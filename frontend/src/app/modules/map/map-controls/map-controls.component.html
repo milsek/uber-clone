@@ -1,0 +1,39 @@
+<div class="w-full min-h-screen">
+
+  <!-- top controls -->
+  <div class="absolute left-0 right-0 top-0">
+    <div class="flex justify-between w-11/12 sm:w-88 h-14 px-2 mt-5 mx-auto bg-white
+    rounded-full shadow-md pointer-events-auto select-none">
+      <!-- menu -->
+      <div class="flex flex-col justify-center text-center text-xl w-11 h-11 my-auto
+      rounded-full cursor-pointer hover:bg-gray-100">
+        <fa-icon [icon]="faBars" class=""></fa-icon>
+      </div>
+
+      <div class="flex flex-col justify-center text-center text-xl my-auto rounded-full font-medium">
+        Suber
+      </div>
+
+      <!-- profile -->
+      <div class="flex flex-col justify-center text-center text-xl w-11 h-11 my-auto
+      rounded-full cursor-pointer hover:bg-gray-100">
+        <fa-icon [icon]="faArrowRightToBracket" class=""></fa-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- clear markers button -->
+  <div *ngIf="summary" class="absolute left-0 bottom-0">
+    <div class="w-14 h-14 m-5 bg-white rounded-full pointer-events-auto cursor-pointer
+    shadow-md transition translate-y-1 hover:scale-105 active:scale-100" (click)="clearMarkers()">
+      <img src="assets/icons/map-marker-minus.png" alt="Clear markers icon" class="p-3">
+    </div>
+  </div>
+
+  <!-- clear markers button -->
+  <div *ngIf="summary" class="absolute right-0 bottom-0">
+    <div class="text-center m-5 px-4 py-2 bg-white rounded-full shadow-md font-medium text-accent">
+      {{ (summary.totalDistance / 1000).toLocaleString('fullwide', {minimumFractionDigits:2, maximumFractionDigits:2}) }} km
+    </div>
+  </div>
+</div>
