@@ -5,3 +5,12 @@
 .leaflet-top, .leaflet-right {
   display: none;
 }
+
+/* disable input field background changing on autocomplete */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+input[data-autocompleted] {
+    background-color: transparent !important;
+}

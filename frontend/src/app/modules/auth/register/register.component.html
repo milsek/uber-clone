@@ -1,0 +1,135 @@
+<div class="min-h-screen h-full w-full bg-dark flex flex-col justify-center">
+  <div class="w-11/12 sm:w-96 mx-auto text-left">
+    <div class="border-4 border-white h-9 w-9 text-lg text-white text-center cursor-pointer
+    transition hover:-translate-x-1 mb-2" routerLink="/">
+      <fa-icon [icon]="faChevronLeft" class=""></fa-icon>
+    </div>
+    <h1 class="text-3xl font-bold text-white">Create an account</h1>
+
+    <form [formGroup]="registerForm" (submit)="onSubmit()">
+    <div class="flex flex-col gap-y-6 mt-10 mb-12 tracking-wide">
+      <div class="w-full">
+        <label class="block tracking-wide text-light text-xs font-bold mb-1"
+        for="register-email">
+          E-Mail
+        </label>
+        <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+        placeholder-light caret-light border-b border-light focus:border-accent-light
+        bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+        id="register-email" type="text" placeholder="Your E-Mail Address" autofocus="autofocus"
+        formControlName="email">
+        <div class="h-1">
+          <p *ngIf="email && email.invalid && email.touched"
+            class="text-yellow-400 text-xs italic">
+            <span *ngIf="email.errors?.['required']">
+              Email is required.
+            </span>
+            <span *ngIf="email.errors?.['pattern']">
+              Email is not valid.
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-between gap-x-4">
+        <div class="w-full">
+          <label class="block tracking-wide text-light text-xs font-bold mb-1"
+          for="register-first-name">
+            First Name
+          </label>
+          <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+          placeholder-light caret-light border-b border-light focus:border-accent-light
+          bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+          id="register-first-name" type="text" placeholder="Your First Name" formControlName="name">
+          <div class="h-1">
+            <p *ngIf="name && name.invalid && name.touched"
+              class="text-yellow-400 text-xs italic">
+              <span *ngIf="name.errors?.['required']">
+                First name is required.
+              </span>
+              <span *ngIf="name.errors?.['minlength']">
+                First name is too short.
+              </span>
+              <span *ngIf="name.errors?.['maxlength']">
+                First name is too long.
+              </span>
+            </p>
+          </div>
+        </div>
+  
+        <div class="w-full">
+          <label class="block tracking-wide text-light text-xs font-bold mb-1"
+          for="register-last-name">
+            Last Name
+          </label>
+          <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+          placeholder-light caret-light border-b border-light focus:border-accent-light
+          bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+          id="register-last-name" type="text" placeholder="Your Last Name" formControlName="surname">
+          <div class="h-1">
+            <p *ngIf="surname && surname.invalid && surname.touched"
+              class="text-yellow-400 text-xs italic">
+              <span *ngIf="surname.errors?.['required']">
+                Last name is required.
+              </span>
+              <span *ngIf="surname.errors?.['minlength']">
+                Last name is too short.
+              </span>
+              <span *ngIf="surname.errors?.['maxlength']">
+                Last name is too long.
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full">
+        <label class="block tracking-wide text-light text-xs font-bold mb-1"
+        for="register-password">
+          Password
+        </label>
+        <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+        placeholder-light caret-light border-b border-light focus:border-accent-light
+        bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+        id="register-password" type="password" placeholder="Your Password" formControlName="password">
+        <div class="h-1">
+          <p *ngIf="password && password.invalid && password.touched"
+            class="text-yellow-400 text-xs italic">
+            <span *ngIf="password.errors?.['required']">
+              Password is required.
+            </span>
+            <span *ngIf="password.errors?.['minlength']">
+              Password is too short.
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="w-full">
+        <label class="block tracking-wide text-light text-xs font-bold mb-1"
+        for="register-confirm-password">
+          Confirm Password
+        </label>
+        <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+        placeholder-light caret-light border-b border-light focus:border-accent-light
+        bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+        id="register-confirm-password" type="password" placeholder="Confirm Your Password" formControlName="confirmPassword">
+        <div class="h-1">
+          <p *ngIf="password && confirmPassword && registerForm.hasError('notSame') && password.valid"
+            class="text-yellow-400 text-xs italic">
+            Passwords do not match.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  <button type="submit" class="w-full h-16 bg-accent-light active:bg-accent text-white font-medium tracking-wide">
+    REGISTER
+  </button>
+  </form>
+
+  <div class="text-light text-sm text-center mt-6">
+    Already have an account?
+    <span class="text-accent-light cursor-pointer"><a routerLink="/login">Log In</a></span>
+  </div>
+</div>
