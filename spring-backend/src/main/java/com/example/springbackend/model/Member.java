@@ -1,15 +1,12 @@
 package com.example.springbackend.model;
 
 import lombok.Data;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Data
 public class Member extends User{
 
     Boolean blocked;
@@ -17,7 +14,10 @@ public class Member extends User{
     @OneToMany(mappedBy = "member")
     private List<Note> notes;
 
-    @OneToOne
-    @JoinColumn(name = "chat_id")
-    Chat chat;
+    public Boolean getBlocked() {
+        return blocked;
+    }
+    public void setBlocked(Boolean blocked) {
+        this.blocked = blocked;
+    }
 }
