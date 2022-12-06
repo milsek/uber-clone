@@ -6,20 +6,16 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppComponent } from './app.component';
 import { MapComponent } from './modules/map/map.component';
 import { MapControlsComponent } from './modules/map/map-controls/map-controls.component';
-import { RegisterComponent } from './modules/auth/register/register.component';
-import { LoginComponent } from './modules/auth/login/login.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { AuthModule } from './modules/auth/auth.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
     MapControlsComponent,
-    RegisterComponent,
-    LoginComponent
   ],
   imports: [
-    BrowserModule, AppRoutingModule, FontAwesomeModule, ReactiveFormsModule
+    BrowserModule, AppRoutingModule, FontAwesomeModule, AuthModule
   ],
   providers: [],
   bootstrap: [AppComponent]

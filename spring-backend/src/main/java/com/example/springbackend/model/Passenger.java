@@ -9,9 +9,14 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Data
 public class Passenger extends Member {
 
     private String paymentDetails;
+
+    private double distanceTravelled;
+
+    private int ridesCompleted;
 
     @ManyToMany()
     @Fetch(value = FetchMode.SUBSELECT)

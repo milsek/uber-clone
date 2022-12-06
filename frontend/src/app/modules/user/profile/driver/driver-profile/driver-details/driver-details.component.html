@@ -1,0 +1,101 @@
+<div class="flex flex-col h-full">
+  <!-- main info -->
+  <div>
+    <!-- image -->
+    <div class="relative h-28 w-28 mx-auto">
+      <img src="/assets/images/placeholders/taxi-driver.jpg" alt=""
+      class="rounded-full">
+      <span class="absolute bottom-1 right-1 h-6 w-6">
+        <span class="relative flex w-6 h-6 bg-dark rounded-full text-center">
+          <span *ngIf="driver.active" class="absolute inline-flex w-4 h-4 top-1 left-1 bg-accent-light rounded-full animate-ping my-auto mx-auto"></span>
+          <span class="relative inline-flex rounded-full h-4 w-4 my-auto mx-auto" [ngClass]="driver.active ? 'bg-accent-light' : 'bg-light'"></span>
+        </span>
+      </span>
+    </div>
+
+    <div class="mt-2 text-gray-50 text-2xl tracking-tight leading-5">
+      {{ driver.name }} {{ driver.surname }}
+    </div>
+    <div class="mt-0 text-light text-xs tracking-widest font-medium uppercase">
+     {{ driver.city }}
+    </div>
+
+    <div class="flex justify-center gap-x-1 mt-4">
+      <div class="text-light text-sm">
+        <span class="text-light text-base">&#9733;
+          {{ getDriverRating() }} <span>·</span> {{ driver.numberOfReviews }} ratings
+        </span>
+    </div>
+    </div>
+
+  </div>
+
+  <!-- the rest -->
+  <div class="flex flex-col flex-grow justify-between">
+    <!-- ride stats -->
+    <div class="flex h-14 border mt-8 border-stone-500 rounded-lg">
+
+      <div class="flex border-r border-stone-500 border-dashed w-1/2 shrink-0">
+        <div class="my-auto px-4 shrink-0">
+          <fa-icon [icon]="faCar" class="text-white"></fa-icon>
+        </div>
+        <div class="my-auto text-left shrink-0">
+          <div class="text-sm text-white font-medium">{{ driver.ridesCompleted }}</div>
+          <div class="text-xs text-light">Rides Completed</div>
+        </div>
+      </div>
+
+      <div class="flex w-1/2 shrink-0">
+        <div class="my-auto px-4 shrink-0">
+          <fa-icon [icon]="faPaperPlane" class="text-white"></fa-icon>
+        </div>
+        <div class="my-auto text-left shrink-0">
+          <div class="text-sm text-white font-medium">{{ getDistanceTravelled() }} km</div>
+          <div class="text-xs text-light">Distance Travelled</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- car info -->
+    <div class="flex-col">
+      <img [src]="getCarImage()" class="w-20 fill-gray-300 mx-auto" title="Coupe"/>
+      <div class="text-light text-sm leading-3 mt-1.5">{{ driver.vehicle.make }} · {{ driver.vehicle.model }} · {{ driver.vehicle.colour }}</div>
+      <div class="text-light text-sm font-bold tracking-wide">
+        {{ driver.vehicle.licensePlateNumber }}
+      </div>
+      <div class="flex justify-center gap-x-3 text-xl">
+        <fa-icon *ngIf="driver.vehicle.babySeat" [icon]="faBabyCarriage" class="text-light" title="Has baby seat"></fa-icon>
+        <fa-icon *ngIf="driver.vehicle.petsAllowed" [icon]="faPaw" class="text-light" title="Pet friendly"></fa-icon>
+      </div>
+    </div>
+
+    <!-- phone and email -->
+    <div class="divide-y divide-stone-500">
+      <!-- phone number -->
+      <div class="flex h-12 w-fit mx-auto">
+
+        <div class="my-auto px-4 shrink-0 text-xl">
+          <fa-icon [icon]="faMobileRetro" class="text-gray-50"></fa-icon>
+        </div>
+        <div class="my-auto text-left pr-4 shrink-0">
+          <div class="text-sm text-gray-50 font-medium">{{ driver.phoneNumber }}</div>
+        </div>
+
+      </div>
+
+      <!-- e-mail -->
+      <div *ngIf="driver.email" class="flex h-12 w-fit mx-auto">
+
+        <div class="my-auto px-4 shrink-0 text-xl">
+          <fa-icon [icon]="faEnvelope" class="text-gray-50"></fa-icon>
+        </div>
+        <div class="my-auto text-left pr-4 shrink-0">
+          <div class="text-sm text-gray-50 font-medium">{{ driver.email }}</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

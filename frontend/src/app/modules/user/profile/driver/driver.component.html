@@ -1,0 +1,15 @@
+<div class="min-h-screen h-full w-full bg-dark flex flex-col justify-center">
+  <div class="absolute top-6 left-6">
+    <div class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer
+    transition hover:-translate-x-1 mb-2" routerLink="/">
+      <fa-icon [icon]="faChevronLeft" class=""></fa-icon>
+    </div>
+  </div>
+
+  <app-driver-profile [driver]="driver"></app-driver-profile>
+  <div *ngIf="notFound" class="w-11/12 sm:w-120 mx-auto text-center border
+  border-stone-500 rounded-lg py-16 px-4 sm:p-16 my-20 text-stone-500
+  font-bold text-2xl">
+    Driver does not exist.
+  </div>
+</div>

@@ -59,8 +59,7 @@ export class MapComponent implements AfterViewInit {
       that.chosenRoute = e.route;
     })
     .addTo(this.map);
-
-    
+    document.getElementById('map')!.style.cursor = 'crosshair';
   }
 
   constructor() { }

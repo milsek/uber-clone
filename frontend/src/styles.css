@@ -14,3 +14,49 @@ input:-webkit-autofill:focus {
 input[data-autocompleted] {
     background-color: transparent !important;
 }
+
+/* SCROLLBAR */
+
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  --tw-bg-opacity: 1;
+  background-color: rgba(61, 60, 65, var(--tw-bg-opacity));
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #666; 
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none;
+  overflow: hidden;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.hidden-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* selection */
+::-moz-selection { /* Code for Firefox */
+  color: rgb(61, 60, 65);
+  background: rgb(147, 149, 155);
+}
+
+::selection {
+  color: rgb(61, 60, 65);
+  background: rgb(147, 149, 155);
+}

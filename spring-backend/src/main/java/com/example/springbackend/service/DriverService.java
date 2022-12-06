@@ -1,8 +1,11 @@
 package com.example.springbackend.service;
 
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.dto.display.DriverDisplayDTO;
+import com.example.springbackend.dto.display.UserDisplayDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Passenger;
+import com.example.springbackend.model.User;
 import com.example.springbackend.repository.DriverRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,4 +34,8 @@ public class DriverService {
         return null;
     }
 
+    public DriverDisplayDTO getByUsername(String username) {
+        Driver driver = driverRepository.findByUsername(username).orElseThrow();
+        return modelMapper.map(driver, DriverDisplayDTO.class);
+    }
 }

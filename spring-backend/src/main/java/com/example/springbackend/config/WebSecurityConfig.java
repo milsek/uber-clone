@@ -5,7 +5,6 @@ import com.example.springbackend.security.RestAuthenticationEntryPoint;
 import com.example.springbackend.security.TokenAuthenticationFilter;
 import com.example.springbackend.service.CustomOAuth2UserService;
 import com.example.springbackend.service.CustomUserDetailsService;
-import com.example.springbackend.service.PassengerService;
 import com.example.springbackend.service.UserService;
 import com.example.springbackend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,3 +139,4 @@ public class WebSecurityConfig {
         return source;
     }
 }
+

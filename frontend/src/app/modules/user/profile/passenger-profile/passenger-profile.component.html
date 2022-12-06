@@ -1,0 +1,75 @@
+<div *ngIf="passenger" class="w-11/12 sm:w-132 mx-auto text-center my-6">
+
+  <div class="lg:hidden mb-2 text-left">
+
+    <div class="hidden sm:flex gap-x-2">
+      <button class="py-3 px-8 border border-stone-500 text-stone-400
+      hover:bg-stone-500 hover:text-stone-300 rounded-lg"
+      [ngClass]="selectedView === 'details' ? 'bg-stone-500 text-stone-300' : ''"
+      (click)="selectedView = 'details'">
+        Details
+      </button>
+
+      <button class="py-3 px-8 border border-stone-500 text-stone-400
+      hover:bg-stone-500 hover:text-stone-300 rounded-lg"
+      [ngClass]="selectedView === 'edit' ? 'bg-stone-500 text-stone-300' : ''"
+      (click)="selectedView = 'edit'">
+        Edit
+      </button>
+    </div>
+
+    <div class="relative block w-fit sm:hidden">
+      <button class="border border-stone-500 text-stone-400 py-2 px-4
+      hover:bg-stone-500 hover:text-stone-300 rounded-lg" (click)="showDropdown = !showDropdown">
+        <fa-icon [icon]="faBars"></fa-icon>
+      </button>
+
+      <div *ngIf="showDropdown" class="absolute z-20 -right-56 top-0 rounded-lg bg-stone-500
+      w-52 p-2 flex flex-col gap-y-2 font-bold">
+
+        <button class="py-3 px-8 border border-dark 
+        hover:bg-dark hover:text-stone-300 rounded-lg w-full"
+        [ngClass]="selectedView === 'details' ? 'bg-dark text-stone-300' : 'text-dark'"
+        (click)="selectedView = 'details'">
+          Details
+        </button>
+
+        <button class="py-3 px-8 border border-dark 
+        hover:bg-dark hover:text-stone-300 rounded-lg w-full"
+        [ngClass]="selectedView === 'edit' ? 'bg-dark text-stone-300' : 'text-dark'"
+        (click)="selectedView = 'edit'">
+          Edit
+        </button>
+
+      </div>
+
+    </div>
+    
+  </div>
+
+  <div class="relative border h-180 border-stone-500 rounded-lg py-16 px-4 sm:p-16">
+
+    <!-- controls -->
+    <div class="absolute hidden lg:-right-32 lg:top-0 lg:flex lg:flex-col lg:gap-y-2 gap-x-2">
+
+      <button class="py-3 px-8 border border-stone-500 text-stone-400
+      hover:bg-stone-500 hover:text-stone-300 rounded-lg"
+      [ngClass]="selectedView === 'details' ? 'bg-stone-500 text-stone-300' : ''"
+      (click)="selectedView = 'details'">
+        Details
+      </button>
+
+      <button class="py-3 px-8 border border-stone-500 text-stone-400
+      hover:bg-stone-500 hover:text-stone-300 rounded-lg"
+      [ngClass]="selectedView === 'edit' ? 'bg-stone-500 text-stone-300' : ''"
+      (click)="selectedView = 'edit'">
+        Edit
+      </button>
+      
+    </div>
+
+    <app-passenger-details *ngIf="selectedView === 'details'" [passenger]="passenger"></app-passenger-details>
+    <app-passenger-edit *ngIf="selectedView === 'edit'" [passenger]="passenger"></app-passenger-edit>
+  </div>
+</div>
+

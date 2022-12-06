@@ -1,0 +1,54 @@
+<div class="flex flex-col h-full">
+  <!-- main info -->
+  <div>
+    <!-- image -->
+    <div class="relative h-28 w-28 mx-auto">
+      <img src="/assets/images/placeholders/taxi-admin.png" alt=""
+      class="rounded-full">
+    </div>
+
+    <div class="mt-2 text-gray-50 text-2xl tracking-tight leading-5">
+      {{ admin.name }} {{ admin.surname }}
+    </div>
+    <div class="mt-0 text-light text-sm tracking-widest font-medium">
+      {{ admin.username }}
+    </div>
+
+  </div>
+
+  <!-- the rest -->
+  <div class="flex flex-col flex-grow justify-between">
+    
+    <div class="block mt-8 text-center text-4xl text-stone-500 font-bold">
+      ADMINISTRATOR
+    </div>
+    
+    <!-- phone and email -->
+    <div class="divide-y divide-stone-500">
+      <!-- phone number -->
+      <div class="flex h-12 w-fit mx-auto">
+
+        <div class="my-auto px-4 shrink-0 text-xl">
+          <fa-icon [icon]="faMobileRetro" class="text-gray-50"></fa-icon>
+        </div>
+        <div class="my-auto text-left pr-4 shrink-0">
+          <div class="text-sm text-gray-50 font-medium">{{ admin.phoneNumber }}</div>
+        </div>
+
+      </div>
+
+      <!-- e-mail -->
+      <div class="flex h-12 w-fit mx-auto">
+
+        <div class="my-auto px-4 shrink-0 text-xl">
+          <fa-icon [icon]="faEnvelope" class="text-gray-50"></fa-icon>
+        </div>
+        <div class="my-auto text-left pr-4 shrink-0">
+          <div class="text-sm text-gray-50 font-medium">{{ admin.email }}</div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
