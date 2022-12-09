@@ -56,12 +56,12 @@ public class AuthenticationController {
     @PostMapping("/signup-passenger")
     public ResponseEntity<Passenger> signupPassenger(@RequestBody UserCreationDTO userCreationDTO){
         Passenger passenger = passengerService.signUp(userCreationDTO);
-        return new ResponseEntity<>(passenger, passenger == null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(passenger, passenger != null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/signup-driver")
     public ResponseEntity<Driver> signupDriver(@RequestBody UserCreationDTO userCreationDTO){
         Driver driver = driverService.signUp(userCreationDTO);
-        return new ResponseEntity<>(driver, driver == null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(driver, driver != null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
 }

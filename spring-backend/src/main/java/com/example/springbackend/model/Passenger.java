@@ -7,9 +7,7 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.List;
-
 @Entity
-@Data
 public class Passenger extends Member {
 
     private String paymentDetails;
@@ -31,5 +29,29 @@ public class Passenger extends Member {
 
     public void setPaymentDetails(String paymentDetails) {
         this.paymentDetails = paymentDetails;
+    }
+
+    public double getDistanceTravelled() {
+        return distanceTravelled;
+    }
+
+    public void setDistanceTravelled(double distanceTravelled) {
+        this.distanceTravelled = distanceTravelled;
+    }
+
+    public int getRidesCompleted() {
+        return ridesCompleted;
+    }
+
+    public void setRidesCompleted(int ridesCompleted) {
+        this.ridesCompleted = ridesCompleted;
+    }
+
+    public List<Route> getFavouriteRoutes() {
+        return favouriteRoutes;
+    }
+
+    public void setFavouriteRoutes(List<Route> favouriteRoutes) {
+        this.favouriteRoutes = favouriteRoutes;
     }
 }

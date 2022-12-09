@@ -29,6 +29,10 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    public Boolean userExistsForCustomRegistration(String email, String username){
+        return userRepository.findByEmail(email).isPresent() || userRepository.findByUsername(username).isPresent();
+    }
+
     public void processOAuthPostLogin(CustomOAuth2User customOAuth2User) {
         if (!userExists(customOAuth2User.getEmail())) {
             Passenger newUser = new Passenger();

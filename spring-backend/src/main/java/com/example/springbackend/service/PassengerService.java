@@ -13,6 +13,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class PassengerService {
 
@@ -24,12 +26,15 @@ public class PassengerService {
     private ModelMapper modelMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleService roleService;
 
     public Passenger signUp(UserCreationDTO userCreationDTO) {
-        if(!userService.userExists(userCreationDTO.getEmail())){
+        if(!userService.userExistsForCustomRegistration(userCreationDTO.getEmail(), userCreationDTO.getUsername())){
             Passenger passenger = modelMapper.map(userCreationDTO, Passenger.class);
             passenger.setAuthenticationProvider(AuthenticationProvider.LOCAL);
             passenger.setPassword(passwordEncoder.encode(userCreationDTO.getPassword()));
+            passenger.setRoles(roleService.findByName("ROLE_PASSENGER"));
             passenger.setBlocked(false);
             passengerRepository.save(passenger);
             return passenger;
