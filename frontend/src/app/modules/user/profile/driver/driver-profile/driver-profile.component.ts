@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener } from '@angular/core';
 import { ActivatedRoute  } from '@angular/router';
 import { IconDefinition, faBars } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
@@ -20,6 +20,7 @@ export class DriverProfileComponent implements OnInit {
   _selectedView: DriverProfileView = DriverProfileView.Details; 
   faBars: IconDefinition = faBars;
   showDropdown: boolean = false;
+  clickedInDropdown: boolean = false;
 
   constructor(private authenticationService: AuthenticationService, private route: ActivatedRoute) { }
 
@@ -40,6 +41,14 @@ export class DriverProfileComponent implements OnInit {
     if (session)
       return this.route.snapshot.paramMap.get('username') === session.username;
     return false;
+  }
+
+  @HostListener('document:click')
+  clickout() {
+    if (this.showDropdown && !this.clickedInDropdown) {
+      this.showDropdown = false;
+    }
+    this.clickedInDropdown = false;
   }
 
 }

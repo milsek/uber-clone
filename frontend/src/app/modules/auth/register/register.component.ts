@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  faChevronLeft = faChevronLeft;
+  faChevronLeft: IconDefinition = faChevronLeft;
 
   checkPasswords: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => { 
     let pass = group.get('password')?.value;

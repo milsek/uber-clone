@@ -77,7 +77,7 @@ public class TestDataSupplierService {
         driver.setSurname("Bickle");
         driver.setPhoneNumber("+1 422 135 12");
         driver.setCity("New York City");
-        driver.setBlocked(false);
+        driver.setActive(false);
         driver.setVehicle(vehicle);
         driver.setDistanceTravelled(5251.12);
         driver.setRidesCompleted(2153);

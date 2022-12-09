@@ -1,6 +1,7 @@
 package com.example.springbackend.service;
 
 import com.example.springbackend.dto.display.AccountDisplayDTO;
+import com.example.springbackend.dto.display.SessionDisplayDTO;
 import com.example.springbackend.dto.display.UserDisplayDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Passenger;
@@ -41,5 +42,10 @@ public class UserService {
     public AccountDisplayDTO getAccount(Authentication auth) {
         User user = (User) auth.getPrincipal();
         return modelMapper.map(user, AccountDisplayDTO.class);
+    }
+
+    public SessionDisplayDTO whoAmI(Authentication auth) {
+        User user = (User) auth.getPrincipal();
+        return modelMapper.map(user, SessionDisplayDTO.class);
     }
 }

@@ -17,4 +17,11 @@ public class ControllerAdvisor {
                 HttpStatus.NOT_FOUND.value(),
                 "Requested resource does not exist.");
     }
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(UserIsNotDriverException.class)
+    public ExceptionResponseBody handleUserIsNotDriverException(UserIsNotDriverException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.FORBIDDEN.value(),
+                "Non-driver users cannot access this.");
+    }
 }

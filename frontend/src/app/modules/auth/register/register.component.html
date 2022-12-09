@@ -1,9 +1,13 @@
 <div class="min-h-screen h-full w-full bg-dark flex flex-col justify-center">
-  <div class="w-11/12 sm:w-96 mx-auto text-left">
-    <div class="border-4 border-white h-9 w-9 text-lg text-white text-center cursor-pointer
+
+  <div class="absolute top-6 left-6">
+    <div class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer
     transition hover:-translate-x-1 mb-2" routerLink="/">
       <fa-icon [icon]="faChevronLeft" class=""></fa-icon>
     </div>
+  </div>
+
+  <div class="w-11/12 sm:w-96 mx-auto text-left">
     <h1 class="text-3xl font-bold text-white">Create an account</h1>
 
     <form [formGroup]="registerForm" (submit)="onSubmit()">

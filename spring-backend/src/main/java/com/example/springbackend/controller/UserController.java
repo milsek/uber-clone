@@ -1,6 +1,7 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.display.AccountDisplayDTO;
+import com.example.springbackend.dto.display.SessionDisplayDTO;
 import com.example.springbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,4 +19,10 @@ public class UserController {
     public ResponseEntity<AccountDisplayDTO> getAccount(Authentication auth) {
         return ResponseEntity.ok(userService.getAccount(auth));
     }
+
+    @GetMapping(value = "/whoami")
+    public ResponseEntity<SessionDisplayDTO> whoAmI(Authentication auth) {
+        return ResponseEntity.ok(userService.whoAmI(auth));
+    }
+
 }

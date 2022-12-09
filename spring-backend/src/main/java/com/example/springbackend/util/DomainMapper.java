@@ -1,9 +1,6 @@
 package com.example.springbackend.util;
 
-import com.example.springbackend.dto.display.AccountDisplayDTO;
-import com.example.springbackend.dto.display.DriverAccountDisplayDTO;
-import com.example.springbackend.dto.display.PassengerAccountDisplayDTO;
-import com.example.springbackend.dto.display.VehicleDisplayDTO;
+import com.example.springbackend.dto.display.*;
 import com.example.springbackend.model.*;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -45,8 +42,27 @@ public class DomainMapper {
             return destination;
         };
 
+        Converter<Driver, SessionDisplayDTO> driverToSessionDisplayDtoConverter = context -> {
+            SessionDisplayDTO destination = context.getDestination();
+            destination.setAccountType("driver");
+            return destination;
+        };
+        Converter<Passenger, SessionDisplayDTO> passengerToSessionDisplayDtoConverter = context -> {
+            SessionDisplayDTO destination = context.getDestination();
+            destination.setAccountType("passenger");
+            return destination;
+        };
+        Converter<Admin, SessionDisplayDTO> adminToSessionDisplayDtoConverter = context -> {
+            SessionDisplayDTO destination = context.getDestination();
+            destination.setAccountType("admin");
+            return destination;
+        };
+
         modelMapper.createTypeMap(Driver.class, AccountDisplayDTO.class).setPostConverter(driverToAccountDisplayDtoConverter);
         modelMapper.createTypeMap(Passenger.class, AccountDisplayDTO.class).setPostConverter(passengerToAccountDisplayDtoConverter);
         modelMapper.createTypeMap(Admin.class, AccountDisplayDTO.class).setPostConverter(adminToAccountDisplayDtoConverter);
+        modelMapper.createTypeMap(Driver.class, SessionDisplayDTO.class).setPostConverter(driverToSessionDisplayDtoConverter);
+        modelMapper.createTypeMap(Passenger.class, SessionDisplayDTO.class).setPostConverter(passengerToSessionDisplayDtoConverter);
+        modelMapper.createTypeMap(Admin.class, SessionDisplayDTO.class).setPostConverter(adminToSessionDisplayDtoConverter);
     }
 }
