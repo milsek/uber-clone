@@ -17,6 +17,7 @@ export class AuthenticationService {
   }
 
   whoami(): void {
+    console.log(this.getToken());
     axios.get(`/api/users/whoami`, 
     {
       headers: {
@@ -53,6 +54,34 @@ export class AuthenticationService {
   
   saveSession(session: Session): void {
     localStorage.setItem('session', JSON.stringify(session));
+  }
+
+  async login(username: string, password: string): Promise<boolean> {
+    
+    var formData =
+    {
+      "username": username,
+      "password": password
+    }
+    
+    const successfulLogin = await axios
+      .post("http://localhost:8080/api/auth/custom-login", formData)
+      .then((resp) => {
+        if (resp.data) {
+          window.localStorage.setItem("token", resp.data["accessToken"]);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+          return true;
+        }
+        else{
+          console.log("Bad credentials");
+          return false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });      
+    return successfulLogin;
   }
 
 }

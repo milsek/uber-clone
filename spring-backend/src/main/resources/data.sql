@@ -1,4 +1,4 @@
-insert into member values ('test','LOCAL','city','mail','name','$2a$12$WNrcfrhC3LBsJmcswhvySOMuFr28o2zPIzCni/zJ1.gFC.DUJzK.a','num','pic','surname','false');
+insert into member values ('test','LOCAL','city','mail','name','$2a$10$w/bdL7W/IvnbuWfNqrd0SOS8b27MVC9kxVjrtVWA0rXZ/RPJsN8CK','num','pic','surname','false');
 
 INSERT INTO role (name)
 VALUES ('ROLE_USER');
