@@ -36,6 +36,7 @@ public class PassengerService {
             passenger.setPassword(passwordEncoder.encode(userCreationDTO.getPassword()));
             passenger.setRoles(roleService.findByName("ROLE_PASSENGER"));
             passenger.setBlocked(false);
+            passenger.setTokenBalance(0);
             passengerRepository.save(passenger);
             return passenger;
         }
@@ -44,5 +45,11 @@ public class PassengerService {
 
     public void getLoggedUser(){
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    }
+
+    public void addToTokenBalance(int balance, String username){
+        Passenger passenger = passengerRepository.findByUsername(username).get();
+        passenger.setTokenBalance(passenger.getTokenBalance() + balance);
+        passengerRepository.save(passenger);
     }
 }
