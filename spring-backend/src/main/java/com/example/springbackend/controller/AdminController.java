@@ -2,6 +2,7 @@ package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.JwtAuthenticationRequestDTO;
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.dto.update.LeaveNoteDTO;
 import com.example.springbackend.dto.update.UsernameDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Passenger;
@@ -40,6 +41,12 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> unbanUser(@RequestBody UsernameDTO usernameDTO){
         adminService.unbanMember(usernameDTO.getUsername());
+        return ResponseEntity.ok().build();
+    }
+    @PostMapping("/leave-note")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> leaveNote(@RequestBody LeaveNoteDTO leaveNoteDTO){
+        adminService.leaveNote(leaveNoteDTO.getContent(),leaveNoteDTO.getUsername());
         return ResponseEntity.ok().build();
     }
 }
