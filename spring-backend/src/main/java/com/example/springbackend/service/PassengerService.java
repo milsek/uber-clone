@@ -35,7 +35,7 @@ public class PassengerService {
             passenger.setAuthenticationProvider(AuthenticationProvider.LOCAL);
             passenger.setPassword(passwordEncoder.encode(userCreationDTO.getPassword()));
             passenger.setRoles(roleService.findByName("ROLE_PASSENGER"));
-            passenger.setBlocked(false);
+            passenger.setBanned(false);
             passenger.setTokenBalance(0);
             passengerRepository.save(passenger);
             return passenger;
@@ -47,7 +47,7 @@ public class PassengerService {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
-    public void addToTokenBalance(int balance, String username){
+    public void addToTokenBalance(int balance, String username) {
         Passenger passenger = passengerRepository.findByUsername(username).get();
         passenger.setTokenBalance(passenger.getTokenBalance() + balance);
         passengerRepository.save(passenger);

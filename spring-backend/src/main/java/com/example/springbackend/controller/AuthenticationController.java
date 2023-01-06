@@ -7,6 +7,7 @@ import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.User;
 import com.example.springbackend.security.UserTokenState;
 import com.example.springbackend.service.DriverService;
+import com.example.springbackend.service.MemberService;
 import com.example.springbackend.service.PassengerService;
 import com.example.springbackend.service.UserService;
 import com.example.springbackend.util.TokenUtils;
@@ -35,6 +36,8 @@ public class AuthenticationController {
     private PassengerService passengerService;
     @Autowired
     private DriverService driverService;
+    @Autowired
+    private MemberService memberService;
 
     @PostMapping("/custom-login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(
@@ -44,6 +47,9 @@ public class AuthenticationController {
                     authenticationRequest.getUsername(), authenticationRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = (User) authentication.getPrincipal();
+            if(memberService.isUserBanned(user.getUsername())){
+                return null;
+            }
             String jwt = tokenUtils.generateToken(user.getUsername());
             int expiresIn = tokenUtils.getExpiredIn();
             passengerService.getLoggedUser();

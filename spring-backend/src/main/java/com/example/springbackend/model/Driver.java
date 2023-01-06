@@ -1,12 +1,14 @@
 package com.example.springbackend.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @Entity
 @Data
+@Where(clause = "banned = false")
 public class Driver extends Member{
 
     private Boolean active;

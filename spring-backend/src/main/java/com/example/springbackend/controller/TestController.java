@@ -22,7 +22,6 @@ public class TestController {
     TestService testService;
 
     @GetMapping(path = "test")
-    @PreAuthorize("hasRole('PASSENGER')")
     public String test(){
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return testService.test();

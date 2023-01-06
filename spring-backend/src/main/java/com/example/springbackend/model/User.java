@@ -25,7 +25,6 @@ public class User implements UserDetails {
     private String phoneNumber;
     private String city;
     private String profilePicture;
-
     @Enumerated(EnumType.STRING)
     private AuthenticationProvider authenticationProvider;
 
