@@ -18,7 +18,7 @@ public class UserController {
 
     @GetMapping("/account")
     public ResponseEntity<AccountDisplayDTO> getAccount(Authentication auth) {
-        return ResponseEntity.ok(userService.getAccount(auth));
+        return ResponseEntity.ok(userService.   getAccount(auth));
     }
 
     @GetMapping(value = "/whoami")

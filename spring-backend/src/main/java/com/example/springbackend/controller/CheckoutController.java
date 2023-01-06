@@ -6,6 +6,7 @@ import com.example.springbackend.repository.OrderRepository;
 import com.example.springbackend.dto.paypal.OrderStatus;
 import com.example.springbackend.repository.PassengerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,7 @@ import com.example.springbackend.dto.paypal.PayPalAppContextDTO;
 import com.example.springbackend.model.Order;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 
 @RestController
 @RequestMapping(value = "api/checkout")
@@ -36,7 +38,9 @@ public class CheckoutController {
     @GetMapping(value = "/success")
     public ResponseEntity<String> paymentSuccess(HttpServletRequest request) throws Exception {
         payPalService.confirmOrder(request.getParameter("token"));
-        return ResponseEntity.ok().body("Payment success");
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create("http://localhost:4200/account"))
+                .build();
     }
 
 }

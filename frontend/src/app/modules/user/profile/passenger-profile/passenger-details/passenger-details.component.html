@@ -43,6 +43,36 @@
 
     </div>
     
+    
+    <div class="flex h-14 border mt-8 border-stone-500 rounded-lg">
+
+      <div class="flex border-r border-stone-500 border-dashed w-1/2 shrink-0">
+        <div class="my-auto px-4 shrink-0">
+          <fa-icon [icon]="	faMoneyBill1Wave" class="text-white"></fa-icon>
+        </div>
+        <div class="my-auto text-left shrink-0">
+          <div class="text-sm text-white font-medium">{{ passenger.tokenBalance }}</div>
+          <div class="text-xs text-light">Token balance</div>
+        </div>
+      </div>
+
+      <div class="flex w-1/2 shrink-0">
+        <div class="my-auto px-4 shrink-0">
+          <fa-icon [icon]="faPlus" class="text-white" (click)="addTokens()"></fa-icon>
+        </div>
+        <div class="my-auto text-left shrink-0">
+          <div class="text-sm text-white font-medium">                        
+          <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+          placeholder-light caret-light border-b border-light focus:border-accent-light
+          bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+          id="token-number" type="text" placeholder="Amount of tokens" autofocus="autofocus"
+          formControlName="email">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
     <!-- phone and email -->
     <div class="divide-y divide-stone-500">
       <!-- phone number -->

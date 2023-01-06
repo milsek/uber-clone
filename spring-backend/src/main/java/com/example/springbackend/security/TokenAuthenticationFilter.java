@@ -55,8 +55,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
 
-        } catch (ExpiredJwtException ex) {
-            LOGGER.debug("Token expired!");
+        } catch (Exception ex) {
+
         }
         chain.doFilter(request, response);
     }

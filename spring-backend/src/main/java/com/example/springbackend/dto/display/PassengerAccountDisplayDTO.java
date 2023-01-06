@@ -6,4 +6,5 @@ import lombok.Data;
 public class PassengerAccountDisplayDTO extends AccountDisplayDTO {
     private double distanceTravelled;
     private int ridesCompleted;
+    private int tokenBalance;
 }

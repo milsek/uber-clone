@@ -7,6 +7,7 @@ export interface Passenger {
   profilePicture: string,
   distanceTravelled: number,
   ridesCompleted: number,
+  tokenBalance: number,
   email?: string,
   accountType?: string,
 }
