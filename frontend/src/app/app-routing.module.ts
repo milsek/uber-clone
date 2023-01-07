@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { LoginComponent } from './modules/auth/login/login.component';
 import { RegisterComponent } from './modules/auth/register/register.component';
-import { MapComponent } from './modules/map/map.component';
+import { MainComponent } from './modules/main/main.component';
 import { DriverPageComponent } from './modules/user/profile/driver/driver.component';
 
 const routes: Routes = [
-  { path: '', component: MapComponent },
+  { path: '', component: MainComponent },
   { path: 'account', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) },
   { path: 'driver/:username', component: DriverPageComponent },
   { path: 'register', component: RegisterComponent },

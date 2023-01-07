@@ -1,0 +1,25 @@
+<div class="w-full min-h-screen">
+
+  <!-- top controls -->
+  <div *ngIf="driverInfo"
+  class="absolute left-0 right-0 top-0">
+    <app-top-controls
+    [driverInfo]="driverInfo"
+    ></app-top-controls>
+  </div>
+
+  <!-- clear markers button -->
+  <div *ngIf="summary" class="hidden sm:block absolute left-0 bottom-0">
+    <div class="w-14 h-14 m-5 bg-dark rounded-full pointer-events-auto cursor-pointer
+    shadow-md transition translate-y-1 hover:scale-105 active:scale-100" (click)="clearMarkers()">
+      <img src="assets/icons/map-marker-minus-white.png" alt="Clear markers icon" class="p-3">
+    </div>
+  </div>
+
+  <!-- summary -->
+  <div *ngIf="summary" class="hidden sm:block absolute right-0 bottom-0">
+    <div class="text-center m-5 px-4 py-2 bg-dark rounded-full shadow-md font-medium text-white">
+      {{ (summary.totalDistance / 1000).toLocaleString('fullwide', {minimumFractionDigits:2, maximumFractionDigits:2}) }} km
+    </div>
+  </div>
+</div>

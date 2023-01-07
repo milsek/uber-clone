@@ -25,7 +25,10 @@ export class AuthenticationService {
       }
     })
     .then((response) => {
+      let reload: boolean = false;
+      if (!this.getSession()) reload = true;
       this.saveSession(response.data);
+      if (reload) window.location.href="/";
     })
     .catch((err) => {
       this.logout();
@@ -41,7 +44,7 @@ export class AuthenticationService {
 
   getAccountType(): string {
     const session: Session | null = this.getSession();
-    if (session){
+    if (session) {
       return session.accountType;
     }
     return "anonymous";

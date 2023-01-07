@@ -15,9 +15,9 @@ public class Route {
     private Integer id;
 
     @ElementCollection
-    private List<Coordinates<Double,Double>> coordinates;
+    private List<Coordinates> coordinates;
 
     @ElementCollection
-    private List<Coordinates<Double,Double>> waypoints;
+    private List<Coordinates> waypoints;
 
 }

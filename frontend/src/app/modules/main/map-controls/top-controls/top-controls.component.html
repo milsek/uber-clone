@@ -1,18 +1,21 @@
-<div *ngIf="sharedInfo && driverInfo">
-  <div class="flex justify-between gap-x-2 sm:gap-x-0 w-11/12 sm:w-88 h-14 px-2 mt-5 mx-auto bg-white
+<div>
+  <div class="flex justify-between gap-x-2 sm:gap-x-0 w-11/12
+    sm:w-88 h-14 px-2 mt-5 mx-auto bg-dark text-gray-50
     rounded-full shadow-md pointer-events-auto select-none">
       <!-- menu -->
       <div class="flex flex-col justify-center text-center text-xl w-11 h-11 my-auto
-      rounded-full cursor-pointer hover:bg-gray-100 shrink-0">
+      rounded-full cursor-pointer hover:text-light shrink-0">
         <fa-icon [icon]="faBars" class=""></fa-icon>
       </div>
 
-      <div *ngIf="sharedInfo.accountType !== 'driver'" class="flex flex-col justify-center text-center text-xl my-auto rounded-full font-medium">
+      <div *ngIf="accountType !== 'driver'"
+      class="flex flex-col justify-center text-center text-xl
+      my-auto rounded-full font-medium">
         Suber
       </div>
 
       <!-- activity -->
-      <div *ngIf="sharedInfo.accountType === 'driver' && driverInfo.isActive !== null"
+      <div *ngIf="accountType === 'driver' && driverInfo.isActive !== null"
       class="flex flex-col justify-center relative h-11 my-auto w-56 rounded-full mx-auto
       text-center text-xl font-medium tracking-wider pointer-events-auto select-none cursor-pointer"
       [ngClass]="driverInfo.isActive ? 'bg-accent' : 'bg-light'" (click)="toggleActivity()">
@@ -23,36 +26,36 @@
         <p class="animate-none text-white z-10">{{ driverInfo.isActive ? 'ACTIVE' : 'INACTIVE' }}</p>
       </div>
 
-      <!-- register -->
-      <div *ngIf="sharedInfo.accountType === 'anonymous'" routerLink="/register"
+      <!-- login -->
+      <div *ngIf="accountType === 'anonymous'" routerLink="/login"
       class="flex flex-col justify-center text-center text-xl w-11 h-11 my-auto
-      rounded-full cursor-pointer hover:bg-gray-100">
+      rounded-full cursor-pointer hover:text-light">
         <fa-icon [icon]="faArrowRightToBracket" class=""></fa-icon>
       </div>
 
-      <div *ngIf="sharedInfo.accountType !== 'anonymous'"
+      <div *ngIf="accountType !== 'anonymous'"
       class="relative block my-auto">
         <!-- profile -->
         <div (click)="showProfileDropdown = !showProfileDropdown; clickedProfileDropdown = true;"
-        class="flex flex-col justify-center text-center text-xl w-11 h-11 my-auto
-        rounded-full cursor-pointer hover:bg-gray-100 shadow-sm border border-gray-300">
+        class="flex flex-col justify-center text-center text-xl w-10 h-10 my-auto
+        rounded-full cursor-pointer hover:text-light shadow-sm">
           <img src="/assets/images/placeholders/taxi-driver.jpg" alt="" class="w-11 h-11 rounded-full">
         </div>
 
         <!-- profile dropdown -->
-        <div *ngIf="showProfileDropdown" class="absolute z-20 right-0 top-14 rounded-lg bg-white
-       w-64 p-1.5 flex flex-col font-medium text-gray-700"
+        <div *ngIf="showProfileDropdown" class="absolute z-20 right-0 top-14 rounded-lg bg-dark
+       w-64 p-1.5 px-2 flex flex-col font-medium text-light"
         (click)="clickedProfileDropdown = true">
 
-          <button class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:bg-gray-100"
+          <button class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
           routerLink="/account">
             <fa-icon [icon]="faUser" class="text-xl"></fa-icon>
             <span class="my-auto">Account</span>
           </button>
           
-          <hr class="my-1">
+          <hr class="my-1 border-stone-500">
 
-          <button class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:bg-gray-100"
+          <button class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
           (click)="logout()">
             <fa-icon [icon]="faPowerOff" class="text-xl"></fa-icon>
             <span class="my-auto">Log Out</span>

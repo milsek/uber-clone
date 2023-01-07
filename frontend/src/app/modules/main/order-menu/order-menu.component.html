@@ -1,0 +1,162 @@
+<div class="absolute bottom-0 left-0 right-0 sm:static flex sm:flex-row flex-col-reverse
+sm:h-full select-none" id="order-menu">
+
+  <div *ngIf="isOpened" class="sm:static flex flex-col rounded-t-3xl sm:rounded-none
+  w-screen h-140 sm:h-auto sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
+    <h1 class="text-3xl font-bold text-gray-50 mt-4 sm:mt-0">Order a ride</h1>
+
+    <div *ngIf="waypoints" class="flex flex-col shrink-0 gap-y-3 mt-6 max-h-72 overflow-auto">
+      <div *ngFor="let waypoint of waypoints; let i=index;">
+        <div class="flex w-full justify-between">
+          
+          <div class="flex grow gap-x-4">
+            <div class="relative flex flex-col justify-center h-10 w-10 shrink-0 text-accent-light
+            rounded-full text-center select-none">
+              <p *ngIf="i > 0"
+                class="absolute -top-4 w-full text-center mx-auto font-extrabold">·</p>
+              <fa-icon [icon]="getIcon(i)" class="mx-auto" [ngClass]="i === 0 ? 'text-base' : 'text-xl'"></fa-icon>
+              <p *ngIf="i < waypoints.length - 1"
+              class="absolute -bottom-4 w-full text-center mx-auto font-extrabold">·</p>
+            </div>
+            
+            <div class="flex flex-col">
+              <div class="text-lg font-medium text-gray-50">{{ i === 0 ? 'Pick Up' : i === waypoints.length - 1 ? 'Drop Off' : 'Stop ' + i }}</div>
+              <div class="text-sm font-medium text-light">
+                {{ waypoint.raw.address.road ? waypoint.raw.address.road + (waypoint.raw.address.house_number ? ' ' + waypoint.raw.address.house_number : '') +
+                (waypoint.raw.address.city ? ', ' : '') : '' }}
+                {{ waypoint.raw.address.quarter ? waypoint.raw.address.quarter + (waypoint.raw.address.city ? ', ' : '') : '' }}{{ waypoint.raw.address.city }}
+                </div>
+            </div>
+          </div>
+
+          <button class="grow-0 w-10 h-10 my-auto p-1 text-gray-50 hover:text-accent-light mx-auto"
+          (click)="removeStop(i)">
+            <fa-icon [icon]="faXmark"></fa-icon>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- add new stop -->
+    
+    <div *ngIf="!(accountType === 'anonymous' && waypoints.length == 2)" class="flex" [ngClass]="waypoints.length > 0 ? 'mt-4' : 'mt-0'">
+      <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+      placeholder-light caret-light border-b border-light focus:border-accent-light
+      bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+      type="text" [(ngModel)]="newStopQuery" (keydown.enter)="addStop()"
+      [placeholder]="waypoints.length === 0 ? 'Add the starting point' : 'Add a destination'">
+
+      <button (click)="addStop()"
+      class="px-2 py-1 text-gray-50 hover:text-accent-light mx-auto">
+        <fa-icon [icon]="faPlus"></fa-icon>
+      </button>
+    </div>
+
+    <div *ngIf="route" class="flex flex-col mt-10">
+
+      <div class="flex justify-center font-medium text-sm text-gray-50
+      divide-x divide-light">
+        <div class="flex gap-x-1.5 px-2 w-1/2 justify-end">
+          <fa-icon [icon]="faStopwatch"></fa-icon>
+          <span>{{ (route.summary.totalTime / 60) + 1 | number: '1.0-0' }} min</span>
+        </div>
+        <div class="flex gap-x-1.5 px-2 w-1/2 justify-start">
+          <fa-icon [icon]="faRoute"></fa-icon>
+          <span>{{ (route.summary.totalDistance / 1000) | number: '1.2-2' }} km</span>
+        </div>
+      </div>
+      
+      <div *ngIf="calculateRidePrice() > 0" class="flex justify-center font-medium text-sm text-gray-50 mt-2">
+        <div class="flex gap-x-1.5">
+          <fa-icon [icon]="faHandHoldingUsd"></fa-icon>
+          <span>{{ calculateRidePrice() }}<b class="font-black text-accent-light">&nbsp;T</b></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Show when route chosen -->
+    <div *ngIf="waypoints.length > 1" class="mt-12">
+      <!-- car preferences -->
+      <div *ngIf="selectedVehicleType" class="flex flex-col">
+        <!-- car type -->
+        <div class="flex justify-around select-none">
+
+          <div class="flex flex-col justify-end text-center">
+            <img [src]="selectedVehicleType.name === 'COUPE' ? 'assets/icons/car-coupe.png' : 'assets/icons/car-coupe-gray.png'"
+            class="w-16 hover:opacity-90 cursor-pointer" title="Coupe" (click)="setVehicleType('COUPE')"/>
+            <p class="text-sm font-medium mt-1" [ngClass]="selectedVehicleType.name === 'COUPE' ? 'text-gray-50' : 'text-light'">Coupe</p>
+          </div>
+
+          <div class="flex flex-col justify-end text-center">
+            <img [src]="selectedVehicleType.name === 'MINIVAN' ? 'assets/icons/car-minivan.png' : 'assets/icons/car-minivan-gray.png'"
+            class="w-16 hover:opacity-90 cursor-pointer" title="Minivan" (click)="setVehicleType('MINIVAN')"/>
+            <p class="text-sm font-medium mt-1" [ngClass]="selectedVehicleType.name === 'MINIVAN' ? 'text-gray-50' : 'text-light'">Minivan</p>
+          </div>
+          
+          <div class="flex flex-col justify-end text-center">
+            <img [src]="selectedVehicleType.name === 'STATION' ? 'assets/icons/car-station.png' : 'assets/icons/car-station-gray.png'"
+            class="w-16 hover:opacity-90 cursor-pointer" title="Station" (click)="setVehicleType('STATION')"/>
+            <p class="text-sm font-medium mt-1" [ngClass]="selectedVehicleType.name === 'STATION' ? 'text-gray-50' : 'text-light'">Station</p>
+          </div>
+
+        </div>
+
+        <!-- additional options -->
+        <div *ngIf="accountType === 'passenger'" class="flex mx-auto mt-6 px-4 py-0.5 justify-between gap-x-3">
+
+          <div class="flex gap-x-2 justify-between border border-light border-dashed px-2 sm:px-6 py-1 cursor-pointer"
+          [ngClass]="hasBabySeat ? 'text-gray-50 border-gray-50' : 'text-light border-light'" (click)="hasBabySeat = !hasBabySeat">
+            <fa-icon [icon]="faBabyCarriage"title="Has baby seat"
+            class="text-xl"></fa-icon>
+            <p class="text-base my-auto">Baby seat</p>
+          </div>
+
+          <div class="flex gap-x-2 justify-between border border-light border-dashed px-2 sm:px-6 py-1 cursor-pointer"
+          [ngClass]="isPetFriendly ? 'text-gray-50 border-gray-50' : 'text-light border-light'" (click)="isPetFriendly = !isPetFriendly">
+            <fa-icon [icon]="faPaw" title="Pet friendly"
+            class="text-xl"></fa-icon>
+            <p class="text-base my-auto">Pet friendly</p>
+          </div>
+
+        </div>
+
+      </div>
+      
+      <!-- order button -->
+      <div>
+        <button *ngIf="accountType === 'passenger'" type="submit" class="w-full h-16 bg-accent-light
+        active:bg-accent text-white font-medium tracking-wide mt-12" (click)="orderRide()">
+          ORDER RIDE
+        </button>
+        <div *ngIf="accountType === 'anonymous'" class="text-light text-center mt-6">
+          You must
+          <span class="text-accent-light cursor-pointer font-bold"><a routerLink="/login">Log In</a></span>
+          before ordering a ride
+        </div>
+      </div>
+    </div>
+    
+
+  </div>
+
+  <!-- opening arrow -->
+  <div class="hidden sm:flex flex-col justify-center h-32 w-8 bg-dark
+  my-auto cursor-pointer text-center slide-in text-light hover:text-gray-300"
+  [ngClass]="isOpened ? '-ml-8 rounded-none' : 'rounded-r-full'"
+  (click)="toggleOpened()">
+    <fa-icon [icon]="isOpened ? faChevronLeft : faChevronRight" class="text-2xl"></fa-icon>
+  </div>
+
+  <!-- opening arrow -->
+  <div class="sm:hidden flex justify-center w-screen z-10 slide-in-bottom">
+    <div class="flex flex-col justify-center bg-dark
+    my-auto cursor-pointer text-center text-light hover:text-gray-300"
+    [ngClass]="isOpened ? '-mb-8 rounded-none h-8 w-full mx-10' : 'rounded-t-full h-8 w-44'"
+    (click)="toggleOpened()">
+      <fa-icon [icon]="isOpened ? faChevronDown : faChevronUp" class="text-2xl"></fa-icon>
+    </div>
+  </div>
+
+</div>

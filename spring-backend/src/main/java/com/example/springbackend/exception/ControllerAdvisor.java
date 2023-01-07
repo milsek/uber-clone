@@ -2,10 +2,14 @@ package com.example.springbackend.exception;
 
 import com.example.springbackend.exception.error.ExceptionResponseBody;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -17,11 +21,41 @@ public class ControllerAdvisor {
                 HttpStatus.NOT_FOUND.value(),
                 "Requested resource does not exist.");
     }
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(UserIsNotDriverException.class)
-    public ExceptionResponseBody handleUserIsNotDriverException(UserIsNotDriverException ex) {
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ExceptionResponseBody handleInsufficientFundsException(InsufficientFundsException ex) {
         return new ExceptionResponseBody(
-                HttpStatus.FORBIDDEN.value(),
-                "Non-driver users cannot access this.");
+                HttpStatus.PAYMENT_REQUIRED.value(),
+                "Insufficient funds.");
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(AdequateDriverNotFoundException.class)
+    public ExceptionResponseBody handleAdequateDriverNotFoundException(AdequateDriverNotFoundException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Adequate driver not found.");
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(TooManyPassengersException.class)
+    public ExceptionResponseBody handleTooManyPassengersException(TooManyPassengersException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Number of passengers exceeds vehicle capacity.");
     }
 }

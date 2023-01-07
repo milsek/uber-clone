@@ -2,9 +2,7 @@ package com.example.springbackend.service;
 
 import com.example.springbackend.dto.creation.UserCreationDTO;
 import com.example.springbackend.dto.display.DriverDisplayDTO;
-import com.example.springbackend.exception.UserIsNotDriverException;
 import com.example.springbackend.model.Driver;
-import com.example.springbackend.model.User;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;
 import com.example.springbackend.repository.DriverRepository;
 import org.modelmapper.ModelMapper;
@@ -45,24 +43,14 @@ public class DriverService {
     }
 
     public void toggleActivity(Authentication auth) {
-        User user = (User) auth.getPrincipal();
-        if (user instanceof Driver) {
-            Driver driver = (Driver) user;
-            driver.setActive(!driver.getActive());
-            driverRepository.save(driver);
-        }
-        else {
-            throw new UserIsNotDriverException();
-        }
+        Driver driver = (Driver) auth.getPrincipal();
+        driver.setActive(!driver.getActive());
+        driverRepository.save(driver);
     }
 
     public boolean getActivity(Authentication auth) {
-        User user = (User) auth.getPrincipal();
-        if (user instanceof Driver) {
-            return ((Driver) user).getActive();
-        }
-        else {
-            throw new UserIsNotDriverException();
-        }
+        Driver driver = (Driver) auth.getPrincipal();
+        return driver.getActive();
     }
+
 }

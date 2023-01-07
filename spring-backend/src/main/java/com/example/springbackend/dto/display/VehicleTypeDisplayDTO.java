@@ -6,4 +6,5 @@ import lombok.Data;
 public class VehicleTypeDisplayDTO {
     private String name;
     private double price;
+    private int seats;
 }

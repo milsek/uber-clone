@@ -1,12 +1,11 @@
 package com.example.springbackend.model;
 
-import com.example.springbackend.model.helpClasses.AuthenticationProvider;
-import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 @Entity
 @Where(clause = "banned = false")
@@ -18,6 +17,7 @@ public class Passenger extends Member {
 
     private int ridesCompleted;
 
+    @PositiveOrZero
     private int tokenBalance;
 
     @ManyToMany()

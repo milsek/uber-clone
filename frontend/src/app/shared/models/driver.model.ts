@@ -16,3 +16,14 @@ export interface Driver {
   email?: string,
   accountType?: string,
 }
+
+export interface DriverSimple {
+  username: string,
+  name: string,
+  surname: string,
+  phoneNumber: string,
+  profilePicture: string,
+  vehicle: Vehicle,
+  totalRatingSum: number,
+  numberOfReviews: number,
+}

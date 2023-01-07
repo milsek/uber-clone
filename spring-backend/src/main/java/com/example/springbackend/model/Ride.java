@@ -1,12 +1,8 @@
 package com.example.springbackend.model;
 
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
@@ -17,12 +13,14 @@ public class Ride {
     private Integer id;
 
     private Double distance;
+    private int expectedTime;
     private String cancelled;
     private Boolean rejected;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private LocalDateTime createdAt;
     private Boolean driverInconsistency;
-    private Double price;
+    private int price;
 
     @ManyToOne
     @JoinColumn

@@ -2,13 +2,11 @@ package com.example.springbackend.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name" }) })
 public class VehicleType {
 
     @Id
@@ -18,4 +16,6 @@ public class VehicleType {
     private String name;
 
     private double price;
+
+    private int seats;
 }

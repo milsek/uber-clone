@@ -10,7 +10,11 @@ export class DriverService {
   constructor(private authenticationService: AuthenticationService) { }
 
   getDriverByUsername(username: string): Promise<any> {
-    return axios.get(`/api/drivers/${username}`);
+    return axios.get(`/api/drivers/${username}`, {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`
+      }
+    });
   }
 
   async getDriverActivity(): Promise<boolean> {

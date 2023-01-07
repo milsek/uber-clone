@@ -27,3 +27,4 @@ target/
 *.iml
 *.ipr
 
+simulator/venv

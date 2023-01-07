@@ -1,0 +1,124 @@
+<div class="absolute bottom-0 left-0 right-0 sm:static flex sm:flex-row flex-col-reverse
+sm:h-full select-none" id="order-menu">
+
+  <div *ngIf="isOpened && ride" class="sm:static flex flex-col rounded-t-3xl sm:rounded-none
+  w-screen h-140 sm:h-auto sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
+    <h1 class="text-3xl font-bold text-gray-50 mt-4 sm:mt-0">Current ride</h1>
+
+    <div *ngIf="waypoints" class="flex flex-col shrink-0 gap-y-3 mt-6 max-h-72 overflow-auto">
+      <div *ngFor="let waypoint of waypoints; let i=index;">
+        <div class="flex w-full justify-between">
+          
+          <div class="flex grow gap-x-4">
+            <div class="relative flex flex-col justify-center h-10 w-10 shrink-0 text-accent-light
+            rounded-full text-center select-none">
+              <p *ngIf="i > 0"
+                class="absolute -top-4 w-full text-center mx-auto font-extrabold">·</p>
+              <fa-icon [icon]="getIcon(i)" class="mx-auto" [ngClass]="i === 0 ? 'text-base' : 'text-xl'"></fa-icon>
+              <p *ngIf="i < waypoints.length - 1"
+              class="absolute -bottom-4 w-full text-center mx-auto font-extrabold">·</p>
+            </div>
+            
+            <div class="flex flex-col">
+              <div class="text-lg font-medium text-gray-50">{{ i === 0 ? 'Pick Up' : i === waypoints.length - 1 ? 'Drop Off' : 'Stop ' + i }}</div>
+              <div class="text-sm font-medium text-light">
+                {{ waypoint.raw.address.road ? waypoint.raw.address.road + (waypoint.raw.address.house_number ? ' ' + waypoint.raw.address.house_number : '') +
+                (waypoint.raw.address.city ? ', ' : '') : '' }}
+                {{ waypoint.raw.address.quarter ? waypoint.raw.address.quarter + (waypoint.raw.address.city ? ', ' : '') : '' }}{{ waypoint.raw.address.city }}
+                </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ride summary and price -->
+    <div class="flex flex-col mt-10">
+
+      <div class="flex justify-center font-medium text-sm text-gray-50
+      divide-x divide-light">
+        <div class="flex gap-x-1.5 px-2 w-1/2 justify-end">
+          <fa-icon [icon]="faStopwatch"></fa-icon>
+          <span>{{ (ride.expectedTime / 60) + 1 | number: '1.0-0' }} min</span>
+        </div>
+        <div class="flex gap-x-1.5 px-2 w-1/2 justify-start">
+          <fa-icon [icon]="faRoute"></fa-icon>
+          <span>{{ ride.distance }} km</span>
+        </div>
+      </div>
+      
+      <div class="flex justify-center font-medium text-sm text-gray-50 mt-2">
+        <div class="flex gap-x-1.5">
+          <fa-icon [icon]="faHandHoldingUsd"></fa-icon>
+          <span>{{ ride.price }}<b class="font-black text-accent-light">&nbsp;T</b></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- driver info -->
+    <h1 class="text-2xl font-bold text-gray-50 mt-10">Your driver</h1>
+    <div class="flex flex-col mt-4">
+      <div class="flex gap-x-4 h-14">
+
+        <div class="w-14 h-14 flex-shrink-0 my-auto cursor-pointer"
+        [routerLink]="['/driver', ride.driver.username]">
+          <img src="/assets/images/placeholders/taxi-driver.jpg" alt=""
+          class="rounded-full">
+        </div>
+        
+        <div class="flex flex-col justify-between my-auto text-gray-50 text-lg tracking-wide">
+          <div [routerLink]="['/driver', ride.driver.username]" class="cursor-pointer">
+            {{ ride.driver.name }} {{ ride.driver.surname }}
+          </div>
+          <span class="text-light text-base">&#9733;
+            {{ driverRating }} <span>·</span> {{ ride.driver.numberOfReviews }} ratings
+          </span>
+        </div>
+
+      </div>
+      
+      <!-- vehicle -->
+      <div class="flex flex-col gap-x-4 py-6 mt-4 border border-stone-500 rounded-xl">
+
+        <div class="flex-shrink-0 my-auto cursor-pointer mx-auto"
+        [routerLink]="['/driver', ride.driver.username]">
+          <img [src]="vehicleImage" alt=""
+          class="h-6">
+        </div>
+        
+        <div class="flex flex-col my-auto text-gray-50 text-lg tracking-wide">
+          <div [routerLink]="['/driver', ride.driver.username]"
+          class="cursor-pointer mx-auto text-center">
+            {{ ride.driver.vehicle.make }} · {{ ride.driver.vehicle.model }} · {{ ride.driver.vehicle.colour }}
+          </div>
+          <div class="text-light text-sm font-bold tracking-wide mx-auto text-center">
+            {{ ride.driver.vehicle.licensePlateNumber }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- opening arrow -->
+  <div class="hidden sm:flex flex-col justify-center h-32 w-8 bg-dark
+  my-auto cursor-pointer text-center slide-in text-light hover:text-gray-300"
+  [ngClass]="isOpened ? '-ml-8 rounded-none' : 'rounded-r-full'"
+  (click)="toggleOpened()">
+    <fa-icon [icon]="isOpened ? faChevronLeft : faChevronRight" class="text-2xl"></fa-icon>
+  </div>
+
+  <!-- opening arrow -->
+  <div class="sm:hidden flex justify-center w-screen z-10 slide-in-bottom">
+    <div class="flex flex-col justify-center bg-dark
+    my-auto cursor-pointer text-center text-light hover:text-gray-300"
+    [ngClass]="isOpened ? '-mb-8 rounded-none h-8 w-full mx-10' : 'rounded-t-full h-8 w-44'"
+    (click)="toggleOpened()">
+      <fa-icon [icon]="isOpened ? faChevronDown : faChevronUp" class="text-2xl"></fa-icon>
+    </div>
+  </div>
+
+</div>

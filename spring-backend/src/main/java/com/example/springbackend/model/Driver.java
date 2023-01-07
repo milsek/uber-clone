@@ -23,4 +23,10 @@ public class Driver extends Member{
 
     @OneToOne
     Vehicle vehicle;
+
+    @OneToOne
+    Ride currentRide;
+
+    @OneToOne
+    Ride nextRide;
 }

@@ -10,7 +10,7 @@ public class PassengerRide {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
 
     private double driverRating;
     private double vehicleRating;
