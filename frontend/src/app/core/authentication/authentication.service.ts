@@ -59,6 +59,51 @@ export class AuthenticationService {
     localStorage.setItem('session', JSON.stringify(session));
   }
 
+  async resetPasword(email: String) : Promise<boolean>{
+    console.log(email);
+    if(email){
+      
+    var formData =
+    {
+      "email": email,
+    }
+    await axios
+    .post("http://localhost:8080/api/auth/reset-password", formData)
+    .then((resp) => {
+      console.log("AS");
+      return true;
+    })
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });      
+    }
+    return false;
+  }
+
+  async confirmReset(token: String,password: String) : Promise<boolean>{
+    console.log(password);
+    if(password){
+      
+    var formData =
+    {
+      "token" : token,
+      "newPassword" : password
+    }
+     await axios
+    .post("http://localhost:8080/api/auth/confirm-password-reset", formData)
+    .then((resp) => {
+      console.log("AS");
+      return true;
+    })
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });      
+    }
+    return false;
+  }
+
   async login(username: string, password: string): Promise<boolean> {
     
     var formData =

@@ -2,6 +2,7 @@ package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.JwtAuthenticationRequestDTO;
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.dto.update.EmailDTO;
 import com.example.springbackend.dto.update.PasswordResetDTO;
 import com.example.springbackend.dto.update.UsernameDTO;
 import com.example.springbackend.model.Driver;
@@ -81,9 +82,13 @@ public class AuthenticationController {
                 .build();
     }
 
+    @PostMapping("/confirm-password-reset")
+    public boolean confirmPasswordReset(@RequestBody PasswordResetDTO passwordResetDTO){
+        return memberService.confirmPasswordReset(passwordResetDTO.getToken(),passwordResetDTO.getNewPassword());
+    }
 
     @PostMapping("/reset-password")
-    public boolean resetPassword(@RequestBody PasswordResetDTO passwordResetDTO){
-        return memberService.resetPassword(passwordResetDTO.getOldPassword(),passwordResetDTO.getNewPassword());
+    public boolean resetPassword(@RequestBody EmailDTO emailDTO){
+        return memberService.passwordReset(emailDTO.getEmail());
     }
 }

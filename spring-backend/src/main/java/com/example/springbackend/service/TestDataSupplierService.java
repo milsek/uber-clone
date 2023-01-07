@@ -49,7 +49,7 @@ public class TestDataSupplierService {
 
     private void addAdmins() {
         Admin admin = new Admin();
-        admin.setUsername("admin1");
+        admin.setUsername("admin1@noemail.com");
         admin.setEmail("admin1@noemail.com");
         admin.setPassword(passwordEncoder.encode("cascaded"));
         admin.setName("Commissioner");
@@ -62,7 +62,7 @@ public class TestDataSupplierService {
 
     private void addUsers() {
         Passenger passenger = new Passenger();
-        passenger.setUsername("passenger1");
+        passenger.setUsername("passenger1@noemail.com");
         passenger.setEmail("passenger1@noemail.com");
         passenger.setPassword(passwordEncoder.encode("cascaded"));
         passenger.setName("Francois");

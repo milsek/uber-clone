@@ -5,11 +5,12 @@ import { LoginComponent } from './login/login.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from 'src/app/app-routing.module';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
 
 
 
 @NgModule({
-  declarations: [ RegisterComponent, LoginComponent ],
+  declarations: [ RegisterComponent, LoginComponent, PasswordResetComponent ],
   imports: [
     CommonModule,
     FontAwesomeModule,

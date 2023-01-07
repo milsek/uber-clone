@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 
 
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -29,6 +28,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  async resetPassword() {
+    return this.authenticationService.resetPasword(this.email?.value!);
   }
 
   async onSubmit() {

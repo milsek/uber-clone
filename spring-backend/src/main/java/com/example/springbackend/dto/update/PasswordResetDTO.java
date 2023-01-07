@@ -1,15 +1,15 @@
 package com.example.springbackend.dto.update;
 
 public class PasswordResetDTO {
-    private String oldPassword;
+    String token;
     private String newPassword;
 
-    public String getOldPassword() {
-        return oldPassword;
+    public String getToken() {
+        return token;
     }
 
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getNewPassword() {
