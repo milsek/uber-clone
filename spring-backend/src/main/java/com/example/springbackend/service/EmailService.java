@@ -36,16 +36,13 @@ public class EmailService {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", member.getUsername());
         variables.put("link", "http://localhost:8080/api/auth/confirm-registration/" + token);
-        System.out.println("A");
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            System.out.println("A");
 
             helper.setText(buildEmailText(variables), true);
             helper.setTo("mrsisatim20@outlook.com");
             helper.setSubject("Registration Confirmation");
-            System.out.println("A");
             helper.setFrom("mrsisatim20@outlook.com");
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | IOException e) {

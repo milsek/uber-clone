@@ -2,6 +2,7 @@ package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.JwtAuthenticationRequestDTO;
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.dto.update.PasswordResetDTO;
 import com.example.springbackend.dto.update.UsernameDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Passenger;
@@ -12,6 +13,7 @@ import com.example.springbackend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,7 +47,7 @@ public class AuthenticationController {
         try{
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = (User) authentication.getPrincipal();
             if(!memberService.isUserActive(user.getUsername())){
                 return null;
@@ -79,4 +81,9 @@ public class AuthenticationController {
                 .build();
     }
 
+
+    @PostMapping("/reset-password")
+    public boolean resetPassword(@RequestBody PasswordResetDTO passwordResetDTO){
+        return memberService.resetPassword(passwordResetDTO.getOldPassword(),passwordResetDTO.getNewPassword());
+    }
 }
