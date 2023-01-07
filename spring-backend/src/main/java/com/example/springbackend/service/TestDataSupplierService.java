@@ -53,7 +53,7 @@ public class TestDataSupplierService {
         passenger.setSurname("Memphis");
         passenger.setPhoneNumber("+25346014691");
         passenger.setCity("Marseille");
-        passenger.setBanned(false);
+        passenger.setAccountStatus(AccountStatus.ACTIVE);
         passenger.setDistanceTravelled(79.28);
         passenger.setRidesCompleted(28);
         passengerRepository.save(passenger);
@@ -83,7 +83,7 @@ public class TestDataSupplierService {
         driver.setRidesCompleted(2153);
         driver.setTotalRatingSum(7814);
         driver.setNumberOfReviews(1693);
-        driver.setBanned(false);
+        driver.setAccountStatus(AccountStatus.ACTIVE);
         driverRepository.save(driver);
     }
     private ArrayList<VehicleType> generateVehicleTypes() {
@@ -95,5 +95,4 @@ public class TestDataSupplierService {
         vehicleTypeRepository.save(vt1);
         return vehicleTypes;
     }
-
 }

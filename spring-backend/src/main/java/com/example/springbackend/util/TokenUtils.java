@@ -1,7 +1,11 @@
 package com.example.springbackend.util;
+import com.auth0.jwt.JWTVerifier;
 
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.springbackend.model.User;
 import io.jsonwebtoken.Claims;
+import com.auth0.jwt.JWT;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -10,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Component
@@ -26,13 +31,19 @@ public class TokenUtils {
 
     @Value("Authorization")
     private String AUTH_HEADER;
+    private final Algorithm signatureAlgorithm;
+    private final JWTVerifier verifier;
 
 
     private static final String AUDIENCE_WEB = "web";
-
     private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
 
+
+    public TokenUtils() {
+        this.signatureAlgorithm = Algorithm.HMAC256("secret".getBytes());
+        this.verifier = JWT.require(signatureAlgorithm).build();
+    }
 
     /**
      * Funkcija za generisanje JWT tokena.
@@ -40,6 +51,15 @@ public class TokenUtils {
      * @param username Korisničko ime korisnika kojem se token izdaje
      * @return JWT token
      */
+    public String generateConfirmationToken(String username) {
+        return JWT.create()
+                .withSubject(username)
+                .withIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
+                .withExpiresAt(Date.from(ZonedDateTime.now().plusMinutes(15).toInstant()))
+                .withIssuer(APP_NAME)
+                .sign(signatureAlgorithm);
+    }
+
     public String generateToken(String username) {
         return Jwts.builder()
                 .setIssuer(APP_NAME)
@@ -49,7 +69,11 @@ public class TokenUtils {
                 .setExpiration(generateExpirationDate())
                 .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 
+    }
 
+
+    public DecodedJWT verifyToken(String token) {
+        return verifier.verify(token);
     }
 
     /**

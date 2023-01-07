@@ -2,14 +2,12 @@ package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.JwtAuthenticationRequestDTO;
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.dto.update.UsernameDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.User;
 import com.example.springbackend.security.UserTokenState;
-import com.example.springbackend.service.DriverService;
-import com.example.springbackend.service.MemberService;
-import com.example.springbackend.service.PassengerService;
-import com.example.springbackend.service.UserService;
+import com.example.springbackend.service.*;
 import com.example.springbackend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +17,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
+import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/api/auth")
@@ -38,6 +36,8 @@ public class AuthenticationController {
     private DriverService driverService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/custom-login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(
@@ -47,7 +47,7 @@ public class AuthenticationController {
                     authenticationRequest.getUsername(), authenticationRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             User user = (User) authentication.getPrincipal();
-            if(memberService.isUserBanned(user.getUsername())){
+            if(!memberService.isUserActive(user.getUsername())){
                 return null;
             }
             String jwt = tokenUtils.generateToken(user.getUsername());
@@ -60,7 +60,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup-passenger")
-    public ResponseEntity<Passenger> signupPassenger(@RequestBody UserCreationDTO userCreationDTO){
+    public ResponseEntity<Passenger> signupPassenger(@RequestBody UserCreationDTO userCreationDTO) throws MessagingException {
         Passenger passenger = passengerService.signUp(userCreationDTO);
         return new ResponseEntity<>(passenger, passenger != null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
@@ -70,4 +70,13 @@ public class AuthenticationController {
         Driver driver = driverService.signUp(userCreationDTO);
         return new ResponseEntity<>(driver, driver != null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/confirm-registration/{token}")
+    public ResponseEntity<String> confirmRegistration(@PathVariable String token) {
+        memberService.confirmRegistration(token);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create("http://localhost:4200/login"))
+                .build();
+    }
+
 }

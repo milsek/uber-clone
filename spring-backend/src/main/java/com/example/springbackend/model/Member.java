@@ -10,18 +10,10 @@ import java.util.List;
 @Where(clause = "banned = false")
 public class Member extends User{
 
-    Boolean banned;
+    private AccountStatus accountStatus;
 
     @OneToMany(mappedBy = "member")
     private List<Note> notes;
-
-    public Boolean getBanned() {
-        return banned;
-    }
-
-    public void setBanned(Boolean banned) {
-        this.banned = banned;
-    }
 
     public List<Note> getNotes() {
         return notes;
@@ -29,5 +21,13 @@ public class Member extends User{
 
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
     }
 }

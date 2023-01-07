@@ -1,14 +1,19 @@
 package com.example.springbackend.service;
 
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.model.AccountStatus;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.User;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;
 import com.example.springbackend.model.security.CustomOAuth2User;
 import com.example.springbackend.repository.PassengerRepository;
 import com.example.springbackend.repository.UserRepository;
+import com.example.springbackend.util.TokenUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +33,12 @@ public class PassengerService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private TokenUtils tokenUtils;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public Passenger signUp(UserCreationDTO userCreationDTO) {
         if(!userService.userExistsForCustomRegistration(userCreationDTO.getEmail(), userCreationDTO.getUsername())){
@@ -35,9 +46,11 @@ public class PassengerService {
             passenger.setAuthenticationProvider(AuthenticationProvider.LOCAL);
             passenger.setPassword(passwordEncoder.encode(userCreationDTO.getPassword()));
             passenger.setRoles(roleService.findByName("ROLE_PASSENGER"));
-            passenger.setBanned(false);
+            passenger.setAccountStatus(AccountStatus.WAITING);
             passenger.setTokenBalance(0);
             passengerRepository.save(passenger);
+            String jwt = tokenUtils.generateConfirmationToken(userCreationDTO.getUsername());
+            emailService.sendRegistrationEmail(passenger, jwt);
             return passenger;
         }
         return null;
