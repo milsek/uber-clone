@@ -8,15 +8,19 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthenticationService } from './core/authentication/authentication.service';
 import { MainModule } from './modules/main/main.module';
 import { UserModule } from './modules/user/user.module';
+import { ChatComponent } from './modules/chat/chat.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent, ChatComponent],
   imports: [
-    BrowserModule, AppRoutingModule, FontAwesomeModule, AuthModule, MainModule, UserModule
+    BrowserModule,
+    AppRoutingModule,
+    FontAwesomeModule,
+    AuthModule,
+    MainModule,
+    UserModule,
   ],
   providers: [AuthenticationService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

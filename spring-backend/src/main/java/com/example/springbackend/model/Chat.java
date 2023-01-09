@@ -1,9 +1,11 @@
 package com.example.springbackend.model;
 
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,5 +21,8 @@ public class Chat {
 
     @OneToOne
     @JoinColumn(name = "member_username")
-    Member member;
+    private User member;
+
+    @OneToMany(mappedBy = "chat")
+    private List<Message> messages;
 }

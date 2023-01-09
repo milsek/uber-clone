@@ -1,0 +1,11 @@
+<div class="absolute top-0 left-0 right-0 bottom-0 z-10">
+  <div class="h-full">
+    <div id="map" class="h-full"></div>
+  </div>
+</div>
+<div class="absolute top-0 left-0 right-0 z-40 pointer-events-none">
+  <app-map-controls
+    (clear)="clearMarkers()"
+    [summary]="chosenRoute?.summary"
+  ></app-map-controls>
+</div>

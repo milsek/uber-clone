@@ -8,7 +8,11 @@ import { PasswordResetComponent } from './modules/auth/password-reset/password-r
 
 const routes: Routes = [
   { path: '', component: MainComponent },
-  { path: 'account', loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule) },
+  {
+    path: 'account',
+    loadChildren: () =>
+      import('./modules/user/user.module').then((m) => m.UserModule),
+  },
   { path: 'driver/:username', component: DriverPageComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
@@ -21,6 +25,6 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [ RouterModule ]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

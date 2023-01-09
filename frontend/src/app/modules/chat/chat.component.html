@@ -1,0 +1,118 @@
+<div class="mt-auto" *ngIf="user.username != ''">
+  <div
+    class="bg-gray-800 z-50 w-120 h-140 rounded-xl overflow-hidden flex absolute right-16 bottom-24"
+    [ngClass]="{ 'w-80': user.role !== 'admin' }"
+    *ngIf="showChat"
+  >
+    <div
+      *ngIf="user.role === 'admin'"
+      class="translate-y-12 w-30 max-w-[160px] bg-gray-800 select-none overflow-auto overflow-y-scroll hidden-scrollbar"
+    >
+      <ul role="list" class="w-full">
+        <li
+          *ngFor="let chat of chats"
+          class="py-4 flex hover:bg-gray-600"
+          (click)="changeChat(chat.member.username)"
+        >
+          <div class="mx-3 truncate">
+            <p class="text-sm font-medium text-white truncate">
+              {{ chat.member.username }}
+            </p>
+            <p
+              class="text-sm text-gray-400 truncate p-1"
+              [ngClass]="{
+                'text-gray-300 font-bold': getNumberOfUnread(chat) > 0
+              }"
+            >
+              {{ chat.messages[chat.messages.length - 1].content }}
+            </p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="bg-gray-600 z-40 w-80 overflow-hidden relative rounded-xl">
+      <div class="flex h-12 bg-gray-800 my-auto justify-between select-none">
+        <div
+          class="text-lg text-white my-auto ml-4 border-b border-transparent hover:border-gray-500 truncate"
+        >
+          {{ receiver === "admin" ? "Live support" : receiver }}
+        </div>
+      </div>
+      <div
+        id="chat-scroll"
+        class="h-[80%] text-sm overflow-auto overflow-y-scroll hidden-scrollbar"
+      >
+        <div
+          *ngFor="let msg of chats[indexOfSelectedChat].messages"
+          class="overflow-x-hidden"
+          id="listOfMessages"
+        >
+          <div *ngIf="msg.sender != user.username" class="text-left">
+            <p
+              style="max-width: 250px"
+              class="inline-block text-left mt-3 ml-2 mr-6 px-4 py-2 bg-gray-50 rounded-xl break-words"
+            >
+              {{ msg.content }}
+            </p>
+            <div class="mx-4 text-gray-300 text-xs">
+              {{ getTime(msg) }}
+            </div>
+          </div>
+          <div *ngIf="msg.sender == user.username" class="text-right">
+            <p
+              style="max-width: 250px"
+              class="inline-block text-left mt-3 ml-6 mr-2 px-4 py-2 text-white rounded-xl break-words bg-red-500"
+            >
+              {{ msg.content }}
+            </p>
+            <div class="mx-4 text-gray-100 text-xs">
+              {{ getTime(msg) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute bottom-0 h-12 px-2 w-full">
+        <textarea
+          id="chat-text-area"
+          type="text"
+          class="w-full py-1 bg-transparent rounded-xl border px-4 border-gray-100 text-white border-opacity-75 outline-none caret-gray-300 resize-none hidden-scrollbar"
+          placeholder="Type message..."
+          rows="1"
+          [value]="newMessage"
+          (keydown.enter)="createNewMessage($event)"
+          (input)="onValueChange($event)"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="absolute right-6 bottom-16 z-50">
+    <button
+      class="bg-gray-600 text-white w-10 h-10 rounded-2xl"
+      (click)="changeShowChat()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="icon icon-tabler icon-tabler-messages mx-auto"
+        width="25"
+        height="25"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="#FFFFFF"
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path
+          d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"
+        />
+        <path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
+      </svg>
+    </button>
+  </div>
+  <div *ngIf="numOfNewMessages > 0" class="absolute right-5 bottom-24 z-50">
+    <div class="bg-red-600 rounded-2xl w-5 h-5 text-center text-white text-sm">
+      {{ numOfNewMessages }}
+    </div>
+  </div>
+</div>
