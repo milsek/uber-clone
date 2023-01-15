@@ -3,6 +3,7 @@ package com.example.springbackend.service;
 import com.example.springbackend.dto.display.AccountDisplayDTO;
 import com.example.springbackend.dto.display.SessionDisplayDTO;
 import com.example.springbackend.dto.display.UserDisplayDTO;
+import com.example.springbackend.dto.update.UserUpdateDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.User;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -51,5 +53,20 @@ public class UserService {
     public SessionDisplayDTO whoAmI(Authentication auth) {
         User user = (User) auth.getPrincipal();
         return modelMapper.map(user, SessionDisplayDTO.class);
+    }
+
+    public boolean updateUser(UserUpdateDTO userUpdateDTO) {
+        Optional<User> optUser = userRepository.findByUsername(userUpdateDTO.getUsername());
+        if(optUser.isPresent()){
+            User user = optUser.get();
+            user.setCity(userUpdateDTO.getCity());
+            user.setName(userUpdateDTO.getName());
+            user.setSurname(userUpdateDTO.getSurname());
+            user.setPhoneNumber(userUpdateDTO.getPhoneNumber());
+            user.setProfilePicture(userUpdateDTO.getProfilePicture());
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 }

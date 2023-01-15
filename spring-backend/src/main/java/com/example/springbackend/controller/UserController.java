@@ -1,9 +1,11 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.display.AccountDisplayDTO;
+import com.example.springbackend.dto.update.UserUpdateDTO;
 import com.example.springbackend.dto.display.SessionDisplayDTO;
 import com.example.springbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +21,13 @@ public class UserController {
     @GetMapping("/account")
     public ResponseEntity<AccountDisplayDTO> getAccount(Authentication auth) {
         return ResponseEntity.ok(userService.   getAccount(auth));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Boolean> updateUser(@RequestBody UserUpdateDTO userUpdateDTO){
+        boolean successfulUpdate = userService.updateUser(userUpdateDTO);
+        HttpStatus returnStatus = successfulUpdate ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(successfulUpdate, returnStatus);
     }
 
     @GetMapping(value = "/whoami")
