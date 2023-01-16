@@ -75,6 +75,15 @@ public class TestDataSupplierService {
         passenger.setRoles(roleRepository.findByName("ROLE_PASSENGER"));
         passenger.setTokenBalance(690);
         passengerRepository.save(passenger);
+        passenger.setUsername("passenger2@noemail.com");
+        passenger.setEmail("passenger2@noemail.com");
+        passengerRepository.save(passenger);
+        passenger.setUsername("passenger3@noemail.com");
+        passenger.setEmail("passenger3@noemail.com");
+        passengerRepository.save(passenger);
+        passenger.setUsername("passenger4@noemail.com");
+        passenger.setEmail("passenger4@noemail.com");
+        passengerRepository.save(passenger);
     }
 
     private void addDrivers() {

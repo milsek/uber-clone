@@ -1,6 +1,8 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.creation.BasicRideCreationDTO;
+import com.example.springbackend.dto.creation.ConfirmRideDTO;
+import com.example.springbackend.dto.creation.SplitFareRideCreationDTO;
 import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
 import com.example.springbackend.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +27,17 @@ public class RideController {
     @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<RideSimpleDisplayDTO> orderBasicRide(@Valid @RequestBody BasicRideCreationDTO dto, Authentication auth) {
         return ResponseEntity.ok(rideService.orderBasicRide(dto, auth));
+    }
+
+    @PostMapping("/split-fare")
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ResponseEntity<Boolean> orderSplitFareRide(@Valid @RequestBody SplitFareRideCreationDTO dto, Authentication auth) {
+        return ResponseEntity.ok(rideService.orderSplitFareRide(dto, auth));
+    }
+
+    @PostMapping("/confirm-ride")
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ResponseEntity<Object> confirmRide(@Valid @RequestBody ConfirmRideDTO dto, Authentication auth) {
+        return ResponseEntity.ok(rideService.confirmRide(dto, auth));
     }
 }

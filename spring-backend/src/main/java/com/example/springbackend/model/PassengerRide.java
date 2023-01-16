@@ -15,8 +15,8 @@ public class PassengerRide {
     private double driverRating;
     private double vehicleRating;
     private String comment;
-    private double fare;
-    private double agreed;
+    private int fare;
+    private boolean agreed;
 
     @ManyToOne
     Passenger passenger;

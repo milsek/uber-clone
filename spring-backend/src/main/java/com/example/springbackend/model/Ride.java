@@ -14,13 +14,15 @@ public class Ride {
 
     private Double distance;
     private int expectedTime;
-    private String cancelled;
+    private String driverCancelled;
     private Boolean rejected;
+    private Boolean passengersConfirmed;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime createdAt;
     private Boolean driverInconsistency;
     private int price;
+    private String vehicleType;
 
     @ManyToOne
     @JoinColumn

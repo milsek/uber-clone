@@ -1,8 +1,6 @@
 package com.example.springbackend.service;
 
-import com.example.springbackend.dto.creation.BasicRideCreationDTO;
-import com.example.springbackend.dto.creation.CoordinatesCreationDTO;
-import com.example.springbackend.dto.creation.RouteCreationDTO;
+import com.example.springbackend.dto.creation.*;
 import com.example.springbackend.dto.display.CoordinatesDisplayDTO;
 import com.example.springbackend.dto.display.DriverSimpleDisplayDTO;
 import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
@@ -22,6 +20,9 @@ import javax.persistence.Basic;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class RideService {
@@ -37,9 +38,97 @@ public class RideService {
     @Autowired
     VehicleTypeRepository vehicleTypeRepository;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     RouteRepository routeRepository;
     @Autowired
     ModelMapper modelMapper;
+
+    public Boolean orderSplitFareRide(SplitFareRideCreationDTO dto, Authentication auth) {
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        VehicleType vehicleType = vehicleTypeRepository.findByName(dto.getVehicleType()).orElseThrow();
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        int price = calculateRidePrice(dto, vehicleType);
+        dto.getUsersToPay().add(passenger.getUsername());
+        int fare = (int) Math.ceil(price/dto.getUsersToPay().size());
+        Ride ride = createSplitFareRide(dto, price);
+        if (passenger.getTokenBalance() < fare) {
+            throw new InsufficientFundsException();
+        }
+        passenger.setTokenBalance(passenger.getTokenBalance() - fare);
+        passengerRepository.save(passenger);
+        createPassengerRideForUsers(dto, ride, fare, passenger);
+
+        executorService.schedule(() -> processSplitFareRide(dto, fare, ride), 30, TimeUnit.SECONDS);
+        return true;
+    }
+
+    private void createPassengerRideForUsers(SplitFareRideCreationDTO dto, Ride ride,int fare, Passenger passenger) {
+        boolean agreed = false;
+        for(String username : dto.getUsersToPay()){
+            agreed = false;
+            Passenger p = passengerRepository.findByUsername(username).get();
+            if(p.getUsername() == passenger.getUsername()){
+                agreed = true;
+            }
+            createSplitFarePassengerRide(p, ride, fare, agreed);
+        }
+    }
+
+    private void createSplitFarePassengerRide(Passenger passenger, Ride ride, int fare, boolean agreed) {
+        PassengerRide passengerRide = new PassengerRide();
+        passengerRide.setPassenger(passenger);
+        passengerRide.setRide(ride);
+        passengerRide.setFare(fare);
+        passengerRide.setAgreed(agreed);
+        passengerRideRepository.save(passengerRide);
+    }
+
+    public void processSplitFareRide(SplitFareRideCreationDTO dto, int fare, Ride ride){
+        Ride newRide = rideRepository.findById(ride.getId()).get();
+        if(!newRide.getPassengersConfirmed())
+            for(String username : dto.getUsersToPay()){
+                PassengerRide passengerRide = passengerRideRepository.findByRideAndPassengerUsername(ride, username).get();
+                Passenger passenger = passengerRide.getPassenger();
+                if(passengerRide.isAgreed()){
+                    passenger.setTokenBalance(passenger.getTokenBalance() + fare);
+                    passengerRepository.save(passenger);
+                }
+            }
+    }
+
+
+    public Object confirmRide(ConfirmRideDTO dto, Authentication auth) {
+        Ride ride = rideRepository.findById(dto.getRideId()).get();
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        PassengerRide currentPR = passengerRideRepository.findByRideAndPassengerUsername(ride, passenger.getUsername()).get();
+        currentPR.setAgreed(true);
+        passenger.setTokenBalance(passenger.getTokenBalance() - currentPR.getFare());
+        passengerRideRepository.save(currentPR);
+        passengerRepository.save(passenger);
+        List<String> usersToPay = passengerRideRepository.getPassengersForRide(dto.getRideId());
+        boolean fullyPaid = true;
+        for(String username : usersToPay){
+            PassengerRide passengerRide = passengerRideRepository.findByRideAndPassengerUsername(ride, username).get();
+            if(!passengerRide.isAgreed()){
+                fullyPaid = false;
+            }
+        }
+        if(fullyPaid){
+            ride.setPassengersConfirmed(true);
+            BasicRideCreationDTO basicRideCreationDTO = modelMapper.map(ride, BasicRideCreationDTO.class);
+            basicRideCreationDTO.setVehicleType(ride.getVehicleType());
+
+            Driver driver = findDriver(basicRideCreationDTO);
+            rideRepository.save(ride);
+            //TODO: send notifications
+            if (driver == null) {
+                throw new AdequateDriverNotFoundException();
+            }
+        }
+        return null;
+    }
 
     public RideSimpleDisplayDTO orderBasicRide(BasicRideCreationDTO dto, Authentication auth) {
         Passenger passenger = (Passenger) auth.getPrincipal();
@@ -61,7 +150,7 @@ public class RideService {
         Ride ride = createRide(dto, price, driver);
         createPassengerRide(passenger, ride);
 
-        // send notification to driver
+        //TODO: send notifications
         RideSimpleDisplayDTO rideDisplayDTO = createBasicRideSimpleDisplayDTO(ride, driver);
 
         return rideDisplayDTO;
@@ -98,11 +187,14 @@ public class RideService {
         return bestChoice;
     }
 
+
+
     private void createPassengerRide(Passenger passenger, Ride ride) {
         PassengerRide passengerRide = new PassengerRide();
         passengerRide.setPassenger(passenger);
         passengerRide.setRide(ride);
         passengerRide.setFare(ride.getPrice());
+        passengerRide.setAgreed(true);
         passengerRideRepository.save(passengerRide);
     }
 
@@ -118,7 +210,7 @@ public class RideService {
         ride.setDistance(dto.getDistance());
         ride.setActualRoute(actualRoute);
         ride.setExpectedRoute(expectedRoute);
-        ride.setCancelled("");
+        ride.setDriverCancelled("");
         ride.setRejected(false);
         ride.setStartTime(null);
         ride.setEndTime(null);
@@ -126,6 +218,7 @@ public class RideService {
         ride.setCreatedAt(LocalDateTime.now());
         ride.setDriverInconsistency(false);
         ride.setPrice(price);
+        ride.setPassengersConfirmed(true);
         rideRepository.save(ride);
 
         if (driver.getCurrentRide() == null) {
@@ -135,6 +228,32 @@ public class RideService {
         }
         driverRepository.save(driver);
 
+        return ride;
+    }
+
+    private Ride createSplitFareRide(BasicRideCreationDTO dto, int price) {
+        Ride ride = new Ride();
+        Route actualRoute = createRouteFromDto(dto.getActualRoute());
+        routeRepository.save(actualRoute);
+        Route expectedRoute = null;
+        if (dto.getExpectedRoute() != null) {
+            expectedRoute = createRouteFromDto(dto.getExpectedRoute());
+            routeRepository.save(expectedRoute);
+        }
+        ride.setDistance(dto.getDistance());
+        ride.setActualRoute(actualRoute);
+        ride.setExpectedRoute(expectedRoute);
+        ride.setDriverCancelled("");
+        ride.setRejected(false);
+        ride.setStartTime(null);
+        ride.setEndTime(null);
+        ride.setExpectedTime(dto.getExpectedTime());
+        ride.setVehicleType(dto.getVehicleType());
+        ride.setCreatedAt(LocalDateTime.now());
+        ride.setDriverInconsistency(false);
+        ride.setPrice(price);
+        ride.setPassengersConfirmed(false);
+        rideRepository.save(ride);
         return ride;
     }
 
