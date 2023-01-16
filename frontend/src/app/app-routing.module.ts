@@ -13,6 +13,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/user/user.module').then((m) => m.UserModule),
   },
+  { 
+    path: 'admin',
+    loadChildren: () =>
+      import('./modules/admin/admin.module').then(m => m.AdminModule)
+  },
   { path: 'driver/:username', component: DriverPageComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },

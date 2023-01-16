@@ -1,12 +1,8 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.JwtAuthenticationRequestDTO;
-import com.example.springbackend.dto.creation.UserCreationDTO;
 import com.example.springbackend.dto.update.EmailDTO;
 import com.example.springbackend.dto.update.PasswordResetDTO;
-import com.example.springbackend.dto.update.UsernameDTO;
-import com.example.springbackend.model.Driver;
-import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.User;
 import com.example.springbackend.security.UserTokenState;
 import com.example.springbackend.service.*;
@@ -14,7 +10,6 @@ import com.example.springbackend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,7 +17,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import java.net.URI;
 
 @RestController
@@ -36,11 +30,7 @@ public class AuthenticationController {
     @Autowired
     private PassengerService passengerService;
     @Autowired
-    private DriverService driverService;
-    @Autowired
     private MemberService memberService;
-    @Autowired
-    private EmailService emailService;
 
     @PostMapping("/custom-login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(
@@ -60,18 +50,6 @@ public class AuthenticationController {
         } catch (AuthenticationException ae) {
             return null;
         }
-    }
-
-    @PostMapping("/signup-passenger")
-    public ResponseEntity<Passenger> signupPassenger(@RequestBody UserCreationDTO userCreationDTO) throws MessagingException {
-        Passenger passenger = passengerService.signUp(userCreationDTO);
-        return new ResponseEntity<>(passenger, passenger != null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
-    }
-
-    @PostMapping("/signup-driver")
-    public ResponseEntity<Driver> signupDriver(@RequestBody UserCreationDTO userCreationDTO){
-        Driver driver = driverService.signUp(userCreationDTO);
-        return new ResponseEntity<>(driver, driver != null ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/confirm-registration/{token}")

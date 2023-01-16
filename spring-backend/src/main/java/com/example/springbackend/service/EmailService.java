@@ -3,8 +3,6 @@ package com.example.springbackend.service;
 import com.example.springbackend.model.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.MailException;
-import com.example.springbackend.dto.creation.UserCreationDTO;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -15,7 +13,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 
 @Service

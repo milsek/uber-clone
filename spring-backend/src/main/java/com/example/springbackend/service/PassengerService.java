@@ -1,6 +1,7 @@
 package com.example.springbackend.service;
 
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.exception.UserAlreadyExistsException;
 import com.example.springbackend.model.AccountStatus;
 import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
 import com.example.springbackend.model.Driver;
@@ -55,7 +56,9 @@ public class PassengerService {
             emailService.sendRegistrationEmail(passenger, jwt);
             return passenger;
         }
-        return null;
+        else {
+            throw new UserAlreadyExistsException();
+        }
     }
 
     public void getLoggedUser(){

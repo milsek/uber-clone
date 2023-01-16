@@ -2,10 +2,28 @@
   <div class="flex justify-between gap-x-2 sm:gap-x-0 w-11/12
     sm:w-88 h-14 px-2 mt-5 mx-auto bg-dark text-gray-50
     rounded-full shadow-md pointer-events-auto select-none">
+    
       <!-- menu -->
-      <div class="flex flex-col justify-center text-center text-xl w-11 h-11 my-auto
+      <div class="relative flex flex-col justify-center text-center text-xl w-11 h-11 my-auto
       rounded-full cursor-pointer hover:text-light shrink-0">
-        <fa-icon [icon]="faBars" class=""></fa-icon>
+        <fa-icon [icon]="faBars" class="" (click)="showActionsDropdown = !showActionsDropdown; clickedActionsDropdown = true;"></fa-icon>
+        
+        <!-- change when new options are added for other users -->
+        <div *ngIf="showActionsDropdown && accountType === 'admin'" class="absolute z-20 left-0 top-14 rounded-lg bg-dark
+          w-64 p-1.5 px-2 flex flex-col font-medium text-light text-base"
+          (click)="clickedActionsDropdown = true">
+
+          <!-- admin -->
+          <div *ngIf="accountType === 'admin'">
+            <button class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+            routerLink="/admin/driver-registration">
+              <fa-icon [icon]="faUserPlus" class="text-xl"></fa-icon>
+              <span class="my-auto">Register a driver</span>
+            </button>
+          </div>
+
+        </div>
+
       </div>
 
       <div *ngIf="accountType !== 'driver'"

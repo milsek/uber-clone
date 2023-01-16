@@ -3,17 +3,10 @@ package com.example.springbackend.service;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.springbackend.model.AccountStatus;
-import com.example.springbackend.model.User;
 import com.example.springbackend.repository.MemberRepository;
-import com.example.springbackend.security.UserTokenState;
 import com.example.springbackend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.springbackend.model.Member;
@@ -30,9 +23,9 @@ public class MemberService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
     private EmailService emailService;
+    @Autowired
+    private UserService userService;
 
 
     public boolean isUserActive(String username){
@@ -61,9 +54,12 @@ public class MemberService {
         }
     }
 
-    public boolean passwordReset(String mail){
-        String jwt = tokenUtils.generateConfirmationToken(mail);
-        emailService.sendPasswordResetEmail(mail, jwt);
-        return true;
+    public boolean passwordReset(String mail) {
+        if (userService.userExists(mail)) {
+            String jwt = tokenUtils.generateConfirmationToken(mail);
+            emailService.sendPasswordResetEmail(mail, jwt);
+            return true;
+        }
+        return false;
     }
 }

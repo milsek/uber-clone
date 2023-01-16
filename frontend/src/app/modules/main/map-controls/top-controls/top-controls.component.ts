@@ -1,5 +1,5 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { IconDefinition, faBars, faArrowRightToBracket, faUser, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faBars, faArrowRightToBracket, faUser, faPowerOff, faUserPlus } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { DriverService } from 'src/app/core/http/user/driver.service';
 import { DriverInfo } from 'src/app/shared/models/data-transfer-interfaces/driver-info.model';
@@ -16,9 +16,13 @@ export class TopControlsComponent implements OnInit {
   faArrowRightToBracket: IconDefinition = faArrowRightToBracket;
   faUser: IconDefinition = faUser;
   faPowerOff: IconDefinition = faPowerOff;
+  faUserPlus: IconDefinition = faUserPlus;
 
+  showActionsDropdown: boolean = false;
+  clickedActionsDropdown: boolean = false;
   showProfileDropdown: boolean = false;
   clickedProfileDropdown: boolean = false;
+
 
   constructor(private driverService: DriverService, private authenticationService: AuthenticationService) { }
 
@@ -41,6 +45,9 @@ export class TopControlsComponent implements OnInit {
       this.showProfileDropdown = false;
     }
     this.clickedProfileDropdown = false;
+    if (this.showActionsDropdown && !this.clickedActionsDropdown) {
+      this.showActionsDropdown = false;
+    }
+    this.clickedActionsDropdown = false;
   }
-  
 }

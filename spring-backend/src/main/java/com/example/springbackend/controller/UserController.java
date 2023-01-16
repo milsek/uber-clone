@@ -19,6 +19,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/account")
+    @PreAuthorize("hasAnyRole('DRIVER', 'PASSENGER', 'ADMIN')")
     public ResponseEntity<AccountDisplayDTO> getAccount(Authentication auth) {
         return ResponseEntity.ok(userService.   getAccount(auth));
     }

@@ -14,7 +14,7 @@ import { PassengerEditComponent } from './profile/passenger-profile/passenger-ed
 import { AdminProfileComponent } from './profile/admin-profile/admin-profile.component';
 import { AdminDetailsComponent } from './profile/admin-profile/admin-details/admin-details.component';
 import { AdminEditComponent } from './profile/admin-profile/admin-edit/admin-edit.component';
-
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -35,7 +35,8 @@ import { AdminEditComponent } from './profile/admin-profile/admin-edit/admin-edi
   imports: [
     CommonModule,
     UserRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    FormsModule
   ]
 })
 export class UserModule { }

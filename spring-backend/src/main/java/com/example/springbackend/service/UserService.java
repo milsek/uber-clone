@@ -2,9 +2,7 @@ package com.example.springbackend.service;
 
 import com.example.springbackend.dto.display.AccountDisplayDTO;
 import com.example.springbackend.dto.display.SessionDisplayDTO;
-import com.example.springbackend.dto.display.UserDisplayDTO;
 import com.example.springbackend.dto.update.UserUpdateDTO;
-import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.User;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;

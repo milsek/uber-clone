@@ -1,0 +1,329 @@
+<div class="min-h-screen h-full w-full bg-dark flex flex-col justify-center">
+  <div class="absolute top-6 left-6">
+    <div class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer
+    transition hover:-translate-x-1 mb-2" routerLink="/">
+      <fa-icon [icon]="faChevronLeft" class=""></fa-icon>
+    </div>
+  </div>
+
+  <div *ngIf="accountType === 'admin'">
+  
+    <div class="w-11/12 sm:w-96 mx-auto text-left mt-20 mb-16">
+      <h1 class="text-3xl font-bold text-white">Register a driver</h1>
+  
+      <form [formGroup]="registerForm" (submit)="onSubmit()">
+        <h3 class="text-xl font-bold text-gray-50 mt-10">Account information</h3>
+        <div class="flex flex-col gap-y-6 mt-4 tracking-wide">
+          <div class="w-full">
+            <label class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-email">
+              E-Mail
+            </label>
+            <input class="appearance-none block w-full text-white tracking-wide
+            placeholder-light caret-light border-b border-light focus:border-accent-light
+            bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-email" type="text" placeholder="Driver's E-Mail Address" autofocus="autofocus"
+            formControlName="email">
+            <div class="h-1">
+              <p *ngIf="email && email.invalid && email.touched"
+                class="text-yellow-400 text-xs italic">
+                <span *ngIf="email.errors?.['required']">
+                  Email is required.
+                </span>
+                <span *ngIf="email.errors?.['pattern']">
+                  Email is not valid.
+                </span>
+              </p>
+            </div>
+          </div>
+  
+          <div class="flex justify-between gap-x-4">
+            <div class="w-full">
+              <label class="block tracking-wide text-light text-xs font-bold mb-1"
+              for="register-first-name">
+                First Name
+              </label>
+              <input class="appearance-none block w-full text-white tracking-wide
+              placeholder-light caret-light border-b border-light focus:border-accent-light
+              bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+              id="register-first-name" type="text" placeholder="Driver's First Name" formControlName="name">
+              <div class="h-1">
+                <p *ngIf="name && name.invalid && name.touched"
+                  class="text-yellow-400 text-xs italic">
+                  <span *ngIf="name.errors?.['required']">
+                    First name is required.
+                  </span>
+                  <span *ngIf="name.errors?.['minlength']">
+                    First name is too short.
+                  </span>
+                  <span *ngIf="name.errors?.['maxlength']">
+                    First name is too long.
+                  </span>
+                </p>
+              </div>
+            </div>
+      
+            <div class="w-full">
+              <label class="block tracking-wide text-light text-xs font-bold mb-1"
+              for="register-last-name">
+                Last Name
+              </label>
+              <input class="appearance-none block w-full text-white tracking-wide
+              placeholder-light caret-light border-b border-light focus:border-accent-light
+              bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+              id="register-last-name" type="text" placeholder="Driver's Last Name" formControlName="surname">
+              <div class="h-1">
+                <p *ngIf="surname && surname.invalid && surname.touched"
+                  class="text-yellow-400 text-xs italic">
+                  <span *ngIf="surname.errors?.['required']">
+                    Last name is required.
+                  </span>
+                  <span *ngIf="surname.errors?.['minlength']">
+                    Last name is too short.
+                  </span>
+                  <span *ngIf="surname.errors?.['maxlength']">
+                    Last name is too long.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full">
+            <label class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-city">
+              City
+            </label>
+            <input class="appearance-none block w-full text-white tracking-wide
+            placeholder-light caret-light border-b border-light focus:border-accent-light
+            bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-city" type="text" placeholder="Driver's City" formControlName="city">
+            <div class="h-1">
+              <p *ngIf="city && city.invalid && city.touched"
+                class="text-yellow-400 text-xs italic">
+                <span *ngIf="city.errors?.['required']">
+                  City name is required.
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div class="w-full">
+            <label class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-phone-number">
+              Phone Number
+            </label>
+            <input class="appearance-none block w-full text-white tracking-wide
+            placeholder-light caret-light border-b border-light focus:border-accent-light
+            bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-phone-number" type="text" placeholder="Driver's Phone Number"
+            formControlName="phoneNumber">
+            <div class="h-1">
+              <p *ngIf="phoneNumber && phoneNumber.invalid && phoneNumber.touched"
+                class="text-yellow-400 text-xs italic">
+                <span *ngIf="phoneNumber.errors?.['required']">
+                  Phone number is required.
+                </span>
+                <span *ngIf="phoneNumber.errors?.['pattern']">
+                  Phone number is invalid.
+                </span>
+              </p>
+            </div>
+          </div>
+  
+          <div class="w-full">
+            <label class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-password">
+              Password
+            </label>
+            <input class="appearance-none block w-full text-white tracking-wide
+            placeholder-light caret-light border-b border-light focus:border-accent-light
+            bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-password" type="password" placeholder="Driver's Password" formControlName="password">
+            <div class="h-1">
+              <p *ngIf="password && password.invalid && password.touched"
+                class="text-yellow-400 text-xs italic">
+                <span *ngIf="password.errors?.['required']">
+                  Password is required.
+                </span>
+                <span *ngIf="password.errors?.['minlength']">
+                  Password is too short.
+                </span>
+              </p>
+            </div>
+          </div>
+  
+          <div class="w-full">
+            <label class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-confirm-password">
+              Confirm Password
+            </label>
+            <input class="appearance-none block w-full text-white tracking-wide
+            placeholder-light caret-light border-b border-light focus:border-accent-light
+            bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-confirm-password" type="password" placeholder="Confirm the Password" formControlName="confirmPassword">
+            <div class="h-1">
+              <p *ngIf="password && confirmPassword && registerForm.hasError('notSame') && password.valid"
+                class="text-yellow-400 text-xs italic">
+                Passwords do not match.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        
+        <h3 class="text-xl mt-8 font-bold text-gray-50">Vehicle information</h3>
+        <div class="flex flex-col gap-y-6 my-8 tracking-wide">
+          <div class="flex flex-col">
+            <!-- car type -->
+            <div class="flex justify-around select-none">
+    
+              <div class="flex flex-col justify-end text-center">
+                <img [src]="selectedVehicleType === 'COUPE' ? 'assets/icons/car-coupe.png' : 'assets/icons/car-coupe-gray.png'"
+                class="w-16 hover:opacity-90 cursor-pointer" title="Coupe" (click)="setVehicleType('COUPE')"/>
+                <p class="text-sm font-medium mt-1" [ngClass]="selectedVehicleType === 'COUPE' ? 'text-gray-50' : 'text-light'">Coupe</p>
+              </div>
+    
+              <div class="flex flex-col justify-end text-center">
+                <img [src]="selectedVehicleType === 'MINIVAN' ? 'assets/icons/car-minivan.png' : 'assets/icons/car-minivan-gray.png'"
+                class="w-16 hover:opacity-90 cursor-pointer" title="Minivan" (click)="setVehicleType('MINIVAN')"/>
+                <p class="text-sm font-medium mt-1" [ngClass]="selectedVehicleType === 'MINIVAN' ? 'text-gray-50' : 'text-light'">Minivan</p>
+              </div>
+              
+              <div class="flex flex-col justify-end text-center">
+                <img [src]="selectedVehicleType === 'STATION' ? 'assets/icons/car-station.png' : 'assets/icons/car-station-gray.png'"
+                class="w-16 hover:opacity-90 cursor-pointer" title="Station" (click)="setVehicleType('STATION')"/>
+                <p class="text-sm font-medium mt-1" [ngClass]="selectedVehicleType === 'STATION' ? 'text-gray-50' : 'text-light'">Station</p>
+              </div>
+    
+            </div>
+    
+            <!-- additional options -->
+            <div class="flex mx-auto mt-6 px-4 py-0.5 justify-between gap-x-3">
+    
+              <div class="flex gap-x-2 justify-between border border-light border-dashed px-2 sm:px-6 py-1 cursor-pointer"
+              [ngClass]="hasBabySeat ? 'text-gray-50 border-gray-50' : 'text-light border-light'" (click)="hasBabySeat = !hasBabySeat">
+                <fa-icon [icon]="faBabyCarriage"title="Has baby seat"
+                class="text-xl"></fa-icon>
+                <p class="text-base my-auto">Baby seat</p>
+              </div>
+    
+              <div class="flex gap-x-2 justify-between border border-light border-dashed px-2 sm:px-6 py-1 cursor-pointer"
+              [ngClass]="isPetFriendly ? 'text-gray-50 border-gray-50' : 'text-light border-light'" (click)="isPetFriendly = !isPetFriendly">
+                <fa-icon [icon]="faPaw" title="Pet friendly"
+                class="text-xl"></fa-icon>
+                <p class="text-base my-auto">Pet friendly</p>
+              </div>
+    
+            </div>
+
+            <div class="flex justify-between gap-x-4 mt-8">
+              <div class="w-full">
+                <label class="block tracking-wide text-light text-xs font-bold mb-1"
+                for="register-vehicle-make">
+                  Vehicle Make
+                </label>
+                <input class="appearance-none block w-full text-white tracking-wide
+                placeholder-light caret-light border-b border-light focus:border-accent-light
+                bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+                id="register-vehicle-make" type="text" placeholder="Make" formControlName="make">
+                <div class="h-1">
+                  <p *ngIf="make && make.invalid && make.touched"
+                    class="text-yellow-400 text-xs italic">
+                    <span *ngIf="make.errors?.['required']">
+                      Vehicle make is required.
+                    </span>
+                  </p>
+                </div>
+              </div>
+        
+              <div class="w-full">
+                <label class="block tracking-wide text-light text-xs font-bold mb-1"
+                for="register-vehicle-model">
+                  Vehicle Model
+                </label>
+                <input class="appearance-none block w-full text-white tracking-wide
+                placeholder-light caret-light border-b border-light focus:border-accent-light
+                bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+                id="register-vehicle-model" type="text" placeholder="Model" formControlName="model">
+                <div class="h-1">
+                  <p *ngIf="model && model.invalid && model.touched"
+                    class="text-yellow-400 text-xs italic">
+                    <span *ngIf="model.errors?.['required']">
+                      Vehicle model is required.
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between gap-x-4 mt-8">
+              <div class="w-full">
+                <label class="block tracking-wide text-light text-xs font-bold mb-1"
+                for="register-vehicle-colour">
+                  Colour
+                </label>
+                <input class="appearance-none block w-full text-white tracking-wide
+                placeholder-light caret-light border-b border-light focus:border-accent-light
+                bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+                id="register-vehicle-colour" type="text" placeholder="Colour" formControlName="colour">
+                <div class="h-1">
+                  <p *ngIf="colour && colour.invalid && colour.touched"
+                    class="text-yellow-400 text-xs italic">
+                    <span *ngIf="colour.errors?.['required']">
+                      Colour is required.
+                    </span>
+                  </p>
+                </div>
+              </div>
+        
+              <div class="w-full">
+                <label class="block tracking-wide text-light text-xs font-bold mb-1"
+                for="register-vehicle-license-plate">
+                  License Plate Number
+                </label>
+                <input class="appearance-none block w-full text-white tracking-wide
+                placeholder-light caret-light border-b border-light focus:border-accent-light
+                bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+                id="register-vehicle-license-plate" type="text" placeholder="License Plate Number"
+                formControlName="licensePlateNumber">
+                <div class="h-1">
+                  <p *ngIf="licensePlateNumber && licensePlateNumber.invalid && licensePlateNumber.touched"
+                    class="text-yellow-400 text-xs italic">
+                    <span *ngIf="licensePlateNumber.errors?.['required']">
+                      License plate number is required.
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+      
+  
+        <button type="submit" class="w-full h-16 bg-accent-light
+        active:bg-accent text-white font-medium tracking-wide">
+          REGISTER
+        </button>
+        <div class="h-1 mx-auto text-center mt-0.5">
+          <p *ngIf="responseMessage && !errorMessage"
+            class="text-accent-light text italic">
+            {{ responseMessage }}
+          </p>
+          <p *ngIf="errorMessage"
+            class="text-red-400 text italic">
+            {{ errorMessage }}
+          </p>
+        </div>
+      </form>
+  </div>
+  
+</div>
+
+<div *ngIf="accountType !== 'admin'" class="w-11/12 sm:w-120 mx-auto text-center border
+  border-stone-500 rounded-lg py-16 px-4 sm:p-16 my-20 text-stone-500
+  font-bold text-2xl">
+    Not found.
+  </div>
+</div>

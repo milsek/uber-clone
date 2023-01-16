@@ -3,8 +3,6 @@ package com.example.springbackend.service;
 import com.example.springbackend.model.*;
 import com.example.springbackend.repository.MemberRepository;
 import com.example.springbackend.repository.NoteRepository;
-import com.example.springbackend.repository.RoleRepository;
-import com.example.springbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

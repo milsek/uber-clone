@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AuthenticationService } from './core/authentication/authentication.service';
 import { MainModule } from './modules/main/main.module';
 import { UserModule } from './modules/user/user.module';
+import { AdminModule } from './modules/admin/admin.module';
 import { ChatComponent } from './modules/chat/chat.component';
 
 @NgModule({
@@ -19,6 +20,7 @@ import { ChatComponent } from './modules/chat/chat.component';
     AuthModule,
     MainModule,
     UserModule,
+    AdminModule,
   ],
   providers: [AuthenticationService],
   bootstrap: [AppComponent],

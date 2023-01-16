@@ -40,7 +40,6 @@ export class OrderMenuComponent implements OnInit {
   minivanImg: string = 'assets/icons/car-minivan-gray.png';
   stationImg: string = 'assets/icons/car-station-gray.png';
 
-  // selectedVehicleType: string = 'coupe';
   selectedVehicleType!: VehicleType;
   hasBabySeat: boolean = false;
   isPetFriendly: boolean = false;

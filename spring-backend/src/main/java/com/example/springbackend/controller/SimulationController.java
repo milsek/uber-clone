@@ -1,6 +1,5 @@
 package com.example.springbackend.controller;
 
-
 import com.example.springbackend.service.SimulatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

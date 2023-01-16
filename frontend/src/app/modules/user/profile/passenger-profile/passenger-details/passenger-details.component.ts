@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { faCar, faEnvelope, faMobileRetro, faPaperPlane, IconDefinition, faMoneyBill1Wave,faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { faCar, faEnvelope, faMobileRetro, faPaperPlane, IconDefinition, faMoneyBill1Wave, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Passenger } from 'src/app/shared/models/passenger.model';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 
@@ -17,6 +17,12 @@ export class PassengerDetailsComponent implements OnInit {
   faMoneyBill1Wave: IconDefinition = faMoneyBill1Wave;
   faPlus: IconDefinition = faPlus;
 
+  clickedBuyTokensModal: boolean = false;
+  showBuyTokensModal: boolean = false;
+
+  tokensToBuy: Number = 100;
+  buyTokensErrorMessage: string = '';
+
   constructor(private passengerService: PassengerService) { }
 
   ngOnInit(): void {
@@ -26,8 +32,32 @@ export class PassengerDetailsComponent implements OnInit {
     return parseFloat(this.passenger.distanceTravelled.toString()).toFixed(2);
   }
 
-  addTokens(): void{
-    this.passengerService.addTokens(5);
+  addTokens(): void {
+    if (typeof this.tokensToBuy !== 'number') {
+      this.buyTokensErrorMessage = 'Invalid amount';
+      return;
+    }
+    if (!Number.isInteger(this.tokensToBuy)) {
+      this.buyTokensErrorMessage = 'Amount must be a positive integer';
+      return;
+    }
+    if (this.tokensToBuy < 100) {
+      this.buyTokensErrorMessage = 'Minimum amount is 100';
+      return;
+    }
+    if (this.tokensToBuy % 100 !== 0) {
+      this.buyTokensErrorMessage = 'Amount must be divisible by 100';
+      return;
+    }
+    this.passengerService.addTokens(this.tokensToBuy / 100);
+  }
+
+  @HostListener('document:click')
+  clickout() {
+    if (this.showBuyTokensModal && !this.clickedBuyTokensModal) {
+      this.showBuyTokensModal = false;
+    }
+    this.clickedBuyTokensModal = false;
   }
 
 }

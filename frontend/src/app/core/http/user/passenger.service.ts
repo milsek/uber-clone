@@ -33,8 +33,7 @@ export class PassengerService {
         Authorization: `Bearer ${this.authenticationService.getToken()}`
       }
     }).then((resp => {
-      // window.location= (resp.data.links[1].href);
-      window.open(resp.data.links[1].href, '_blank', 'location=yes,height=660,width=520,scrollbars=yes,status=yes');
+      window.open(resp.data.links[1].href, '_blank');
     }));
   }
 
@@ -52,6 +51,16 @@ export class PassengerService {
     .catch((err) => {
       this.currentRide = null;
     });
+  }
+
+  async register(data: any): Promise<any> {
+    await axios.post(`/api/passengers`, data, {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`
+      }
+    }).then((res => {
+      return res.data;
+    }));
   }
 
   getCurrentRide = () => {

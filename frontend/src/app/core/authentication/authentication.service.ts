@@ -17,7 +17,6 @@ export class AuthenticationService {
   }
 
   whoami(): void {
-    console.log(this.getToken());
     axios.get(`/api/users/whoami`, 
     {
       headers: {
@@ -60,46 +59,39 @@ export class AuthenticationService {
   }
 
   async resetPasword(email: String) : Promise<boolean>{
-    console.log(email);
-    if(email){
-      
-    var formData =
-    {
-      "email": email,
-    }
-    await axios
-    .post("http://localhost:8080/api/auth/reset-password", formData)
-    .then((resp) => {
-      console.log("AS");
-      return true;
-    })
-    .catch((err) => {
-      console.log(err);
-      return false;
-    });      
+    if (email) {
+      var formData =
+      {
+        "email": email,
+      }
+      await axios
+      .post("http://localhost:8080/api/auth/reset-password", formData)
+      .then((resp) => {
+        return true;
+      })
+      .catch((err) => {
+        return false;
+      });      
     }
     return false;
   }
 
   async confirmReset(token: String,password: String) : Promise<boolean>{
-    console.log(password);
-    if(password){
+    if (password) {
       
-    var formData =
-    {
-      "token" : token,
-      "newPassword" : password
-    }
-     await axios
-    .post("http://localhost:8080/api/auth/confirm-password-reset", formData)
-    .then((resp) => {
-      console.log("AS");
-      return true;
-    })
-    .catch((err) => {
-      console.log(err);
-      return false;
-    });      
+      var formData =
+      {
+        "token" : token,
+        "newPassword" : password
+      }
+      await axios
+      .post("http://localhost:8080/api/auth/confirm-password-reset", formData)
+      .then((res) => {
+        return true;
+      })
+      .catch((err) => {
+        return false;
+      });      
     }
     return false;
   }
@@ -114,19 +106,18 @@ export class AuthenticationService {
     
     const successfulLogin = await axios
       .post("http://localhost:8080/api/auth/custom-login", formData)
-      .then((resp) => {
-        if (resp.data) {
-          window.localStorage.setItem("token", resp.data["accessToken"]);
+      .then((res) => {
+        if (res.data) {
+          window.localStorage.setItem("token", res.data["accessToken"]);
           axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
           return true;
         }
         else{
-          console.log("Bad credentials");
           return false;
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err)
         return false;
       });      
     return successfulLogin;

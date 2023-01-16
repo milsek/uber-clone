@@ -17,12 +17,12 @@
         for="login-email">
           E-Mail
         </label>
-        <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+        <input class="appearance-none block w-full text-white tracking-wide
         placeholder-light caret-light border-b border-light focus:border-accent-light
         bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
         id="login-email" type="text" placeholder="Your E-Mail Address" autofocus="autofocus"
         formControlName="email"
-        (input)="wrongCredentials = false">
+        (input)="errorMessage = ''">
         <div class="h-1">
           <p *ngIf="email && email.invalid && email.touched"
             class="text-yellow-400 text-xs italic">
@@ -41,11 +41,11 @@
         for="login-password">
           Password
         </label>
-        <input class="appearance-none block w-full bg-gray-200 text-white tracking-wide
+        <input class="appearance-none block w-full text-white tracking-wide
         placeholder-light caret-light border-b border-light focus:border-accent-light
         bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
         id="login-password" type="password" placeholder="Your Password" formControlName="password"
-        (input)="wrongCredentials = false">
+        (input)="errorMessage = ''">
         <div class="h-1">
           <p *ngIf="password && password.invalid && password.touched"
             class="text-yellow-400 text-xs italic">
@@ -61,26 +61,27 @@
 
     </div>
 
-  <button type="submit" class="w-full h-16 bg-accent-light active:bg-accent text-white font-medium tracking-wide">
-    LOGIN
-  </button>
-  <div class="h-1">
-  <p *ngIf="wrongCredentials"
-  class="text-red-400 italic text-center">
-  <span>
-    Incorrect credentials.
-  </span>
-</p>
-</div>
+    <button type="submit" class="w-full h-16 bg-accent-light active:bg-accent text-white font-medium tracking-wide">
+      LOGIN
+    </button>
+    <div class="h-1">
+      <p *ngIf="errorMessage"
+      class="text-red-400 italic text-center">
+        <span>
+          {{ errorMessage }}
+        </span>
+      </p>
+    </div>
+
   </form>
 
-  <div class="text-light text-sm text-center mt-3">
+  <div class="text-light text-sm text-center mt-8">
     Don't have an account?
     <span class="text-accent-light cursor-pointer"><a routerLink="/register">Sign Up</a></span>
     
     <div class="text-light text-sm text-center mt-1">
       Forgot password?
-      <span class="text-accent-light cursor-pointer"(click) = "resetPassword()">Reset password</span>
+      <span class="text-accent-light cursor-pointer" (click)="resetPassword()">Reset password</span>
     </div>
   </div>
 </div>

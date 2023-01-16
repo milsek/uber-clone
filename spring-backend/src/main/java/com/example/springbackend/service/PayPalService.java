@@ -1,10 +1,10 @@
-package com.example.springbackend.config;
+package com.example.springbackend.service;
 
+import com.example.springbackend.config.PaypalConfig;
 import com.example.springbackend.dto.paypal.*;
 import com.example.springbackend.model.Order;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.repository.OrderRepository;
-import com.example.springbackend.service.PassengerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

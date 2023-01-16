@@ -35,6 +35,14 @@ public class ControllerAdvisor {
         return errors;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ExceptionResponseBody handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                "Username or email already exists.");
+    }
+
     @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
     @ExceptionHandler(InsufficientFundsException.class)
     public ExceptionResponseBody handleInsufficientFundsException(InsufficientFundsException ex) {

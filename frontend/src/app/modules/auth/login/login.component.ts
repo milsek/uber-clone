@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faChevronLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 
 
@@ -11,7 +10,7 @@ import { AuthenticationService } from 'src/app/core/authentication/authenticatio
 })
 export class LoginComponent implements OnInit {
   faChevronLeft: IconDefinition = faChevronLeft;
-  wrongCredentials: boolean = false;
+  errorMessage: string = '';
 
   loginForm = new FormGroup({
     email: new FormControl('', [
@@ -23,24 +22,30 @@ export class LoginComponent implements OnInit {
     ]),
   });
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) { 
+  constructor(private authenticationService: AuthenticationService) { 
     document.getElementById('login-email')?.focus();
   }
 
   ngOnInit(): void {
   }
 
-  async resetPassword() {
-    return this.authenticationService.resetPasword(this.email?.value!);
+  resetPassword(): void {
+    if (!this.email?.value)
+      this.errorMessage = 'You must enter your email first.';
+    else if (this.email?.invalid)
+      this.errorMessage = 'Enter a valid email.';
+    else 
+      this.authenticationService.resetPasword(this.email?.value!);
   }
 
   async onSubmit() {
+    if (this.loginForm.invalid) return;
     const success = await this.authenticationService.login(this.email?.value!, this.password?.value!);
     if (success) {   
       this.authenticationService.whoami();
     }
     else {
-      this.wrongCredentials = true;
+      this.errorMessage = 'Incorrect credentials.';
     }
   }
 

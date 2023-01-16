@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faChevronLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 
