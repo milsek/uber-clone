@@ -4,6 +4,8 @@ import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.PassengerRide;
 import com.example.springbackend.model.Ride;
 import io.swagger.models.auth.In;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,9 @@ public interface PassengerRideRepository extends JpaRepository<PassengerRide, In
     Optional<Ride> getCurrentRide(@Param("passenger") Passenger passenger);
 
     Optional<PassengerRide> findByRideAndPassengerUsername(Ride ride, String username);
+    List<PassengerRide> findByRideId(Integer rideId);
+
+    Page<PassengerRide> findByPassengerUsername(String username, Pageable paging);
 
     @Query("SELECT pr.passenger.username FROM PassengerRide pr WHERE " +
             "pr.ride.id = :rideId")

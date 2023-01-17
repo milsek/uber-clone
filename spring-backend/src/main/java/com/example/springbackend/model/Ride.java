@@ -26,6 +26,10 @@ public class Ride {
 
     @ManyToOne
     @JoinColumn
+    private Driver driver;
+
+    @ManyToOne
+    @JoinColumn
     private Route actualRoute;
 
     @ManyToOne

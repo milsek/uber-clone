@@ -3,19 +3,25 @@ package com.example.springbackend.controller;
 import com.example.springbackend.dto.creation.BasicRideCreationDTO;
 import com.example.springbackend.dto.creation.RideIdDTO;
 import com.example.springbackend.dto.creation.SplitFareRideCreationDTO;
+import com.example.springbackend.dto.display.DetailedRideHistoryDriverDTO;
+import com.example.springbackend.dto.display.DetailedRideHistoryPassengerDTO;
+import com.example.springbackend.dto.display.RideHistoryDisplayDTO;
 import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
+import com.example.springbackend.dto.update.UsernameDTO;
 import com.example.springbackend.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/rides", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -41,4 +47,22 @@ public class RideController {
         return ResponseEntity.ok(rideService.confirmRide(dto, auth));
     }
 
+    @GetMapping("/ride-history")
+    public Page<RideHistoryDisplayDTO> getRideHistory(@Valid @RequestParam String username, @RequestParam Integer page, @RequestParam Integer amount, @RequestParam String sortBy, Authentication authentication){
+        Pageable paging = PageRequest.of(page, amount, Sort.by(sortBy));
+        return rideService.getRideHistory(username, authentication, paging);
+    }
+
+
+    @GetMapping("/detailed-ride-history-passanger")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'ADMIN')")
+    public DetailedRideHistoryPassengerDTO detailedRideHistoryPassenger(@Valid @RequestParam Integer rideId, Authentication authentication){
+        return rideService.detailedRideHistoryPassenger(rideId, authentication);
+    }
+
+    @GetMapping("/detailed-ride-history-driver")
+    @PreAuthorize("hasAnyRole('DRIVER', 'ADMIN')")
+    public DetailedRideHistoryDriverDTO detailedRideHistoryDriver(@Valid @RequestParam Integer rideId, Authentication authentication){
+        return rideService.detailedRideHistoryDriver(rideId, authentication);
+    }
 }

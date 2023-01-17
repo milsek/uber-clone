@@ -24,9 +24,10 @@ VALUES ('MINIVAN', 150, 6);
 INSERT INTO vehicle_type (name, price, seats)
 VALUES ('STATION', 125, 4);
 
-
+/*
 insert into route values (1);
 insert into route values (2);
 insert into route values  (3);
 insert into route values  (4);
 insert into route values  (5);
+*/

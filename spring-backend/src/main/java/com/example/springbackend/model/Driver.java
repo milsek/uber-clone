@@ -1,13 +1,16 @@
 package com.example.springbackend.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class Driver extends Member{
 
     private Boolean active;

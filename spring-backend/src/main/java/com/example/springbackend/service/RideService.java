@@ -1,10 +1,7 @@
 package com.example.springbackend.service;
 
 import com.example.springbackend.dto.creation.*;
-import com.example.springbackend.dto.display.CoordinatesDisplayDTO;
-import com.example.springbackend.dto.display.DriverSimpleDisplayDTO;
-import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
-import com.example.springbackend.dto.display.RouteDisplayDTO;
+import com.example.springbackend.dto.display.*;
 import com.example.springbackend.exception.AdequateDriverNotFoundException;
 import com.example.springbackend.exception.InsufficientFundsException;
 import com.example.springbackend.model.*;
@@ -12,7 +9,9 @@ import com.example.springbackend.model.helpClasses.Coordinates;
 import com.example.springbackend.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.Optional;
 
 @Service
 public class RideService {
@@ -40,6 +41,8 @@ public class RideService {
     UserRepository userRepository;
     @Autowired
     RouteRepository routeRepository;
+    @Autowired
+    AdminRepository adminRepository;
     @Autowired
     ModelMapper modelMapper;
 
@@ -118,8 +121,8 @@ public class RideService {
             ride.setPassengersConfirmed(true);
             BasicRideCreationDTO basicRideCreationDTO = modelMapper.map(ride, BasicRideCreationDTO.class);
             basicRideCreationDTO.setVehicleType(ride.getVehicleType());
-
             Driver driver = findDriver(basicRideCreationDTO);
+            ride.setDriver(driver);
             rideRepository.save(ride);
             //TODO: send notifications
             if (driver == null) {
@@ -218,6 +221,7 @@ public class RideService {
         ride.setDriverInconsistency(false);
         ride.setPrice(price);
         ride.setPassengersConfirmed(true);
+        ride.setDriver(driver);
         rideRepository.save(ride);
 
         if (driver.getCurrentRide() == null) {
@@ -288,4 +292,41 @@ public class RideService {
         return dto;
     }
 
+    public Page<RideHistoryDisplayDTO> getRideHistory(String username, Authentication authentication, Pageable paging) {
+        User user = (User) authentication.getPrincipal();
+        if(username.isEmpty()){
+            username = user.getUsername();
+        }
+        else{
+            if(!adminRepository.findById(username).isPresent()){
+                return null;
+            }
+        }
+        Page<PassengerRide> passengerRides = passengerRideRepository.findByPassengerUsername(username, paging);
+        return passengerRides.map(passengerRide -> modelMapper.map(passengerRide.getRide(), RideHistoryDisplayDTO.class));
+    }
+
+    public DetailedRideHistoryPassengerDTO detailedRideHistoryPassenger(Integer rideId, Authentication authentication) {
+        Optional<Ride> optRide = rideRepository.findById(rideId);
+        List<PassengerRide> passengerRides = passengerRideRepository.findByRideId(rideId);
+        if(optRide.isPresent()){
+            DetailedRideHistoryPassengerDTO returnDTO = modelMapper.map(optRide.get(), DetailedRideHistoryPassengerDTO.class);
+            for(PassengerRide passengerRide : passengerRides){
+                if(passengerRide.getDriverRating() != 0)
+                returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getDriverRating());
+                if(passengerRide.getVehicleRating() != 0)
+                    returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getVehicleRating());
+            }
+            return returnDTO;
+        }
+        return null;
+    }
+
+    public DetailedRideHistoryDriverDTO detailedRideHistoryDriver(Integer rideId, Authentication authentication) {
+        List<PassengerRide> passengerRides = passengerRideRepository.findByRideId(rideId);
+        DetailedRideHistoryDriverDTO detailedRideHistoryDriverDTO = new  DetailedRideHistoryDriverDTO();
+        passengerRides.stream().forEach(passengerRide ->
+                detailedRideHistoryDriverDTO.addPassenger(modelMapper.map(passengerRide.getPassenger(), PassengerDisplayDTO.class)));
+        return detailedRideHistoryDriverDTO;
+    }
 }
