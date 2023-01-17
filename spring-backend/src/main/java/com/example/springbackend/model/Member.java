@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
 import java.util.List;
 @Entity
-@Where(clause = "banned = false")
 public class Member extends User{
 
     private AccountStatus accountStatus;

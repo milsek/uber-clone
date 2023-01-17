@@ -98,7 +98,7 @@ public class RideService {
     }
 
 
-    public Object confirmRide(ConfirmRideDTO dto, Authentication auth) {
+    public Object confirmRide(RideIdDTO dto, Authentication auth) {
         Ride ride = rideRepository.findById(dto.getRideId()).get();
         Passenger passenger = (Passenger) auth.getPrincipal();
         PassengerRide currentPR = passengerRideRepository.findByRideAndPassengerUsername(ride, passenger.getUsername()).get();

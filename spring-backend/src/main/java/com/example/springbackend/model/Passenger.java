@@ -1,5 +1,6 @@
 package com.example.springbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Where;
@@ -8,7 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 @Entity
-@Where(clause = "banned = false")
 public class Passenger extends Member {
 
     private String paymentDetails;
@@ -20,11 +20,12 @@ public class Passenger extends Member {
     @PositiveOrZero
     private int tokenBalance;
 
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @JoinTable(name = "favourite_routes",
             joinColumns = @JoinColumn(name = "passenger_username", referencedColumnName = "username"),
             inverseJoinColumns = @JoinColumn(name = "route_id", referencedColumnName = "id"))
+    @JsonManagedReference
     private List<Route> favouriteRoutes;
 
     public String getPaymentDetails() {

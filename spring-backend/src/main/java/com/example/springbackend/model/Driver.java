@@ -8,7 +8,6 @@ import javax.persistence.OneToOne;
 
 @Entity
 @Data
-@Where(clause = "banned = false")
 public class Driver extends Member{
 
     private Boolean active;

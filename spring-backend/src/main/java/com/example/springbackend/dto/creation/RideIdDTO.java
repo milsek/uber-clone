@@ -3,6 +3,6 @@ package com.example.springbackend.dto.creation;
 import lombok.Data;
 
 @Data
-public class ConfirmRideDTO {
+public class RideIdDTO {
     Integer rideId;
 }
