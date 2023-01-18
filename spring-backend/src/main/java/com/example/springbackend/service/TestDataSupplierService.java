@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +47,7 @@ public class TestDataSupplierService {
         addUsers();
         addDrivers();
     }
+
 
     private void addAdmins() {
         Admin admin = new Admin();
@@ -121,9 +123,18 @@ public class TestDataSupplierService {
         driver.setAccountStatus(AccountStatus.ACTIVE);
         driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
         Ride mockRide = new Ride();
+        mockRide.setCreatedAt(LocalDateTime.now());
+        mockRide.setStartTime(LocalDateTime.now());
+        mockRide.setEndTime(LocalDateTime.now());
         rideRepository.save(mockRide);
         driver.setCurrentRide(mockRide);
         driver.setNextRide(null);
+        driverRepository.save(driver);
+        driver.setUsername("travis1");
+        driverRepository.save(driver);
+        driver.setUsername("travis2");
+        driverRepository.save(driver);
+        driver.setUsername("travis3");
         driverRepository.save(driver);
     }
 

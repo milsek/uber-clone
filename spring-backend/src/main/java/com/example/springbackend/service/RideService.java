@@ -6,7 +6,9 @@ import com.example.springbackend.exception.AdequateDriverNotFoundException;
 import com.example.springbackend.exception.InsufficientFundsException;
 import com.example.springbackend.model.*;
 import com.example.springbackend.model.helpClasses.Coordinates;
+import com.example.springbackend.model.helpClasses.ReportParameter;
 import com.example.springbackend.repository.*;
+import org.hibernate.sql.OracleJoinFragment;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,8 +19,11 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -343,5 +348,89 @@ public class RideService {
             return true;
         }
         return false;
+    }
+
+    public Date getDateFromString(String dateString){
+        int startYear = Integer.parseInt(dateString.split("-")[2]);
+        int startMonth = Integer.parseInt(dateString.split("-")[1]);
+        int startDay = Integer.parseInt(dateString.split("-")[0]);
+        return new Date(startYear-1900,startMonth,startDay);
+    }
+
+    public ReportDisplayDTO generateReportPassenger(String startDateString, String endDateString, ReportParameter reportParameter, Authentication authentication) {
+        Date startDate = getDateFromString(startDateString);
+        Date endDate = getDateFromString(endDateString);
+        Passenger passenger = (Passenger) authentication.getPrincipal();
+        List<Object[]> queryRet;
+         ReportDisplayDTO reportDisplayDTO = new ReportDisplayDTO();
+        switch(reportParameter){
+            case MONEY_SPENT_EARNED -> {queryRet = passengerRideRepository.getPassengersMoneyReport(startDate, endDate, passenger.getUsername());
+                reportDisplayDTO.setYAxisName("Money spent"); break;}
+            case NUM_OF_RIDES ->  {queryRet = passengerRideRepository.getPassengerRidesReport(startDate, endDate, passenger.getUsername());
+                reportDisplayDTO.setYAxisName("Number of rides");  break;}
+            default -> {queryRet = passengerRideRepository.getPassengerDistanceReport(startDate, endDate, passenger.getUsername());
+            reportDisplayDTO.setYAxisName("Distance traveled"); }
+        }
+        return generateReportDisplayDTO(queryRet, reportDisplayDTO);
+    }
+
+    public ReportDisplayDTO generateReportDriver(String startDateString, String endDateString, ReportParameter reportParameter, Authentication authentication) {
+        Date startDate = getDateFromString(startDateString);
+        Date endDate = getDateFromString(endDateString);
+        Driver driver = (Driver) authentication.getPrincipal();
+        List<Object[]> queryRet;
+        ReportDisplayDTO reportDisplayDTO = new ReportDisplayDTO();
+        switch(reportParameter){
+            case MONEY_SPENT_EARNED -> {queryRet = rideRepository.getDriverMoneyReport(startDate, endDate, driver.getUsername());
+                reportDisplayDTO.setYAxisName("Money earned"); ; break;}
+            case NUM_OF_RIDES ->  {queryRet = rideRepository.getDriverRidesReport(startDate, endDate, driver.getUsername());
+                reportDisplayDTO.setYAxisName("Number of rides");  break;}
+            default -> {queryRet = rideRepository.getDriverDistanceReport(startDate, endDate, driver.getUsername());
+                reportDisplayDTO.setYAxisName("Distance traveled");}
+        }
+        return generateReportDisplayDTO(queryRet, reportDisplayDTO);
+    }
+
+    public ReportDisplayDTO generateReportAdmin(String startDateString, String endDateString, ReportParameter reportParameter, String type, Authentication authentication) {
+        Date startDate = getDateFromString(startDateString);
+        Date endDate = getDateFromString(endDateString);
+        List<Object[]> queryRet;
+        ReportDisplayDTO reportDisplayDTO = new ReportDisplayDTO();
+        if(Objects.equals(type, "driver")){
+            switch(reportParameter){
+                case MONEY_SPENT_EARNED -> {queryRet = rideRepository.getAllDriversMoneyReport(startDate, endDate);
+                    reportDisplayDTO.setYAxisName("Money spent"); break;}
+                case NUM_OF_RIDES ->  {queryRet = rideRepository.getAllDriversRidesReport(startDate, endDate);
+                    reportDisplayDTO.setYAxisName("Number of rides"); break;}
+                default -> {queryRet = rideRepository.getAllDriversDistanceReport(startDate, endDate);
+                    reportDisplayDTO.setYAxisName("Distance traveled");}
+            }
+        }
+        else{
+            switch(reportParameter){
+                case MONEY_SPENT_EARNED -> {queryRet = passengerRideRepository.getAllPassengersMoneyReport(startDate, endDate);
+                    reportDisplayDTO.setYAxisName("Money earned"); break;}
+                case NUM_OF_RIDES ->  {queryRet = passengerRideRepository.getAllPassengersRidesReport(startDate, endDate);
+                    reportDisplayDTO.setYAxisName("Number of rides"); break;}
+                default -> {queryRet = passengerRideRepository.getAllPassengersDistanceReport(startDate, endDate);
+                    reportDisplayDTO.setYAxisName("Distance traveled");}
+            }
+        }
+        return generateReportDisplayDTO(queryRet, reportDisplayDTO);
+    }
+
+    private ReportDisplayDTO generateReportDisplayDTO(List<Object[]> queryRet, ReportDisplayDTO reportDisplayDTO) {
+        double sumY = 0;
+        reportDisplayDTO.setXAxisName("date");
+        for(Object[] x : queryRet){
+            if(x[0] != null && x[1] != null){
+                reportDisplayDTO.addXAxisValue(String.valueOf(x[0]));
+                reportDisplayDTO.addYAxisValue(Double.parseDouble(String.valueOf(x[1])));
+                sumY += Double.parseDouble(String.valueOf(x[1]));
+            }
+        }
+        reportDisplayDTO.setSum(sumY);
+        reportDisplayDTO.setAverage(sumY/queryRet.size());
+        return reportDisplayDTO;
     }
 }

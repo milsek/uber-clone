@@ -9,6 +9,8 @@ import com.example.springbackend.dto.display.DetailedRideHistoryPassengerDTO;
 import com.example.springbackend.dto.display.RideHistoryDisplayDTO;
 import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
 import com.example.springbackend.dto.update.UsernameDTO;
+import com.example.springbackend.model.ReportDisplayDTO;
+import com.example.springbackend.model.helpClasses.ReportParameter;
 import com.example.springbackend.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -71,4 +74,22 @@ public class RideController {
     public ResponseEntity<Boolean> leaveReview(@Valid @RequestBody ReviewDTO reviewDTO, Authentication authentication ){
         return ResponseEntity.ok(rideService.leaveReview(reviewDTO, authentication));
     }
+
+    @GetMapping("/generate-report-passenger")
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ReportDisplayDTO generateReportPassenger(@RequestParam String startDate, @RequestParam String endDate, @RequestParam ReportParameter reportParameter, Authentication authentication ){
+        return rideService.generateReportPassenger(startDate, endDate, reportParameter, authentication);
+    }
+    @GetMapping("/generate-report-driver")
+    @PreAuthorize("hasRole('DRIVER')")
+    public ReportDisplayDTO generateReportDriver(@RequestParam String startDate, @RequestParam String endDate, @RequestParam ReportParameter reportParameter, Authentication authentication ){
+        return rideService.generateReportDriver(startDate, endDate, reportParameter, authentication);
+    }
+    @GetMapping("/generate-report-admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ReportDisplayDTO generateReportAdmin(@RequestParam String startDate, @RequestParam String endDate, @RequestParam ReportParameter reportParameter, @RequestParam String type, Authentication authentication ){
+        return rideService.generateReportAdmin(startDate, endDate, reportParameter, type, authentication);
+    }
+
+
 }
