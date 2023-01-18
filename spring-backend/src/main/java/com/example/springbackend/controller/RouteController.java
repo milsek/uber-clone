@@ -38,6 +38,5 @@ public class RouteController {
     public Page<Route> getFavouriteRoutes(@RequestParam Integer page, @RequestParam Integer amount, Authentication authentication){
         Pageable paging = PageRequest.of(page, amount);
         return routeService.getFavouriteRoutes(paging, authentication);
-
     }
 }

@@ -1,6 +1,7 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.creation.BasicRideCreationDTO;
+import com.example.springbackend.dto.creation.ReviewDTO;
 import com.example.springbackend.dto.creation.RideIdDTO;
 import com.example.springbackend.dto.creation.SplitFareRideCreationDTO;
 import com.example.springbackend.dto.display.DetailedRideHistoryDriverDTO;
@@ -54,7 +55,7 @@ public class RideController {
     }
 
 
-    @GetMapping("/detailed-ride-history-passanger")
+    @GetMapping("/detailed-ride-history-passenger")
     @PreAuthorize("hasAnyRole('PASSENGER', 'ADMIN')")
     public DetailedRideHistoryPassengerDTO detailedRideHistoryPassenger(@Valid @RequestParam Integer rideId, Authentication authentication){
         return rideService.detailedRideHistoryPassenger(rideId, authentication);
@@ -64,5 +65,10 @@ public class RideController {
     @PreAuthorize("hasAnyRole('DRIVER', 'ADMIN')")
     public DetailedRideHistoryDriverDTO detailedRideHistoryDriver(@Valid @RequestParam Integer rideId, Authentication authentication){
         return rideService.detailedRideHistoryDriver(rideId, authentication);
+    }
+
+    @PostMapping("/leave-review")
+    public ResponseEntity<Boolean> leaveReview(@Valid @RequestBody ReviewDTO reviewDTO, Authentication authentication ){
+        return ResponseEntity.ok(rideService.leaveReview(reviewDTO, authentication));
     }
 }

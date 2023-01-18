@@ -21,6 +21,7 @@ public interface PassengerRideRepository extends JpaRepository<PassengerRide, In
     Optional<Ride> getCurrentRide(@Param("passenger") Passenger passenger);
 
     Optional<PassengerRide> findByRideAndPassengerUsername(Ride ride, String username);
+    Optional<PassengerRide> findByRideIdAndPassengerUsername(Integer rideId, String username);
     List<PassengerRide> findByRideId(Integer rideId);
 
     Page<PassengerRide> findByPassengerUsername(String username, Pageable paging);

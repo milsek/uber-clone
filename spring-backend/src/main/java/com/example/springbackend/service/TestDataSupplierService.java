@@ -73,7 +73,7 @@ public class TestDataSupplierService {
         passenger.setDistanceTravelled(79.28);
         passenger.setRidesCompleted(28);
         passenger.setRoles(roleRepository.findByName("ROLE_PASSENGER"));
-        passenger.setTokenBalance(690);
+        passenger.setTokenBalance(6900);
         passengerRepository.save(passenger);
         passenger.setUsername("passenger2@noemail.com");
         passenger.setEmail("passenger2@noemail.com");

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -315,7 +316,7 @@ public class RideService {
                 if(passengerRide.getDriverRating() != 0)
                 returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getDriverRating());
                 if(passengerRide.getVehicleRating() != 0)
-                    returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getVehicleRating());
+                    returnDTO.getVehicleRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getVehicleRating());
             }
             return returnDTO;
         }
@@ -328,5 +329,19 @@ public class RideService {
         passengerRides.stream().forEach(passengerRide ->
                 detailedRideHistoryDriverDTO.addPassenger(modelMapper.map(passengerRide.getPassenger(), PassengerDisplayDTO.class)));
         return detailedRideHistoryDriverDTO;
+    }
+
+    public Boolean leaveReview(ReviewDTO reviewDTO, Authentication authentication) {
+        Passenger passenger = (Passenger) authentication.getPrincipal();
+        Optional<PassengerRide> optPassengerRide = passengerRideRepository.findByRideIdAndPassengerUsername(reviewDTO.getRideId(),passenger.getUsername());
+        if(optPassengerRide.isPresent()){
+            PassengerRide passengerRide = optPassengerRide.get();
+            passengerRide.setComment(reviewDTO.getComment());
+            passengerRide.setVehicleRating(reviewDTO.getVehicleRating());
+            passengerRide.setDriverRating(reviewDTO.getDriverRating());
+            passengerRideRepository.save(passengerRide);
+            return true;
+        }
+        return false;
     }
 }
