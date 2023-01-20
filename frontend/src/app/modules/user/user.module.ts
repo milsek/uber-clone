@@ -14,8 +14,8 @@ import { PassengerEditComponent } from './profile/passenger-profile/passenger-ed
 import { AdminProfileComponent } from './profile/admin-profile/admin-profile.component';
 import { AdminDetailsComponent } from './profile/admin-profile/admin-details/admin-details.component';
 import { AdminEditComponent } from './profile/admin-profile/admin-edit/admin-edit.component';
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/module/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -30,13 +30,15 @@ import { FormsModule } from '@angular/forms';
     PassengerEditComponent,
     AdminProfileComponent,
     AdminDetailsComponent,
-    AdminEditComponent
+    AdminEditComponent,
   ],
   imports: [
     CommonModule,
     UserRoutingModule,
     FontAwesomeModule,
-    FormsModule
-  ]
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+  ],
 })
-export class UserModule { }
+export class UserModule {}

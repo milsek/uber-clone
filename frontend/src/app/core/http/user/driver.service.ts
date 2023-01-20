@@ -3,28 +3,29 @@ import axios from 'axios';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DriverService {
-
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor(private authenticationService: AuthenticationService) {}
 
   getDriverByUsername(username: string): Promise<any> {
     return axios.get(`/api/drivers/${username}`, {
       headers: {
-        Authorization: `Bearer ${this.authenticationService.getToken()}`
-      }
+        Authorization: `Bearer ${this.authenticationService.getToken()}`,
+      },
     });
   }
 
   async getDriverActivity(): Promise<boolean> {
-    const activity: boolean = await axios.get(`/api/drivers/activity`, {
-      headers: {
-        Authorization: `Bearer ${this.authenticationService.getToken()}`
-      }
-    }).then((res => {
-      return res.data;
-    }));
+    const activity: boolean = await axios
+      .get(`/api/drivers/activity`, {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      })
+      .then((res) => {
+        return res.data;
+      });
     return activity;
   }
 
@@ -39,11 +40,22 @@ export class DriverService {
   }
 
   toggleActivity(): void {
-    axios.patch(`/api/drivers/activity`, {},
-    {
-      headers: {
-        Authorization: `Bearer ${this.authenticationService.getToken()}`
+    axios.patch(
+      `/api/drivers/activity`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
       }
+    );
+  }
+
+  getUpdateRequests(): Promise<any> {
+    return axios.get(`/api/preupdate/all`, {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`,
+      },
     });
   }
 }

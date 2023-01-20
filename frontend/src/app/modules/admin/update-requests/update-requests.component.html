@@ -1,0 +1,352 @@
+<div class="min-h-screen h-full w-full bg-dark flex flex-col justify-center">
+  <div class="absolute top-6 left-6">
+    <div
+      class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
+      routerLink="/"
+    >
+      <fa-icon [icon]="faChevronLeft"></fa-icon>
+    </div>
+  </div>
+
+  <div
+    class="w-2/3 mx-auto text-center border border-stone-500 rounded-lg py-16 px-4 sm:p-16 my-20 text-stone-500 font-bold text-2xl flex"
+  >
+    <div
+      class="mt-2 mr-3 flow-root w-1/3 overflow-y-scroll"
+      *ngIf="requests.length != 0"
+    >
+      <ul role="list" class="-my-5 divide-y divide-gray-200">
+        <li *ngFor="let request of requests" class="py-4">
+          <div class="flex items-center space-x-4">
+            <div class="flex-shrink-0">
+              <img
+                [src]="
+                  request.userImage
+                    ? request.userImage
+                    : getImage(request.profilePicture)
+                "
+                class="h-8 w-8 rounded-full"
+                alt="No Profile Pic"
+              />
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-sm font-medium text-white">
+                {{ request.name }} {{ request.surname }}
+              </p>
+              <p class="truncate text-sm text-gray-500">
+                {{ request.username }}
+              </p>
+            </div>
+            <div>
+              <button
+                class="inline-flex items-center rounded-full border border-gray-300 bg-white px-2.5 py-0.5 text-sm font-medium leading-5 text-gray-700 shadow-sm hover:bg-gray-50"
+                (click)="changeRequest(request.username)"
+              >
+                View
+              </button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="w-full border-l-2" *ngIf="requests.length != 0">
+      <table class="mx-auto border-separate border-spacing-2">
+        <th></th>
+        <th>Old Data</th>
+        <th></th>
+        <th>New Data</th>
+        <tbody>
+          <tr>
+            <td class="text-left">Name:</td>
+            <td>{{ oldData!.name }}</td>
+            <td *ngIf="oldData!.name !== newData!.name">
+              &nbsp;&nbsp;-->&nbsp;&nbsp;
+            </td>
+            <td *ngIf="oldData!.name !== newData!.name">{{ newData!.name }}</td>
+          </tr>
+          <tr>
+            <td class="text-left">Surname:</td>
+            <td>{{ oldData!.surname }}</td>
+            <td *ngIf="oldData!.surname !== newData!.surname">--></td>
+            <td *ngIf="oldData!.surname !== newData!.surname">
+              {{ newData!.surname }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Phone number:</td>
+            <td>{{ oldData!.phoneNumber }}</td>
+            <td *ngIf="oldData!.phoneNumber !== newData!.phoneNumber">--></td>
+            <td *ngIf="oldData!.phoneNumber !== newData!.phoneNumber">
+              {{ newData!.phoneNumber }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Profile photo:</td>
+            <td>
+              <div class="flex rounded-lg w-full ml-1">
+                <label
+                  id="label-input"
+                  class="mx-auto outline-dashed outline-2 outline-offset-2 outline-gray-400 hover:outline-gray-600 hover:border-gray-300 cursor-pointer"
+                >
+                  <img
+                    [src]="oldPicture"
+                    class="flex-none w-24 h-24 rounded-xl object-cover"
+                    alt="Profile Picture"
+                  />
+                </label>
+              </div>
+            </td>
+            <td *ngIf="oldData!.profilePicture !== newData!.profilePicture">
+              -->
+            </td>
+            <td *ngIf="oldData!.profilePicture !== newData!.profilePicture">
+              <div class="flex rounded-lg w-full ml-1">
+                <label
+                  id="label-input"
+                  class="mx-auto outline-dashed outline-2 outline-offset-2 outline-gray-400 hover:outline-gray-600 hover:border-gray-300 cursor-pointer"
+                >
+                  <img
+                    [src]="newPicture"
+                    class="flex-none w-24 h-24 rounded-xl object-cover"
+                    alt="Profile Picture"
+                  />
+                </label>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Baby seat:</td>
+            <td>{{ oldData!.vehicle.babySeat ? "Yes" : "No" }}</td>
+            <td *ngIf="oldData!.vehicle.babySeat !== newData!.babySeat">--></td>
+            <td *ngIf="oldData!.vehicle.babySeat !== newData!.babySeat">
+              {{ newData!.babySeat ? "Yes" : "No" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Pets allowed:</td>
+            <td>{{ oldData!.vehicle.petsAllowed ? "Yes" : "No" }}</td>
+            <td *ngIf="oldData!.vehicle.petsAllowed !== newData!.petsAllowed">
+              -->
+            </td>
+            <td *ngIf="oldData!.vehicle.petsAllowed !== newData!.petsAllowed">
+              {{ newData!.petsAllowed ? "Yes" : "No" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Make:</td>
+            <td>{{ oldData!.vehicle.make }}</td>
+            <td *ngIf="oldData!.vehicle.make !== newData!.make">--></td>
+            <td *ngIf="oldData!.vehicle.make !== newData!.make">
+              {{ newData!.make }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Vehicle type:</td>
+            <td>
+              <div class="flex justify-around select-none">
+                <div
+                  class="flex flex-col justify-end text-center"
+                  *ngIf="oldData!.vehicle.vehicleType.name === 'COUPE'"
+                >
+                  <img
+                    [src]="
+                      oldData!.vehicle.vehicleType.name === 'COUPE'
+                        ? 'assets/icons/car-coupe.png'
+                        : 'assets/icons/car-coupe-gray.png'
+                    "
+                    class="w-16 hover:opacity-90 cursor-pointer"
+                    title="Coupe"
+                  />
+                  <p
+                    class="text-sm font-medium mt-1"
+                    [ngClass]="
+                      oldData!.vehicle.vehicleType.name === 'COUPE'
+                        ? 'text-gray-50'
+                        : 'text-light'
+                    "
+                  >
+                    Coupe
+                  </p>
+                </div>
+                <div
+                  class="flex flex-col justify-end text-center"
+                  *ngIf="oldData!.vehicle.vehicleType.name === 'MINIVAN'"
+                >
+                  <img
+                    [src]="
+                      oldData!.vehicle.vehicleType.name === 'MINIVAN'
+                        ? 'assets/icons/car-minivan.png'
+                        : 'assets/icons/car-minivan-gray.png'
+                    "
+                    class="w-16 hover:opacity-90 cursor-pointer"
+                    title="Minivan"
+                  />
+                  <p
+                    class="text-sm font-medium mt-1"
+                    [ngClass]="
+                      oldData!.vehicle.vehicleType.name === 'MINIVAN'
+                        ? 'text-gray-50'
+                        : 'text-light'
+                    "
+                  >
+                    Minivan
+                  </p>
+                </div>
+                <div
+                  class="flex flex-col justify-end text-center"
+                  *ngIf="oldData!.vehicle.vehicleType.name === 'STATION'"
+                >
+                  <img
+                    [src]="
+                      oldData!.vehicle.vehicleType.name === 'STATION'
+                        ? 'assets/icons/car-station.png'
+                        : 'assets/icons/car-station-gray.png'
+                    "
+                    class="w-16 hover:opacity-90 cursor-pointer"
+                    title="Station"
+                  />
+                  <p
+                    class="text-sm font-medium mt-1"
+                    [ngClass]="
+                      oldData!.vehicle.vehicleType.name === 'STATION'
+                        ? 'text-gray-50'
+                        : 'text-light'
+                    "
+                  >
+                    Station
+                  </p>
+                </div>
+              </div>
+            </td>
+            <td
+              *ngIf="oldData!.vehicle.vehicleType.name !== newData!.vehicleType"
+            >
+              -->
+            </td>
+            <td
+              *ngIf="oldData!.vehicle.vehicleType.name !== newData!.vehicleType"
+            >
+              <div class="flex justify-around select-none">
+                <div
+                  class="flex flex-col justify-end text-center"
+                  *ngIf="newData!.vehicleType === 'COUPE'"
+                >
+                  <img
+                    [src]="
+                      newData!.vehicleType === 'COUPE'
+                        ? 'assets/icons/car-coupe.png'
+                        : 'assets/icons/car-coupe-gray.png'
+                    "
+                    class="w-16 hover:opacity-90 cursor-pointer"
+                    title="Coupe"
+                  />
+                  <p
+                    class="text-sm font-medium mt-1"
+                    [ngClass]="
+                      newData!.vehicleType === 'COUPE'
+                        ? 'text-gray-50'
+                        : 'text-light'
+                    "
+                  >
+                    Coupe
+                  </p>
+                </div>
+                <div
+                  class="flex flex-col justify-end text-center"
+                  *ngIf="newData!.vehicleType === 'MINIVAN'"
+                >
+                  <img
+                    [src]="
+                      newData!.vehicleType === 'MINIVAN'
+                        ? 'assets/icons/car-minivan.png'
+                        : 'assets/icons/car-minivan-gray.png'
+                    "
+                    class="w-16 hover:opacity-90 cursor-pointer"
+                    title="Minivan"
+                  />
+                  <p
+                    class="text-sm font-medium mt-1"
+                    [ngClass]="
+                      newData!.vehicleType === 'MINIVAN'
+                        ? 'text-gray-50'
+                        : 'text-light'
+                    "
+                  >
+                    Minivan
+                  </p>
+                </div>
+                <div
+                  class="flex flex-col justify-end text-center"
+                  *ngIf="newData!.vehicleType === 'STATION'"
+                >
+                  <img
+                    [src]="
+                      newData!.vehicleType === 'STATION'
+                        ? 'assets/icons/car-station.png'
+                        : 'assets/icons/car-station-gray.png'
+                    "
+                    class="w-16 hover:opacity-90 cursor-pointer"
+                    title="Station"
+                  />
+                  <p
+                    class="text-sm font-medium mt-1"
+                    [ngClass]="
+                      newData!.vehicleType === 'STATION'
+                        ? 'text-gray-50'
+                        : 'text-light'
+                    "
+                  >
+                    Station
+                  </p>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">Colour:</td>
+            <td>{{ oldData!.vehicle.colour }}</td>
+            <td *ngIf="oldData!.vehicle.colour !== newData!.colour">--></td>
+            <td *ngIf="oldData!.vehicle.colour !== newData!.colour">
+              {{ newData!.colour }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-left">LicensePlateNumber:</td>
+            <td>{{ oldData!.vehicle.licensePlateNumber }}</td>
+            <td
+              *ngIf="
+                oldData!.vehicle.licensePlateNumber !==
+                newData!.licensePlateNumber
+              "
+            >
+              -->
+            </td>
+            <td
+              *ngIf="
+                oldData!.vehicle.licensePlateNumber !==
+                newData!.licensePlateNumber
+              "
+            >
+              {{ newData!.licensePlateNumber }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div>
+        <button
+          class="bg-green-500 px-2 rounded-md w-10 mr-2"
+          (click)="approveUpdate()"
+        >
+          <fa-icon [icon]="faCheck" class="text-white"></fa-icon>
+        </button>
+        <button
+          class="bg-red-500 px-2 rounded-md w-10 ml-2"
+          (click)="rejectUpdate()"
+        >
+          <fa-icon [icon]="faXmark" class="text-white mx-auto"></fa-icon>
+        </button>
+      </div>
+    </div>
+    <div *ngIf="requests.length === 0">No driver update requests</div>
+  </div>
+</div>

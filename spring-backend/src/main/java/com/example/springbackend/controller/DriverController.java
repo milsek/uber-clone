@@ -3,7 +3,9 @@ package com.example.springbackend.controller;
 import com.example.springbackend.dto.creation.DriverCreationDTO;
 import com.example.springbackend.dto.display.DriverDisplayDTO;
 import com.example.springbackend.model.Driver;
+import com.example.springbackend.dto.update.DriverUpdateDTO;
 import com.example.springbackend.service.DriverService;
+import com.example.springbackend.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +21,8 @@ import javax.validation.Valid;
 public class DriverController {
     @Autowired
     private DriverService driverService;
+    @Autowired
+    private PhotoService photoService;
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
@@ -46,4 +50,11 @@ public class DriverController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<Boolean> updateDriver(@RequestBody DriverUpdateDTO driverUpdateDTO){
+        boolean successfulUpdate = driverService.updateDriver(driverUpdateDTO);
+        photoService.updateImage(driverUpdateDTO.getProfilePicture());
+        HttpStatus returnStatus = successfulUpdate ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(successfulUpdate, returnStatus);
+    }
 }

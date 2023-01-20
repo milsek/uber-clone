@@ -59,6 +59,7 @@ public class TestDataSupplierService {
         admin.setPhoneNumber("+2624035735");
         admin.setCity("Marseille");
         admin.setRoles(roleRepository.findByName("ROLE_ADMIN"));
+        admin.setProfilePicture("/default.png");
         adminRepository.save(admin);
     }
 
@@ -76,16 +77,21 @@ public class TestDataSupplierService {
         passenger.setRidesCompleted(28);
         passenger.setRoles(roleRepository.findByName("ROLE_PASSENGER"));
         passenger.setTokenBalance(1000);
+        passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
         passenger.setTokenBalance(600);
         passenger.setUsername("passenger2@noemail.com");
         passenger.setEmail("passenger2@noemail.com");
+        passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
         passenger.setUsername("passenger3@noemail.com");
         passenger.setEmail("passenger3@noemail.com");
+        passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
         passenger.setUsername("passenger4@noemail.com");
         passenger.setEmail("passenger4@noemail.com");
+        passenger.setTokenBalance(690);
+        passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
     }
 
@@ -108,12 +114,12 @@ public class TestDataSupplierService {
         vehicle.setVehicleType(vehicleTypeRepository.findByName("COUPE").orElseThrow());
         vehicleRepository.save(vehicle);
         Driver driver = new Driver();
-        driver.setUsername("travis");
+        driver.setUsername("travis@noemail.com");
         driver.setEmail("travis@noemail.com");
         driver.setPassword(passwordEncoder.encode("cascaded"));
         driver.setName("Travis");
         driver.setSurname("Bickle");
-        driver.setPhoneNumber("+1 422 135 12");
+        driver.setPhoneNumber("+142213512");
         driver.setCity("New York City");
         driver.setActive(true);
         driver.setVehicle(vehicle);
@@ -123,6 +129,7 @@ public class TestDataSupplierService {
         driver.setNumberOfReviews(1693);
         driver.setAccountStatus(AccountStatus.ACTIVE);
         driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
+        driver.setProfilePicture("/default.png");
         Ride mockRide = new Ride();
         mockRide.setCreatedAt(LocalDateTime.now());
         mockRide.setStartTime(LocalDateTime.now());
@@ -173,6 +180,7 @@ public class TestDataSupplierService {
             driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
             driver.setCurrentRide(null);
             driver.setNextRide(null);
+            driver.setProfilePicture("/default.png");
             driverRepository.save(driver);
         }
     }

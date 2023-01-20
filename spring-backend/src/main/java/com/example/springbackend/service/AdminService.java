@@ -1,11 +1,14 @@
 package com.example.springbackend.service;
 
+import com.example.springbackend.dto.update.UserUpdateDTO;
 import com.example.springbackend.model.*;
 import com.example.springbackend.repository.MemberRepository;
 import com.example.springbackend.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -33,5 +36,20 @@ public class AdminService {
         note.setContent(content);
         note.setAdmin( (Admin) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         noteRepository.save(note);
+    }
+
+    public boolean updateAdmin(UserUpdateDTO userUpdateDTO) {
+        Optional<Member> optAdmin = memberRepository.findByUsername(userUpdateDTO.getUsername());
+        if(optAdmin.isPresent()){
+            Member admin = optAdmin.get();
+            admin.setCity(userUpdateDTO.getCity());
+            admin.setName(userUpdateDTO.getName());
+            admin.setSurname(userUpdateDTO.getSurname());
+            admin.setPhoneNumber(userUpdateDTO.getPhoneNumber());
+            admin.setProfilePicture(userUpdateDTO.getProfilePicture());
+            memberRepository.save(admin);
+            return true;
+        }
+        return false;
     }
 }

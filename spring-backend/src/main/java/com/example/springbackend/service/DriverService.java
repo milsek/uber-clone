@@ -4,8 +4,10 @@ import com.example.springbackend.dto.creation.DriverCreationDTO;
 import com.example.springbackend.dto.display.DriverDisplayDTO;
 import com.example.springbackend.exception.UserAlreadyExistsException;
 import com.example.springbackend.model.AccountStatus;
+import com.example.springbackend.dto.update.DriverUpdateDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Vehicle;
+import com.example.springbackend.model.VehicleType;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;
 import com.example.springbackend.repository.DriverRepository;
 import com.example.springbackend.repository.VehicleRepository;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.Optional;
 
 @Service
 public class DriverService {
@@ -39,6 +42,8 @@ public class DriverService {
     private TokenUtils tokenUtils;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private PreupdateService preupdateService;
 
     public Driver signUp(DriverCreationDTO driverCreationDTO) {
         if(!userService.userExistsForCustomRegistration(driverCreationDTO.getEmail(), driverCreationDTO.getUsername())) {
@@ -73,7 +78,6 @@ public class DriverService {
         return driver.getActive();
     }
 
-
     private Driver createDriverFromDto(DriverCreationDTO dto) {
         Driver driver = modelMapper.map(dto, Driver.class);
         driver.setAuthenticationProvider(AuthenticationProvider.LOCAL);
@@ -106,4 +110,29 @@ public class DriverService {
         vehicle.setRideActive(false);
         return vehicle;
     }
+    public boolean updateDriver(DriverUpdateDTO driverUpdateDTO) {
+        Optional<Driver> opetDriver = driverRepository.findByUsername(driverUpdateDTO.getUsername());
+        if(opetDriver.isPresent()){
+            Driver driver = opetDriver.get();
+            driver.setCity(driverUpdateDTO.getCity());
+            driver.setName(driverUpdateDTO.getName());
+            driver.setSurname(driverUpdateDTO.getSurname());
+            driver.setPhoneNumber(driverUpdateDTO.getPhoneNumber());
+            driver.setProfilePicture(driverUpdateDTO.getProfilePicture().substring(4));
+            Vehicle v = driver.getVehicle();
+            v.setColour(driverUpdateDTO.getColour());
+            v.setModel(driverUpdateDTO.getModel());
+            v.setMake(driverUpdateDTO.getMake());
+            v.setBabySeat(driverUpdateDTO.getBabySeat());
+            v.setPetsAllowed(driverUpdateDTO.getPetsAllowed());
+            v.setLicensePlateNumber(driverUpdateDTO.getLicensePlateNumber());
+            v.setVehicleType(vehicleTypeRepository.findByName(driverUpdateDTO.getVehicleType()).get());
+            driverRepository.save(driver);
+            vehicleRepository.save(v);
+            preupdateService.removeUpdateRequest(driverUpdateDTO);
+            return true;
+        }
+        return false;
+    }
+
 }
