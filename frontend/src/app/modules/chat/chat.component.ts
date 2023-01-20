@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Stomp } from '@stomp/stompjs';
-import * as SockJS from 'sockjs-client';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { ChatService } from 'src/app/core/http/user/chat.service';
+import { SocketService } from 'src/app/core/socket/socket.service';
 import { Chat } from 'src/app/shared/models/chat.model';
 import { Message } from 'src/app/shared/models/message.model';
 import { User } from 'src/app/shared/models/user.model';
@@ -13,7 +12,6 @@ import { User } from 'src/app/shared/models/user.model';
 })
 export class ChatComponent implements OnInit {
   numOfNewMessages: number = 0;
-  stompClient: any;
   indexOfSelectedChat: number = 0;
   showChat: boolean = false;
   shouldScroll: boolean = false;
@@ -21,9 +19,11 @@ export class ChatComponent implements OnInit {
   receiver: string = '';
   user: User = { username: '', role: '' };
   chats: Array<Chat> = [];
+
   constructor(
     private chatService: ChatService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private socketService: SocketService
   ) {}
 
   ngOnInit(): void {
@@ -32,7 +32,6 @@ export class ChatComponent implements OnInit {
 
   ngAfterContentInit(): void {
     if (this.user.role !== '') {
-      this.initWS();
       this.countNumberOfUnreadMessages();
     }
   }
@@ -59,21 +58,17 @@ export class ChatComponent implements OnInit {
         this.receiver = 'admin';
       });
     }
-  }
-
-  initWS(): void {
     let addr = '';
-    if (this.user.role === 'admin') {
+    if (session.accountType === 'admin') {
       addr = '/user/admin/private';
     } else {
-      addr = '/user/' + this.user.username + '/private';
+      addr = '/user/' + session.username + '/private';
     }
-    this.stompClient = Stomp.over(new SockJS('http://localhost:8080/ws'));
-    this.stompClient.connect({}, () => this.onMessageRecieve(addr));
+    this.onMessageRecieve(addr);
   }
 
   onMessageRecieve(addr: string): void {
-    this.stompClient.subscribe(addr, (message: any) => {
+    this.socketService.stompClient.subscribe(addr, (message: any) => {
       let messageData = JSON.parse(message.body);
       let mess = {
         sender: messageData.sender,
@@ -106,7 +101,7 @@ export class ChatComponent implements OnInit {
     let currentDate = new Date();
     let tempDate = new Date();
     tempDate.setHours(tempDate.getHours() + 1);
-    this.stompClient.send(
+    this.socketService.stompClient.send(
       '/app/privateMessage',
       {},
       JSON.stringify({

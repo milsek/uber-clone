@@ -7,8 +7,10 @@ import { MainComponent } from './main.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { OrderMenuComponent } from './order-menu/order-menu.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PassengerRideDetailsComponent } from './passenger-ride-details/passenger-ride-details.component';
+import { SplitFareWaitComponent } from './modals/split-fare-wait/split-fare-wait.component';
+import { SharedModule } from 'src/app/shared/module/shared/shared.module';
 
 
 
@@ -19,13 +21,16 @@ import { PassengerRideDetailsComponent } from './passenger-ride-details/passenge
     TopControlsComponent,
     MainComponent,
     OrderMenuComponent,
-    PassengerRideDetailsComponent
+    PassengerRideDetailsComponent,
+    SplitFareWaitComponent
   ],
   imports: [
     CommonModule,
     FontAwesomeModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule
   ]
 })
 export class MainModule { }

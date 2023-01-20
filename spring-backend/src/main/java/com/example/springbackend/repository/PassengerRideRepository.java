@@ -3,27 +3,22 @@ package com.example.springbackend.repository;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.PassengerRide;
 import com.example.springbackend.model.Ride;
-import io.swagger.models.auth.In;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import javax.swing.text.html.Option;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface PassengerRideRepository extends JpaRepository<PassengerRide, Integer> {
-    @Query("SELECT pr.ride FROM PassengerRide pr WHERE " +
+    @Query("SELECT pr FROM PassengerRide pr WHERE " +
             "pr.passenger = :passenger AND pr.ride.rejected = false " +
             "AND pr.ride.endTime is null")
-    Optional<Ride> getCurrentRide(@Param("passenger") Passenger passenger);
+    Optional<PassengerRide> getCurrentPassengerRide(@Param("passenger") Passenger passenger);
 
     Optional<PassengerRide> findByRideAndPassengerUsername(Ride ride, String username);
     Optional<PassengerRide> findByRideIdAndPassengerUsername(Integer rideId, String username);
@@ -76,6 +71,8 @@ public interface PassengerRideRepository extends JpaRepository<PassengerRide, In
             "      group by cast(pr.ride.startTime as date) order by" +
             " cast(pr.ride.startTime as date)")
     List<Object[]> getAllPassengersMoneyReport(Date startDate, Date endDate);
+
+    List<PassengerRide> findByRide(Ride ride);
 
     @Query("SELECT pr.passenger.username FROM PassengerRide pr WHERE " +
             "pr.ride.id = :rideId")

@@ -13,4 +13,6 @@ public class RideSimpleDisplayDTO {
     private int price;
     private DriverSimpleDisplayDTO driver;
     private RouteDisplayDTO route;
+    private boolean allConfirmed;
+    private boolean passengerConfirmed;
 }

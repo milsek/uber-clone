@@ -45,7 +45,7 @@ public class RideController {
         return ResponseEntity.ok(rideService.orderSplitFareRide(dto, auth));
     }
 
-    @PostMapping("/confirm-ride")
+    @PatchMapping("/confirm")
     @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<Object> confirmRide(@Valid @RequestBody RideIdDTO dto, Authentication auth) {
         return ResponseEntity.ok(rideService.confirmRide(dto, auth));
@@ -80,16 +80,22 @@ public class RideController {
     public ReportDisplayDTO generateReportPassenger(@RequestParam String startDate, @RequestParam String endDate, @RequestParam ReportParameter reportParameter, Authentication authentication ){
         return rideService.generateReportPassenger(startDate, endDate, reportParameter, authentication);
     }
+
     @GetMapping("/generate-report-driver")
     @PreAuthorize("hasRole('DRIVER')")
     public ReportDisplayDTO generateReportDriver(@RequestParam String startDate, @RequestParam String endDate, @RequestParam ReportParameter reportParameter, Authentication authentication ){
         return rideService.generateReportDriver(startDate, endDate, reportParameter, authentication);
     }
+
     @GetMapping("/generate-report-admin")
     @PreAuthorize("hasRole('ADMIN')")
     public ReportDisplayDTO generateReportAdmin(@RequestParam String startDate, @RequestParam String endDate, @RequestParam ReportParameter reportParameter, @RequestParam String type, Authentication authentication ){
         return rideService.generateReportAdmin(startDate, endDate, reportParameter, type, authentication);
     }
 
-
+    @PatchMapping("/reject")
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ResponseEntity<Boolean> rejectRide(@Valid @RequestBody RideIdDTO dto, Authentication auth) {
+        return ResponseEntity.ok(rideService.rejectRide(dto, auth));
+    }
 }

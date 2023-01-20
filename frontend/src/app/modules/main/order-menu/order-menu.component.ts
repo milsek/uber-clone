@@ -1,14 +1,18 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IconDefinition, faChevronRight, faChevronLeft, faChevronUp, faChevronDown, faCircle, faFlagCheckered, faStop, faPlus, faXmark, faStopwatch, faRoute, faPaw, faBabyCarriage, faHandHoldingUsd } from '@fortawesome/free-solid-svg-icons';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { IconDefinition, faChevronRight, faChevronLeft, faChevronUp, faChevronDown, faCircle, faFlagCheckered, faStop, faPlus, faXmark, faStopwatch, faRoute, faPaw, faBabyCarriage, faHandHoldingUsd, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
+import { SocketService } from 'src/app/core/socket/socket.service';
+import { RideSimple } from 'src/app/shared/models/ride.model';
+import { Session } from 'src/app/shared/models/session.model';
 import { VehicleType } from 'src/app/shared/models/vehicle-type.model';
 
 @Component({
   selector: 'app-order-menu',
   templateUrl: './order-menu.component.html',
-  styleUrls: ['./order-menu.component.css']
+  styleUrls: ['./order-menu.component.css', './order-menu-modal.component.scss']
 })
 export class OrderMenuComponent implements OnInit {
   @Input() waypoints: any[] = [];
@@ -30,11 +34,21 @@ export class OrderMenuComponent implements OnInit {
   faRoute: IconDefinition = faRoute;
   faBabyCarriage: IconDefinition = faBabyCarriage;
   faPaw: IconDefinition = faPaw;
+  faEnvelope: IconDefinition = faEnvelope;
   faHandHoldingUsd: IconDefinition = faHandHoldingUsd;
 
   accountType: string = this.authenticationService.getAccountType();
   isOpened: boolean = false;
   newStopQuery: string = '';
+
+  expandSplitFare: boolean = false;
+  linkedPassengers: string[] = [];
+  splitFareForm = new FormGroup({
+    splitFareEmail: new FormControl('', [
+      Validators.required,
+      Validators.pattern(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
+    ]),
+  });
 
   coupeImg: string = 'assets/icons/car-coupe.png';
   minivanImg: string = 'assets/icons/car-minivan-gray.png';
@@ -46,7 +60,17 @@ export class OrderMenuComponent implements OnInit {
 
   vehicleTypes: VehicleType[] = [];
 
-  constructor(private authenticationService: AuthenticationService, private rideService: RideService, private passengerService: PassengerService) { }
+  showSplitFareSuccessModal: boolean = false;
+
+  showErrorModal: boolean = false;
+  errorTitle: string = ''
+  errorMessage: string = '';
+
+  constructor(
+      private authenticationService: AuthenticationService,
+      private rideService: RideService,
+      private passengerService: PassengerService
+    ) { }
 
   async ngOnInit(): Promise<void> {
     await this.loadVehicleTypes();
@@ -55,28 +79,56 @@ export class OrderMenuComponent implements OnInit {
   orderRide(): void {
     const deviateFromRoute: boolean = Math.random() > 0.75 && this.alternativeRoute;
     const actualRoute: any = deviateFromRoute ? this.alternativeRoute : this.route;
-    this.rideService.orderBasicRide({
+    const orderData: any = {
       distance: Number((this.route.summary.totalDistance / 1000).toLocaleString('fullwide', {minimumFractionDigits:2, maximumFractionDigits:2})),
       babySeat: this.hasBabySeat,
       petFriendly: this.isPetFriendly,
       vehicleType: this.selectedVehicleType.name,
       expectedTime: actualRoute.summary.totalTime,
       expectedRoute: deviateFromRoute ? {
-        waypoints: this.route.waypoints,
+        waypoints: this.route.waypoints.map((waypoint: any) => waypoint.latLng),
         coordinates: this.route.coordinates
       } : null,
       actualRoute: {
         waypoints: actualRoute.waypoints.map((waypoint: any) => waypoint.latLng),
         coordinates: actualRoute.coordinates
-      }
-    })
-    .then((res: any) => {
-      this.passengerService.setCurrentRide(res.data);
-      window.location.href="/";
-    })
-    .catch((err: any) => {
-      console.log(err);
-    });
+      },
+      usersToPay: this.linkedPassengers
+    };
+    if (orderData.usersToPay.length > 0) {
+      this.rideService.orderSplitFareRide(orderData)
+      .then(res => {
+          this.showSplitFareSuccessModal = true;
+          setTimeout(() => {
+            this.confirmRideResponse();
+          }, 2000);
+      })
+      .catch(err => {
+        if (err.response.data?.message) {
+          this.openErrorModal('Error', err.response.data?.message);
+        } else if (err.response.data?.distance) {
+          this.openErrorModal('Error', err.response.data?.distance);
+        } else {
+          this.openErrorModal('Oops!', 'Something went wrong...');
+        }
+      });
+    }
+    else {
+      this.rideService.orderBasicRide(orderData)
+      .then(res => {
+        this.passengerService.setCurrentRide(res.data);
+        window.location.href="/";
+      })
+      .catch(err => {
+        if (err.response.data?.message) {
+          this.openErrorModal('Error', err.response.data?.message);
+        } else if (err.response.data?.distance) {
+          this.openErrorModal('Error', err.response.data?.distance);
+        } else {
+          this.openErrorModal('Oops!', 'Something went wrong...');
+        }
+      });
+    }
   }
 
   calculateRidePrice(): number {
@@ -87,7 +139,13 @@ export class OrderMenuComponent implements OnInit {
 
   setVehicleType(typeName: string) {
     const potentialType: VehicleType | undefined = this.vehicleTypes.find(type => type.name === typeName);
-    if (potentialType) this.selectedVehicleType = potentialType;
+    if (potentialType) {
+      this.selectedVehicleType = potentialType;
+      this.splitFareEmail?.reset();
+      if (this.linkedPassengers.length > this.selectedVehicleType.seats) {
+        this.linkedPassengers.splice(this.selectedVehicleType.seats)
+      }
+    }
   }
 
   addStop(): void {
@@ -97,6 +155,19 @@ export class OrderMenuComponent implements OnInit {
 
   removeStop(i: number): void {
     this.stopRemoved.emit(i);
+  }
+
+  linkPassenger(): void {
+    this.splitFareForm.updateValueAndValidity();
+    this.splitFareEmail?.markAsTouched();
+    if (this.splitFareEmail?.value && this.splitFareEmail?.valid) {
+      this.linkedPassengers.push(this.splitFareEmail?.value);
+      this.splitFareEmail.reset();
+    }
+  }
+
+  unlinkPassenger(i: number): void {
+    this.linkedPassengers.splice(i, 1);
   }
 
   toggleOpened(): void {
@@ -119,6 +190,11 @@ export class OrderMenuComponent implements OnInit {
     }
   }
 
+  confirmRideResponse(): void {
+    this.showSplitFareSuccessModal = false;
+    window.location.href="/";
+  }
+
   async loadVehicleTypes(): Promise<void> {
     if (this.vehicleTypes.length === 0)
       this.vehicleTypes = await this.rideService.getVehicleTypes();
@@ -129,5 +205,22 @@ export class OrderMenuComponent implements OnInit {
     if (i === 0) return this.faCircle;
     else if (i === this.waypoints.length - 1) return this.faFlagCheckered;
     else return this.faStop;
+  }
+
+  get splitFareEmail() {
+    return this.splitFareForm.get('splitFareEmail');
+  }
+  
+  openErrorModal (errorTitle: string, errorMessage: string): void {
+    this.showErrorModal = true;
+    this.errorTitle = errorTitle;
+    this.errorMessage = errorMessage;
+    this.showErrorModal = true;
+  }
+
+  closeErrorModal () {
+    this.showErrorModal = false;
+    this.errorMessage = '';
+    this.errorTitle = '';
   }
 }

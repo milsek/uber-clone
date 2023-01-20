@@ -9,4 +9,6 @@ export interface RideSimple {
   driver: DriverSimple,
   route: Route,
   createdAt: Date,
+  allConfirmed: boolean,
+  passengerConfirmed: boolean
 }

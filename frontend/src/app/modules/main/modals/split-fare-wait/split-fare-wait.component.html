@@ -1,0 +1,33 @@
+<div *ngIf="showSelf" class="fixed top-0 left-0 z-30 w-screen min-w-screen min-h-screen h-screen text-center
+  flex items-center justify-center bg-stone-500 bg-opacity-80 transition-opacity text-base font-display">
+  <div class="relative flex flex-col w-96 bg-dark rounded-xl mx-auto
+  overflow-hidden px-9 py-8">
+    <div class="circle-loader mx-auto mb-4"></div>
+
+    <h3 class="text-xl font-medium text-stone-400">
+      Waiting for everyone to confirm...
+    </h3>
+    
+    <div *ngIf="ride && !ride.passengerConfirmed" class="flex justify-around">
+      <button class="py-1 w-36 px-8 mt-6 border border-light text-light font-medium tracking-wide
+      hover:bg-light hover:text-dark rounded-2xl" (click)="rejectRide()">
+        Reject
+      </button>
+
+      <button class="py-1 w-36 px-8 mt-6 border border-accent-light text-accent-light font-medium tracking-wide
+      hover:bg-accent-light hover:text-gray-50 rounded-2xl" (click)="confirmRide()">
+        Confirm
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="showErrorModal">
+  <app-error-modal
+    [title]="errorTitle"
+    [description]="errorMessage"
+    (onClose)="closeErrorModal()"
+  ></app-error-modal>
+</div>

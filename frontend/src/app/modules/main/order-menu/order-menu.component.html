@@ -123,12 +123,71 @@ sm:h-full select-none" id="order-menu">
         </div>
 
       </div>
+
+      <!-- split fare -->
+      <div *ngIf="selectedVehicleType" class="mt-10">
+
+        <h3 *ngIf="expandSplitFare"  class="text-xl font-bold text-gray-50 mt-4 sm:mt-0">Linked passengers</h3>
+
+        <div *ngIf="linkedPassengers" class="flex flex-col shrink-0 mt-2 max-h-72 overflow-auto">
+          <div *ngFor="let passengerEmail of linkedPassengers; let i=index;">
+            <div class="flex w-full justify-between">
+              
+              <div class="flex gap-x-3 grow my-auto text-base font-medium
+              text-gray-50">
+                <fa-icon [icon]="faEnvelope" class="text-lg my-auto text-light"></fa-icon>
+                <div>{{ passengerEmail }}</div>
+              </div>
+    
+              <button class="grow-0 w-10 h-10 my-auto p-1 text-gray-50 hover:text-accent-light mx-auto"
+              (click)="unlinkPassenger(i)">
+                <fa-icon [icon]="faXmark"></fa-icon>
+              </button>
+    
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!expandSplitFare" class="text-sm italic text-light hover:text-accent-light
+        cursor-pointer text-center"
+        (click)="expandSplitFare = true">
+          <fa-icon [icon]="faPlus"></fa-icon>
+          <span class="ml-2">Link more passengers for a fare split</span>
+        </div>
+        
+        <form *ngIf="expandSplitFare && linkedPassengers.length < selectedVehicleType.seats" 
+        [formGroup]="splitFareForm" (submit)="linkPassenger()">
+          <div class="flex">
+            <input class="appearance-none block w-full text-white tracking-wide
+            placeholder-light caret-light border-b border-light focus:border-accent-light
+            bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            type="text" formControlName="splitFareEmail" placeholder="Enter a co-passenger's email">
+            
+            <button type="submit"
+            class="px-2 py-1 text-gray-50 hover:text-accent-light mx-auto">
+              <fa-icon [icon]="faPlus"></fa-icon>
+            </button>
+          </div>
+          <div class="h-1">
+            <p *ngIf="splitFareEmail && splitFareEmail.invalid && splitFareEmail.touched"
+              class="text-yellow-400 text-xs italic">
+              <span *ngIf="splitFareEmail.errors?.['required']">
+                An email is required.
+              </span>
+              <span *ngIf="splitFareEmail.errors?.['pattern']">
+                Email is not valid.
+              </span>
+            </p>
+          </div>
+        </form>
+      </div>
       
       <!-- order button -->
       <div>
         <button *ngIf="accountType === 'passenger'" type="submit" class="w-full h-16 bg-accent-light
-        active:bg-accent text-white font-medium tracking-wide mt-12" (click)="orderRide()">
-          ORDER RIDE
+        active:bg-accent text-white font-medium tracking-wide mt-10" (click)="orderRide()">
+          ORDER RIDE {{linkedPassengers.length > 0 ? 'WITH ' + linkedPassengers.length + ' OTHER PASSENGER'
+          + (linkedPassengers.length === 1 ? '' : 'S') : ''}}
         </button>
         <div *ngIf="accountType === 'anonymous'" class="text-light text-center mt-6">
           You must
@@ -157,6 +216,37 @@ sm:h-full select-none" id="order-menu">
     (click)="toggleOpened()">
       <fa-icon [icon]="isOpened ? faChevronDown : faChevronUp" class="text-2xl"></fa-icon>
     </div>
+  </div>
+
+  <div *ngIf="showSplitFareSuccessModal"
+  class="fixed top-0 left-0 z-30 w-screen min-w-screen min-h-screen h-screen text-center
+    flex items-center justify-center bg-stone-500 bg-opacity-80 transition-opacity text-base font-display">
+    <div class="relative flex flex-col w-96 bg-dark rounded-xl mx-auto
+    overflow-hidden px-9 py-8">
+
+      <div class="circle-loader load-complete mx-auto mb-4">
+        <div class="checkmark draw"></div>
+      </div>
+      <h3 class="text-xl font-medium text-gray-50">
+        Success!
+        <br>
+        <span class="text-base text-stone-400">The ride will commence when we receive a confirmation from each passenger.</span>
+      </h3>
+
+      <!-- <button class="py-1 px-8 mt-6 border border-accent-light text-accent-light font-medium tracking-wide
+      hover:bg-accent-light hover:text-gray-50 rounded-2xl" (click)="confirmRideResponse()">
+        Close
+      </button> -->
+
+    </div>
+  </div>
+
+  <div *ngIf="showErrorModal">
+    <app-error-modal
+      [title]="errorTitle"
+      [description]="errorMessage"
+      (onClose)="closeErrorModal()"
+    ></app-error-modal>
   </div>
 
 </div>

@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 @Service
 public class DriverService {
     @Autowired
@@ -37,7 +39,6 @@ public class DriverService {
     private TokenUtils tokenUtils;
     @Autowired
     private RoleService roleService;
-
 
     public Driver signUp(DriverCreationDTO driverCreationDTO) {
         if(!userService.userExistsForCustomRegistration(driverCreationDTO.getEmail(), driverCreationDTO.getUsername())) {
@@ -99,6 +100,9 @@ public class DriverService {
         vehicle.setBabySeat(dto.getBabySeat());
         vehicle.setPetsAllowed(dto.getPetsAllowed());
         vehicle.setLicensePlateNumber(dto.getLicensePlateNumber());
+        Random rand = new Random();
+        int i = rand.nextInt(0, TestDataSupplierService.locations.size());
+        vehicle.setCurrentCoordinates(TestDataSupplierService.locations.get(i));
         vehicle.setRideActive(false);
         return vehicle;
     }

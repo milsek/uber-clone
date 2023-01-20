@@ -87,8 +87,8 @@ export class MapComponent implements AfterViewInit {
 
     const that = this;
     this.control = L.Routing.control({
-      lineOptions: {styles: [{color: '#006D5B', weight: 4}], extendToWaypoints: true, missingRouteTolerance: 0.1},
-      altLineOptions: {styles: [{color: '#8aa1ad', weight: 7}], extendToWaypoints: true, missingRouteTolerance: 0.1},
+      lineOptions: {styles: [{color: '#ff7035', weight: 4}], extendToWaypoints: true, missingRouteTolerance: 0.1},
+      altLineOptions: {styles: [{color: '#afafaf', weight: 7}], extendToWaypoints: true, missingRouteTolerance: 0.1},
       showAlternatives: true,
       addWaypoints: this.canUserAlterWaypoints() ? true : false,
       waypoints: [],
@@ -164,7 +164,7 @@ export class MapComponent implements AfterViewInit {
       properties: { isSimplified: true },
       instructions: [],
     }
-    L.Routing.line(r, {styles: [{color: '#006D5B', weight: 4}], extendToWaypoints: false, missingRouteTolerance: 0.1}).addTo(this.map);
+    L.Routing.line(r, {styles: [{color: '#ff7035', weight: 4}], extendToWaypoints: false, missingRouteTolerance: 0.1}).addTo(this.map);
     ride.route.waypoints?.forEach((e : any) => {
       L.marker({lat: e.lat, lng: e.lng}).addTo(this.map);
     });
