@@ -1,12 +1,11 @@
 package com.example.springbackend.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,6 +22,8 @@ public class Driver extends Member{
 
     private int numberOfReviews;
 
+    double activeMinutesToday;
+    LocalDateTime lastSetActive;
     @OneToOne
     Vehicle vehicle;
 

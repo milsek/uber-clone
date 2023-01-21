@@ -7,21 +7,33 @@ import com.example.springbackend.model.AccountStatus;
 import com.example.springbackend.dto.update.DriverUpdateDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Vehicle;
-import com.example.springbackend.model.VehicleType;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;
 import com.example.springbackend.repository.DriverRepository;
 import com.example.springbackend.repository.VehicleRepository;
 import com.example.springbackend.repository.VehicleTypeRepository;
 import com.example.springbackend.util.TokenUtils;
+import com.example.springbackend.websocket.MessageType;
+import com.example.springbackend.websocket.WSMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Optional;
-
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.List;
 @Service
 public class DriverService {
     @Autowired
@@ -45,6 +57,16 @@ public class DriverService {
     @Autowired
     private PreupdateService preupdateService;
 
+    private Map<String, ScheduledFuture<?>> currentThreads;
+
+    private final SimpMessagingTemplate template;
+
+    @Autowired
+    public DriverService(SimpMessagingTemplate template) {
+        this.currentThreads = new HashMap<>();
+        this.template = template;
+    }
+
     public Driver signUp(DriverCreationDTO driverCreationDTO) {
         if(!userService.userExistsForCustomRegistration(driverCreationDTO.getEmail(), driverCreationDTO.getUsername())) {
             Driver driver = createDriverFromDto(driverCreationDTO);
@@ -67,15 +89,66 @@ public class DriverService {
         return modelMapper.map(driver, DriverDisplayDTO.class);
     }
 
-    public void toggleActivity(Authentication auth) {
+    public boolean toggleActivity(Authentication auth) {
         Driver driver = (Driver) auth.getPrincipal();
-        driver.setActive(!driver.getActive());
-        driverRepository.save(driver);
+        if(driver.getActiveMinutesToday() < 480){
+            triggerActivity(driver);
+            driver.setActive(!driver.getActive());
+            driverRepository.save(driver);
+            return true;
+        }
+        return false;
+    }
+
+    private void triggerActivity(Driver driver){
+        if(driver.getActive()){
+            if(currentThreads.get(driver.getUsername()) != null)
+                currentThreads.get(driver.getUsername()).cancel(false);
+            if(driver.getLastSetActive() != null){
+                driver.setActiveMinutesToday(driver.getActiveMinutesToday() + Duration.between(driver.getLastSetActive(), LocalDateTime.now()).toMinutes());
+            }
+            driver.setLastSetActive(LocalDateTime.now());
+            driverRepository.save(driver);
+        }
+        else{
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            ScheduledFuture<?> future = executorService.schedule(() -> {
+                driver.setActive(false);
+                driverRepository.save(driver);
+                WSMessage message = WSMessage.builder()
+                        .type(MessageType.NOTIFICATION)
+                        .sender("server")
+                        .receiver(driver.getUsername())
+                        .content("Your 8 hours has expired")
+                        .sentDateTime(LocalDateTime.now())
+                        .build();
+                driver.setActiveMinutesToday(driver.getActiveMinutesToday() + Duration.between(driver.getLastSetActive(), LocalDateTime.now()).toMinutes());
+                driverRepository.save(driver);
+                this.template.convertAndSendToUser(driver.getUsername(), "/private/driver/overtime", message);
+
+            }, 480-(int)driver.getActiveMinutesToday(), TimeUnit.MINUTES);
+            currentThreads.put(driver.getUsername(), future);
+        }
     }
 
     public boolean getActivity(Authentication auth) {
         Driver driver = (Driver) auth.getPrincipal();
         return driver.getActive();
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    private void resetHours(){
+        List<Driver> drivers = driverRepository.findAll();
+        for(Driver d : drivers){
+            d.setActiveMinutesToday(0);
+            if(d.getActive()){
+                triggerActivity(d);
+            }
+            else{
+                d.setLastSetActive(null);
+            }
+            driverRepository.save(d);
+        }
     }
 
     private Driver createDriverFromDto(DriverCreationDTO dto) {

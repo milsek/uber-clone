@@ -45,9 +45,8 @@ public class DriverController {
 
     @PatchMapping ("/activity")
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<Void> getByUsername(Authentication auth) {
-        driverService.toggleActivity(auth);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> getByUsername(Authentication auth) {
+        return ResponseEntity.ok(driverService.toggleActivity(auth));
     }
 
     @PostMapping("/update")
