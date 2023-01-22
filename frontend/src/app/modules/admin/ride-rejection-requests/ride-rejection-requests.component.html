@@ -1,0 +1,78 @@
+<div class="min-h-screen h-full w-full bg-dark flex flex-col justify-center">
+  <div class="absolute top-6 left-6">
+    <div
+      class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
+      routerLink="/"
+    >
+      <fa-icon [icon]="faChevronLeft"></fa-icon>
+    </div>
+  </div>
+
+  <div class="w-11/12 sm:w-4/5 lg:w-2/3 mx-auto border border-stone-500 rounded-lg
+  py-6 px-4 sm:p-10 md:p-14 lg:p-16 my-20 flex">
+    <div *ngIf="requests.length > 0" class="w-full flex flex-col gap-y-8">
+
+      <div *ngFor="let request of requests; let i = index;"
+      class="flex flex-col">
+      
+        <div class="flex justify-between h-14">
+          <!-- driver -->
+          <div class="flex gap-x-3">
+            <div class="w-14 h-14 flex-shrink-0 my-auto cursor-pointer"
+            [routerLink]="['/driver', request.driver.username]">
+              <img src="/assets/images/placeholders/taxi-driver.jpg" alt=""
+              class="rounded-full">
+            </div>
+            
+            <div class="flex flex-col justify-between my-auto text-gray-50 text-lg
+            tracking-wide text-left">
+              <div [routerLink]="['/driver', request.driver.username]"
+              class="cursor-pointer text-gray-50 font-bold">
+                {{ request.driver.name }} {{ request.driver.surname }}
+              </div>
+              <div [routerLink]="['/driver', request.driver.username]"
+              class="cursor-pointer text-light text-sm font-medium">
+                {{ request.driver.username }}
+              </div>
+            </div>
+          </div>
+    
+          <div class="hidden sm:block my-auto">
+            <button class="bg-accent-light hover:bg-accent px-2 rounded-md w-10
+            h-10 mr-2" (click)="acceptRequest(i)">
+              <fa-icon [icon]="faCheck" class="text-white"></fa-icon>
+            </button>
+            <button class="bg-light hover:bg-gray-500 px-2 rounded-md w-10 h-10
+            ml-2" (click)="rejectRequest(i)">
+              <fa-icon [icon]="faXmark" class="text-white mx-auto"></fa-icon>
+            </button>
+          </div>
+
+        </div>
+
+        <div class="flex mt-1.5 w-full text-base text-stone-400 font-medium">
+          {{ request.reason }}
+        </div>
+
+        <div class="flex justify-end sm:hidden my-auto mt-3">
+          <button class="bg-accent-light hover:bg-accent px-2 rounded-md w-10
+          h-10 mr-2" (click)="acceptRequest(i)">
+            <fa-icon [icon]="faCheck" class="text-white"></fa-icon>
+          </button>
+          <button class="bg-light hover:bg-gray-500 px-2 rounded-md w-10 h-10
+          ml-2" (click)="rejectRequest(i)">
+            <fa-icon [icon]="faXmark" class="text-white mx-auto"></fa-icon>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div *ngIf="requests.length === 0"
+    class="mx-auto text-center text-xl text-stone-500 font-bold">
+      There are no pending ride rejection requests
+    </div>
+    
+  </div>
+</div>
+

@@ -11,3 +11,9 @@ export interface Passenger {
   email?: string;
   accountType?: string;
 }
+
+export interface PassengerSimple {
+  username: string;
+  name: string;
+  surname: string;
+}

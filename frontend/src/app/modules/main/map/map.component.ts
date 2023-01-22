@@ -8,8 +8,8 @@ import { AuthenticationService } from 'src/app/core/authentication/authenticatio
 import { SimulatorService } from 'src/app/core/http/simulator/simulator.service';
 import * as moment from 'moment';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
-import { RideSimple } from 'src/app/shared/models/ride.model';
-import { Route } from 'src/app/shared/models/route.model';
+import { DriverRide, RideSimple } from 'src/app/shared/models/ride.model';
+import { DriverService } from 'src/app/core/http/user/driver.service';
 
 const service_url = "https://nominatim.openstreetmap.org/reverse?format=json";
 const API_KEY = null;
@@ -33,13 +33,26 @@ export class MapComponent implements AfterViewInit {
   private vehicleRoutes: any = {};
 
   @Input() set isMainLoaded(value: boolean) {
+    this.handlePassengerRideInProgress();
+    this.handleDriverRideInProgress();
+  }
+
+  handlePassengerRideInProgress(): void {
     const passengerRide: RideSimple | null = this.passengerService.getCurrentRide();
-    if (passengerRide) {
-      this.clearMarkers();
-      this.fillWaypoints();
-      this.setCursorStyle();
-      this.drawRideRoute(passengerRide)
-    }
+    this.handleRideInProgress(passengerRide);
+  }
+
+  handleDriverRideInProgress(): void {
+    const driverRide: DriverRide | undefined = this.driverService.getCurrentRides()?.currentRide;
+    this.handleRideInProgress(driverRide);
+  }
+
+  handleRideInProgress(ride: RideSimple | DriverRide | null | undefined): void {
+    if (!ride) return;
+    this.clearMarkers();
+    this.fillWaypoints(ride);
+    this.setCursorStyle();
+    this.drawRideRoute(ride)
   }
 
   occupiedTaxiIcon = L.icon({
@@ -52,7 +65,12 @@ export class MapComponent implements AfterViewInit {
     iconSize: [20, 20]
   })
 
-  constructor(private authenticationService: AuthenticationService, private simulatorService: SimulatorService, private passengerService: PassengerService) { }
+  constructor(
+    private authenticationService: AuthenticationService,
+    private simulatorService: SimulatorService,
+    private passengerService: PassengerService,
+    private driverService: DriverService
+    ) { }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -151,7 +169,7 @@ export class MapComponent implements AfterViewInit {
     this.waypoints = [];
   }
 
-  drawRideRoute(ride: RideSimple): void {
+  drawRideRoute(ride: RideSimple | DriverRide): void {
     // maybe no need for 'deep' copy after testing
     const r: any = {
       name: 'Route',
@@ -295,8 +313,7 @@ export class MapComponent implements AfterViewInit {
     }
   }
 
-  fillWaypoints = async () => {
-    const ride: RideSimple | null = this.passengerService.getCurrentRide();
+  fillWaypoints = async (ride: RideSimple | DriverRide) => {
     if (!ride) return;
     for (const latLng of ride.route.waypoints) {
       await this.reverseSearchLocation(latLng.lat, latLng.lng)

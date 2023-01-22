@@ -4,9 +4,6 @@ import { IconDefinition, faChevronRight, faChevronLeft, faChevronUp, faChevronDo
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
-import { SocketService } from 'src/app/core/socket/socket.service';
-import { RideSimple } from 'src/app/shared/models/ride.model';
-import { Session } from 'src/app/shared/models/session.model';
 import { VehicleType } from 'src/app/shared/models/vehicle-type.model';
 
 @Component({
@@ -79,6 +76,8 @@ export class OrderMenuComponent implements OnInit {
   orderRide(): void {
     const deviateFromRoute: boolean = Math.random() > 0.75 && this.alternativeRoute;
     const actualRoute: any = deviateFromRoute ? this.alternativeRoute : this.route;
+    const startWaypoint: any = this.waypoints[0];
+    const destinationWaypoint: any = this.waypoints[this.waypoints.length - 1];
     const orderData: any = {
       distance: Number((this.route.summary.totalDistance / 1000).toLocaleString('fullwide', {minimumFractionDigits:2, maximumFractionDigits:2})),
       babySeat: this.hasBabySeat,
@@ -93,7 +92,9 @@ export class OrderMenuComponent implements OnInit {
         waypoints: actualRoute.waypoints.map((waypoint: any) => waypoint.latLng),
         coordinates: actualRoute.coordinates
       },
-      usersToPay: this.linkedPassengers
+      usersToPay: this.linkedPassengers,
+      startAddress: this.getAddressName(startWaypoint),
+      destinationAddress: this.getAddressName(destinationWaypoint),
     };
     if (orderData.usersToPay.length > 0) {
       this.rideService.orderSplitFareRide(orderData)
@@ -129,6 +130,12 @@ export class OrderMenuComponent implements OnInit {
         }
       });
     }
+  }
+
+  getAddressName(waypoint: any): string {
+    return `${waypoint.raw.address.road ? waypoint.raw.address.road + (waypoint.raw.address.house_number ? ' ' +
+    waypoint.raw.address.house_number : '') + (waypoint.raw.address.city ? ', ' : '') : ''}${waypoint.raw.address.quarter ?
+    waypoint.raw.address.quarter + (waypoint.raw.address.city ? ', ' : '') : ''}${waypoint.raw.address.city}`;
   }
 
   calculateRidePrice(): number {

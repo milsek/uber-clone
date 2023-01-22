@@ -1,7 +1,10 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.creation.DriverCreationDTO;
+import com.example.springbackend.dto.display.DriverCurrentAndNextRideDisplayDTO;
 import com.example.springbackend.dto.display.DriverDisplayDTO;
+import com.example.springbackend.dto.display.DriverRideDisplayDTO;
+import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.dto.update.DriverUpdateDTO;
 import com.example.springbackend.service.DriverService;
@@ -45,8 +48,9 @@ public class DriverController {
 
     @PatchMapping ("/activity")
     @PreAuthorize("hasRole('DRIVER')")
-    public ResponseEntity<Boolean> getByUsername(Authentication auth) {
-        return ResponseEntity.ok(driverService.toggleActivity(auth));
+    public ResponseEntity<Void> toggleActivity(Authentication auth) {
+        driverService.toggleActivity(auth);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/update")
@@ -55,5 +59,11 @@ public class DriverController {
         photoService.updateImage(driverUpdateDTO.getProfilePicture());
         HttpStatus returnStatus = successfulUpdate ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
         return new ResponseEntity<>(successfulUpdate, returnStatus);
+    }
+
+    @GetMapping("/current-rides")
+    @PreAuthorize("hasRole('DRIVER')")
+    public ResponseEntity<DriverCurrentAndNextRideDisplayDTO> getCurrentRides(Authentication auth) {
+        return ResponseEntity.ok(driverService.getCurrentRides(auth));
     }
 }

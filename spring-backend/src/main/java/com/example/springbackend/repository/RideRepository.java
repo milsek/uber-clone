@@ -56,4 +56,8 @@ public interface RideRepository extends JpaRepository<Ride, Integer> {
             "      group by cast(ride.startTime as date) order by" +
             " cast(ride.startTime as date)")
     List<Object[]> getAllDriversMoneyReport(Date startDate, Date endDate);
+
+    @Query(value = "SELECT r FROM Ride r WHERE r.driverRejectionReason is not null AND " +
+            "r.status = com.example.springbackend.model.RideStatus.DRIVER_ARRIVING")
+    List<Ride> getRidesPendingRejection();
 }

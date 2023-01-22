@@ -2,7 +2,6 @@ package com.example.springbackend.model;
 
 import com.example.springbackend.model.helpClasses.Coordinates;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;

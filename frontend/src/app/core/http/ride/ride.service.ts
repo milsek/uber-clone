@@ -53,7 +53,7 @@ export class RideService {
     });
   }
 
-  confirmRide(rideId: number) {
+  confirmRide(rideId: number): Promise<any> {
     return axios.patch(`/api/rides/confirm`, 
     {
       rideId
@@ -65,10 +65,23 @@ export class RideService {
     });
   }
 
-  rejectRide(rideId: number) {
+  rejectRide(rideId: number): Promise<any> {
     return axios.patch(`/api/rides/reject`, 
     {
       rideId
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`
+      }
+    });
+  }
+
+  driverRejectRide(rideId: number, reason: string): Promise<any> {
+    return axios.patch(`/api/rides/driver-rejection`, 
+    {
+      rideId,
+      reason
     },
     {
       headers: {

@@ -59,46 +59,27 @@ sm:h-full select-none" id="order-menu">
     </div>
 
     <!-- driver info -->
-    <h1 class="text-2xl font-bold text-gray-50 mt-10">Your driver</h1>
-    <div class="flex flex-col mt-4">
-      <div class="flex gap-x-4 h-14">
-
-        <div class="w-14 h-14 flex-shrink-0 my-auto cursor-pointer"
-        [routerLink]="['/driver', ride.driver.username]">
-          <img src="/assets/images/placeholders/taxi-driver.jpg" alt=""
-          class="rounded-full">
-        </div>
-        
-        <div class="flex flex-col justify-between my-auto text-gray-50 text-lg tracking-wide">
-          <div [routerLink]="['/driver', ride.driver.username]" class="cursor-pointer">
-            {{ ride.driver.name }} {{ ride.driver.surname }}
+    <h1 class="text-2xl font-bold text-gray-50 mt-10">Your passengers</h1>
+    <div *ngIf="ride.passengers" class="flex flex-col mt-4 max-h-72 overflow-auto">
+      <div *ngFor="let passenger of ride.passengers">
+        <div class="flex w-full justify-between">
+          
+          <div class="flex grow my-auto text-base font-medium text-gray-50 gap-x-4">
+            <fa-icon [icon]="faUser" class="text-2xl my-auto text-accent-light"></fa-icon>
+            <div class="flex flex-col justify-between">
+              <div class="text-gray-50 text-lg font-medium">{{ passenger.name }} {{ passenger.surname }}</div>
+              <div class="text-light text-sm">{{ passenger.username }}</div>
+            </div>
           </div>
-          <span class="text-light text-base">&#9733;
-            {{ driverRating }} <span>·</span> {{ ride.driver.numberOfReviews }} ratings
-          </span>
-        </div>
 
-      </div>
-      
-      <!-- vehicle -->
-      <div class="flex flex-col gap-x-4 py-6 mt-4 border border-stone-500 rounded-xl">
-
-        <div class="flex-shrink-0 my-auto mx-auto">
-          <img [src]="vehicleImage" alt=""
-          class="h-6">
         </div>
-        
-        <div class="flex flex-col my-auto text-gray-50 text-lg tracking-wide">
-          <div class="mx-auto text-center">
-            {{ ride.driver.vehicle.make }} · {{ ride.driver.vehicle.model }} · {{ ride.driver.vehicle.colour }}
-          </div>
-          <div class="text-light text-sm font-bold tracking-wide mx-auto text-center">
-            {{ ride.driver.vehicle.licensePlateNumber }}
-          </div>
-        </div>
-
       </div>
     </div>
+    
+    <button *ngIf="ride.status === 'DRIVER_ARRIVING'" class="w-full h-16 bg-accent-light
+    active:bg-accent text-white font-medium tracking-wide mt-8" (click)="openRejectRideModal()">
+      REJECT RIDE
+    </button>
 
   </div>
 
@@ -118,6 +99,37 @@ sm:h-full select-none" id="order-menu">
     (click)="toggleOpened()">
       <fa-icon [icon]="isOpened ? faChevronDown : faChevronUp" class="text-2xl"></fa-icon>
     </div>
+  </div>
+
+  <div *ngIf="showRejectRideModal"
+  class="fixed top-0 left-0 z-30 w-full min-h-screen h-screen text-center
+    flex items-center justify-center bg-stone-500 bg-opacity-80 transition-opacity text-base font-display">
+      <div class="relative flex flex-col w-120 h-72 bg-dark rounded-xl mx-auto
+      overflow-hidden px-9 py-7"
+      (click)="clickedRejectRideModal = true">
+        <h3 class="text-xl font-medium text-gray-50">Ride rejection</h3>
+
+        <div class="flex flex-col justify-between h-full mt-4">
+          <div clase="w-full mt-2">
+            <textarea class="w-full border border-solid border-stone-500 bg-dark resize-none h-32 md:h-32
+            text text-thin text-stone-100 placeholder-stone-400 p-2 leading-tight rounded-md focus:outline-none focus:border-accent-light"
+            [(ngModel)]="rideRejectionReason" placeholder="Please enter the reason for rejecting this ride..."
+            (input)="rideRejectionErrorMessage = ''"></textarea>
+            <div class="h-1">
+              <p *ngIf="rideRejectionErrorMessage"
+                class="text-red-400 text-xs italic">
+                {{ rideRejectionErrorMessage }}
+              </p>
+            </div>
+          </div>
+
+          <button *ngIf="!rideRejectionSent" class="py-1 px-8 border border-stone-500 text-stone-400
+          hover:bg-stone-500 hover:text-stone-300 rounded-2xl" (click)="rejectRide()">
+            Reject ride
+          </button>
+
+        </div>
+      </div>
   </div>
 
 </div>

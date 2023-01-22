@@ -28,7 +28,7 @@ public class PassengerController {
 
     @GetMapping("/current-ride")
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<RideSimpleDisplayDTO> getActivity(Authentication auth) {
+    public ResponseEntity<RideSimpleDisplayDTO> getCurrentRide(Authentication auth) {
         return ResponseEntity.ok(passengerService.getCurrentRide(auth));
     }
 }

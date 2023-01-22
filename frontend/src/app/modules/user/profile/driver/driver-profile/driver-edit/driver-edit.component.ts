@@ -29,8 +29,6 @@ export class DriverEditComponent implements OnInit {
   selectedVehicleType: string = '';
   hasBabySeat: boolean = false;
   isPetFriendly: boolean = false;
-  showVehicleInfo: boolean = false;
-  showUserInfo: boolean = true;
 
   @Output() changeView = new EventEmitter<void>();
 
@@ -173,15 +171,6 @@ export class DriverEditComponent implements OnInit {
       reader.readAsDataURL(file);
       this.newFile = file;
     }
-  }
-
-  onClickUserInfo(): void {
-    this.showUserInfo = !this.showUserInfo;
-    this.showVehicleInfo = !this.showVehicleInfo;
-  }
-  onClickVehicleInfo(): void {
-    this.showVehicleInfo = !this.showVehicleInfo;
-    this.showUserInfo = !this.showUserInfo;
   }
 
   closeModal(): void {

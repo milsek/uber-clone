@@ -5,5 +5,6 @@ public enum MessageType {
     CONNECT,
     DISCONNECT,
     NOTIFICATION,
-    RIDE_UPDATE
+    RIDE_UPDATE,
+    RIDE_ERROR
 }

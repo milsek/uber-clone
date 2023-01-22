@@ -45,3 +45,10 @@ export interface DriverNewData {
   licensePlateNumber: string;
   userImage: string;
 }
+
+export interface DriverNano {
+  username: string;
+  name: string;
+  surname: string;
+  profilePicture: string;
+}

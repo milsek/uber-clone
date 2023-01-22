@@ -24,6 +24,10 @@ export class UpdateRequestsComponent implements OnInit {
   selectedRequest: number = 0;
   oldPicture = '';
   newPicture = '';
+  confirmModalTitle: string = '';
+  confirmModalDescription: string = '';
+  showConfirmModal: boolean = false;
+
   constructor(
     private authenticationService: AuthenticationService,
     private driverService: DriverService,
@@ -98,9 +102,8 @@ export class UpdateRequestsComponent implements OnInit {
       this.newData!.model,
       this.newData!.colour,
       this.newData!.licensePlateNumber
-    );
-    alert('Update approved!');
-    setTimeout(() => {
+    ).then(res => {
+      this.displayConfirmModal("Success", "Update approved.");
       this.driverService.getUpdateRequests().then((res) => {
         this.requests = res.data;
         this.newData = this.requests[0];
@@ -111,13 +114,13 @@ export class UpdateRequestsComponent implements OnInit {
             this.getPictures();
           });
       });
-    }, 20);
+    });
   }
 
   rejectUpdate(): void {
-    this.authenticationService.cancelRequest(this.newData!.username);
-    alert('Update rejected!');
-    setTimeout(() => {
+    this.authenticationService.cancelRequest(this.newData!.username)
+    .then(res => {
+      this.displayConfirmModal("Success", "Update rejected.");
       this.driverService.getUpdateRequests().then((res) => {
         this.requests = res.data;
         this.newData = this.requests[0];
@@ -128,6 +131,18 @@ export class UpdateRequestsComponent implements OnInit {
             this.getPictures();
           });
       });
-    }, 20);
+    })
+  }
+
+  displayConfirmModal(title: string, description: string): void {
+    this.confirmModalTitle = title;
+    this.confirmModalDescription = description;
+    this.showConfirmModal = true;
+  }
+
+  closeConfirmModal(): void {
+    this.confirmModalTitle = '';
+    this.confirmModalDescription = '';
+    this.showConfirmModal = false;
   }
 }

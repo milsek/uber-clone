@@ -1,23 +1,23 @@
 package com.example.springbackend.service;
 
 import com.example.springbackend.dto.creation.DriverCreationDTO;
+import com.example.springbackend.dto.display.DriverCurrentAndNextRideDisplayDTO;
 import com.example.springbackend.dto.display.DriverDisplayDTO;
+import com.example.springbackend.dto.display.DriverRideDisplayDTO;
+import com.example.springbackend.dto.display.PassengerDisplayDTO;
 import com.example.springbackend.exception.UserAlreadyExistsException;
-import com.example.springbackend.model.AccountStatus;
+import com.example.springbackend.model.*;
 import com.example.springbackend.dto.update.DriverUpdateDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Vehicle;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;
-import com.example.springbackend.repository.DriverRepository;
-import com.example.springbackend.repository.VehicleRepository;
-import com.example.springbackend.repository.VehicleTypeRepository;
+import com.example.springbackend.repository.*;
 import com.example.springbackend.util.TokenUtils;
 import com.example.springbackend.websocket.MessageType;
 import com.example.springbackend.websocket.WSMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,13 +27,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.Random;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.List;
 @Service
 public class DriverService {
     @Autowired
@@ -54,6 +54,12 @@ public class DriverService {
     private TokenUtils tokenUtils;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private RideService rideService;
+    @Autowired
+    private PassengerRideRepository passengerRideRepository;
+    @Autowired
+    private RideRepository rideRepository;
     @Autowired
     private PreupdateService preupdateService;
 
@@ -119,7 +125,7 @@ public class DriverService {
                         .type(MessageType.NOTIFICATION)
                         .sender("server")
                         .receiver(driver.getUsername())
-                        .content("Your 8 hours has expired")
+                        .content("You have completed 8 hours of work time today.")
                         .sentDateTime(LocalDateTime.now())
                         .build();
                 driver.setActiveMinutesToday(driver.getActiveMinutesToday() + Duration.between(driver.getLastSetActive(), LocalDateTime.now()).toMinutes());
@@ -208,4 +214,28 @@ public class DriverService {
         return false;
     }
 
+    public DriverCurrentAndNextRideDisplayDTO getCurrentRides(Authentication auth) {
+        Driver driver = (Driver) auth.getPrincipal();
+        DriverCurrentAndNextRideDisplayDTO dto = new DriverCurrentAndNextRideDisplayDTO();
+        if (driver.getCurrentRide() != null)
+            dto.setCurrentRide(createDriverRideDtoFromRide(
+                rideRepository.findById(driver.getCurrentRide().getId()).orElse(null)));
+        if (driver.getNextRide() != null)
+            dto.setNextRide(createDriverRideDtoFromRide(
+                    rideRepository.findById(driver.getNextRide().getId()).orElse(null)));
+        return dto;
+    }
+
+    private DriverRideDisplayDTO createDriverRideDtoFromRide(Ride ride) {
+        if (ride == null) return null;
+        DriverRideDisplayDTO dto = modelMapper.map(ride, DriverRideDisplayDTO.class);
+        List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
+        dto.setPassengers(passengerRides.stream()
+                .map(pr -> modelMapper.map(pr.getPassenger(), PassengerDisplayDTO.class)).toList());
+        if (ride.getExpectedRoute() != null)
+            dto.setRoute(rideService.createRouteDisplayDtoFromRoute(ride.getExpectedRoute()));
+        else
+            dto.setRoute(rideService.createRouteDisplayDtoFromRoute(ride.getActualRoute()));
+        return dto;
+    }
 }

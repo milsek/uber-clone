@@ -14,6 +14,10 @@ public class BasicRideCreationDTO {
     private boolean babySeat;
     private boolean petFriendly;
     @NotBlank
+    private String startAddress;
+    @NotBlank
+    private String destinationAddress;
+    @NotBlank
     private String vehicleType;
     @NotNull
     private RouteCreationDTO actualRoute;

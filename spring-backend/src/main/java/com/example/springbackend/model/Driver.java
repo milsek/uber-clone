@@ -1,5 +1,6 @@
 package com.example.springbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,8 +29,10 @@ public class Driver extends Member{
     Vehicle vehicle;
 
     @OneToOne
+    @JsonIgnoreProperties({"driver"})
     Ride currentRide;
 
     @OneToOne
+    @JsonIgnoreProperties({"driver"})
     Ride nextRide;
 }

@@ -22,7 +22,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.Optional;
 
 @Service
@@ -52,6 +50,8 @@ public class RideService {
     RouteRepository routeRepository;
     @Autowired
     AdminRepository adminRepository;
+    @Autowired
+    VehicleRepository vehicleRepository;
     @Autowired
     ModelMapper modelMapper;
     @Autowired
@@ -91,7 +91,7 @@ public class RideService {
                 sendRefreshMessage(username);
         });
 
-        executorService.schedule(() -> processSplitFareRide(dto, fare, ride), 30, TimeUnit.SECONDS);
+        executorService.schedule(() -> processSplitFareRide(dto, ride), 30, TimeUnit.SECONDS);
         return true;
     }
 
@@ -116,31 +116,37 @@ public class RideService {
         passengerRideRepository.save(passengerRide);
     }
 
-    public void processSplitFareRide(SplitFareRideCreationDTO dto, int fare, Ride ride) {
+    public void processSplitFareRide(SplitFareRideCreationDTO dto, Ride ride) {
         Ride newRide = rideRepository.findById(ride.getId()).get();
-        if (!newRide.getPassengersConfirmed())
+        if (newRide.getStatus() != RideStatus.CANCELLED && !newRide.getPassengersConfirmed()) {
             for (String username : dto.getUsersToPay()) {
-                PassengerRide passengerRide = passengerRideRepository.findByRideAndPassengerUsername(ride, username).get();
-                Passenger passenger = passengerRide.getPassenger();
-                if (passengerRide.isAgreed()) {
-                    passenger.setTokenBalance(passenger.getTokenBalance() + fare);
-                    passengerRepository.save(passenger);
-                }
+                sendMessageToPassenger(username,
+                        "The ride is cancelled because one of the passengers did not respond to the invitation.",
+                        MessageType.RIDE_ERROR);
             }
+            List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
+            refundPassengers(passengerRides);
+            ride.setStatus(RideStatus.CANCELLED);
+            rideRepository.save(ride);
+        }
     }
 
     public Object confirmRide(RideIdDTO dto, Authentication auth) {
         Ride ride = rideRepository.findById(dto.getRideId()).get();
         Passenger passenger = (Passenger) auth.getPrincipal();
-        List<String> usersToPay = passengerRideRepository.getPassengersForRide(dto.getRideId());
+        List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
+        List<String> usersToPay = passengerRides.stream().map(pr -> pr.getPassenger().getUsername()).toList();
 
         PassengerRide currentPR = passengerRideRepository.findByRideAndPassengerUsername(ride, passenger.getUsername()).get();
         if (passenger.getTokenBalance() < currentPR.getFare()) {
             for (String username : usersToPay) {
-                sendErrorMessage(username, "Ride is cancelled due to insufficient funds.");
+                sendMessageToPassenger(username,
+                        "Ride is cancelled due to insufficient funds.",
+                        MessageType.RIDE_ERROR);
             }
-            ride.setRejected(true);
+            ride.setStatus(RideStatus.CANCELLED);
             rideRepository.save(ride);
+            refundPassengers(passengerRides);
             throw new InsufficientFundsException();
         }
         currentPR.setAgreed(true);
@@ -166,13 +172,14 @@ public class RideService {
 
             if (driver == null) {
                 for (String username : usersToPay) {
-                    sendErrorMessage(username, "Adequate driver was not found.");
+                    sendMessageToPassenger(username, "Adequate driver was not found.", MessageType.RIDE_ERROR);
                 }
-                ride.setRejected(true);
+                ride.setStatus(RideStatus.CANCELLED);
                 rideRepository.save(ride);
+                refundPassengers(passengerRides);
                 throw new AdequateDriverNotFoundException();
             } else {
-                //TODO: send notifications to driver
+                sendRefreshMessage(driver.getUsername());
                 for (String username : usersToPay) {
                     sendRefreshMessage(username);
                 }
@@ -182,6 +189,8 @@ public class RideService {
                     driver.setNextRide(ride);
                 }
                 driverRepository.save(driver);
+                ride.setStatus(RideStatus.DRIVER_ARRIVING);
+                rideRepository.save(ride);
             }
         }
         return null;
@@ -191,23 +200,92 @@ public class RideService {
         Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
         Passenger passenger = (Passenger) auth.getPrincipal();
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
-        PassengerRide currentPassengerRide = passengerRideRepository.findByRideAndPassengerUsername(ride, passenger.getUsername()).orElseThrow();
+        PassengerRide currentPassengerRide = passengerRideRepository
+                .findByRideAndPassengerUsername(ride, passenger.getUsername()).orElseThrow();
         if (!ride.getPassengersConfirmed() && !currentPassengerRide.isAgreed()) {
             for (PassengerRide passengerRide : passengerRides) {
                 Passenger ridePassenger = passengerRide.getPassenger();
                 if (!ridePassenger.getUsername().equals(passenger.getUsername()))
-                    sendRefreshMessage(ridePassenger.getUsername());
-                if (passengerRide.isAgreed()) {
-                    ridePassenger.setTokenBalance(ridePassenger.getTokenBalance() + passengerRide.getFare());
-                    passengerRepository.save(ridePassenger);
-                }
+                    sendMessageToPassenger(ridePassenger.getUsername(),
+                            "A passenger has rejected the ride.",
+                            MessageType.RIDE_ERROR);
             }
-            ride.setRejected(true);
+            refundPassengers(passengerRides);
+            ride.setStatus(RideStatus.CANCELLED);
             rideRepository.save(ride);
-
             return true;
         }
         return false;
+    }
+
+    private void refundPassengers(List<PassengerRide> passengerRides) {
+        for (PassengerRide passengerRide : passengerRides) {
+            Passenger ridePassenger = passengerRide.getPassenger();
+            if (passengerRide.isAgreed()) {
+                ridePassenger.setTokenBalance(ridePassenger.getTokenBalance() + passengerRide.getFare());
+                passengerRepository.save(ridePassenger);
+            }
+        }
+    }
+
+    public Boolean driverRejectRide(DriverRideRejectionCreationDTO dto, Authentication auth) {
+        Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
+        ride.setDriverRejectionReason(dto.getReason());
+        rideRepository.save(ride);
+        return true;
+    }
+
+    public List<DriverRideRejectionDisplayDTO> getDriverRideRejectionRequests(Authentication auth) {
+        List<Ride> ridesPendingRejection = rideRepository.getRidesPendingRejection();
+        return ridesPendingRejection.stream().map(r -> modelMapper.map(r, DriverRideRejectionDisplayDTO.class)).toList();
+    }
+
+    public Boolean acceptDriverRideRejection(DriverRideRejectionVerdictCreationDTO dto, Authentication auth) {
+        Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
+
+        if (!dto.isAccepted()) {
+            ride.setDriverRejectionReason(null);
+            rideRepository.save(ride);
+            sendMessageToDriver(ride.getDriver().getUsername(),
+                    "Your rejection reason was deemed invalid.",
+                    MessageType.RIDE_ERROR);
+            return true;
+        }
+
+        ride.setStatus(RideStatus.CANCELLED);
+        rideRepository.save(ride);
+
+        Driver driver = ride.getDriver();
+        driver.setCurrentRide(driver.getNextRide());
+        driver.setNextRide(null);
+        driverRepository.save(driver);
+
+        Vehicle vehicle = driver.getVehicle();
+        vehicle.setCurrentCoordinates(vehicle.getNextCoordinates());
+        if (driver.getCurrentRide() != null) {
+            List<Coordinates> waypoints = driver.getCurrentRide().getActualRoute().getWaypoints();
+            vehicle.setNextCoordinates(waypoints.get(0));
+        }
+        vehicleRepository.save(vehicle);
+
+        List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
+
+        for (PassengerRide passengerRide : passengerRides) {
+            Passenger ridePassenger = passengerRide.getPassenger();
+            sendMessageToPassenger(ridePassenger.getUsername(),
+                    "The driver rejected the ride.",
+                    MessageType.RIDE_ERROR);
+            if (passengerRide.isAgreed()) {
+                ridePassenger.setTokenBalance(ridePassenger.getTokenBalance() + passengerRide.getFare());
+                passengerRepository.save(ridePassenger);
+            }
+        }
+
+        sendMessageToDriver(ride.getDriver().getUsername(),
+                "Your rejection is accepted. The ride will be cancelled.",
+                MessageType.RIDE_UPDATE);
+
+        return true;
     }
 
     public RideSimpleDisplayDTO orderBasicRide(BasicRideCreationDTO dto, Authentication auth) {
@@ -227,10 +305,11 @@ public class RideService {
         // successful
         passenger.setTokenBalance(passenger.getTokenBalance() - price);
         passengerRepository.save(passenger);
-        Ride ride = createRide(dto, price, driver);
+        Ride ride = createBasicRide(dto, price, driver);
         PassengerRide passengerRide = createPassengerRide(passenger, ride);
 
-        //TODO: send notifications
+        sendRefreshMessage(driver.getUsername()
+        );
         RideSimpleDisplayDTO rideDisplayDTO = createBasicRideSimpleDisplayDTO(passengerRide, driver);
 
         return rideDisplayDTO;
@@ -277,7 +356,7 @@ public class RideService {
         return passengerRide;
     }
 
-    private Ride createRide(BasicRideCreationDTO dto, int price, Driver driver) {
+    private Ride createBasicRide(BasicRideCreationDTO dto, int price, Driver driver) {
         Ride ride = new Ride();
         Route actualRoute = createRouteFromDto(dto.getActualRoute());
         routeRepository.save(actualRoute);
@@ -289,8 +368,8 @@ public class RideService {
         ride.setDistance(dto.getDistance());
         ride.setActualRoute(actualRoute);
         ride.setExpectedRoute(expectedRoute);
-        ride.setDriverCancelled("");
-        ride.setRejected(false);
+        ride.setDriverRejectionReason(null);
+        ride.setStatus(RideStatus.DRIVER_ARRIVING);
         ride.setStartTime(null);
         ride.setEndTime(null);
         ride.setExpectedTime(dto.getExpectedTime());
@@ -323,8 +402,8 @@ public class RideService {
         ride.setDistance(dto.getDistance());
         ride.setActualRoute(actualRoute);
         ride.setExpectedRoute(expectedRoute);
-        ride.setDriverCancelled("");
-        ride.setRejected(false);
+        ride.setDriverRejectionReason(null);
+        ride.setStatus(RideStatus.PENDING_CONFIRMATION);
         ride.setStartTime(null);
         ride.setEndTime(null);
         ride.setExpectedTime(dto.getExpectedTime());
@@ -363,7 +442,7 @@ public class RideService {
         return route;
     }
 
-    private RouteDisplayDTO createRouteDisplayDtoFromRoute(Route route) {
+    public RouteDisplayDTO createRouteDisplayDtoFromRoute(Route route) {
         RouteDisplayDTO dto = new RouteDisplayDTO();
         dto.setWaypoints(route.getWaypoints().stream().map(latLng ->
                 modelMapper.map(latLng, CoordinatesDisplayDTO.class)).toList());
@@ -508,15 +587,26 @@ public class RideService {
         return reportDisplayDTO;
     }
 
-    private void sendErrorMessage(String receiverUsername, String content) {
+    private void sendMessageToPassenger(String receiverUsername, String content, MessageType messageType) {
         WSMessage message = WSMessage.builder()
-                .type(MessageType.RIDE_UPDATE)
+                .type(messageType)
                 .sender("server")
                 .receiver(receiverUsername)
                 .content(content)
                 .sentDateTime(LocalDateTime.now())
                 .build();
-        this.template.convertAndSendToUser(receiverUsername, "/private/ride/error", message);
+        this.template.convertAndSendToUser(receiverUsername, "/private/passenger/ride", message);
+    }
+
+    private void sendMessageToDriver(String receiverUsername, String content, MessageType messageType) {
+        WSMessage message = WSMessage.builder()
+                .type(messageType)
+                .sender("server")
+                .receiver(receiverUsername)
+                .content(content)
+                .sentDateTime(LocalDateTime.now())
+                .build();
+        this.template.convertAndSendToUser(receiverUsername, "/private/driver/ride", message);
     }
 
     private void sendRefreshMessage(String receiverUsername) {
@@ -527,6 +617,6 @@ public class RideService {
                 .content("REFRESH")
                 .sentDateTime(LocalDateTime.now())
                 .build();
-        this.template.convertAndSendToUser(receiverUsername, "/private/ride", message);
+        this.template.convertAndSendToUser(receiverUsername, "/private/ride/refresh", message);
     }
 }

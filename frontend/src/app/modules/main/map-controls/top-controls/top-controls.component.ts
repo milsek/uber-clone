@@ -7,6 +7,7 @@ import {
   faPowerOff,
   faUserPlus,
   faUserEdit,
+  faCircleXmark
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { DriverService } from 'src/app/core/http/user/driver.service';
@@ -26,6 +27,7 @@ export class TopControlsComponent implements OnInit {
   faPowerOff: IconDefinition = faPowerOff;
   faUserPlus: IconDefinition = faUserPlus;
   faUserEdit: IconDefinition = faUserEdit;
+  faCircleXmark: IconDefinition = faCircleXmark;
 
   showActionsDropdown: boolean = false;
   clickedActionsDropdown: boolean = false;

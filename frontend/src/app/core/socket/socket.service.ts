@@ -28,8 +28,8 @@ export class SocketService {
 
   subscribeToRideUpdates(session: Session): void {
     let addr: string = '';
-    if (session.accountType === 'passenger') {
-      addr = `/user/${ session.username }/private/ride`;
+    if (session.accountType === 'passenger' || session.accountType === 'driver') {
+      addr = `/user/${ session.username }/private/ride/refresh`;
     }
     this.stompClient.subscribe(addr, (message: any) => {
       let messageData = JSON.parse(message.body);

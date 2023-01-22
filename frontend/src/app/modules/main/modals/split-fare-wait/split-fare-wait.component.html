@@ -1,4 +1,4 @@
-<div *ngIf="showSelf" class="fixed top-0 left-0 z-30 w-screen min-w-screen min-h-screen h-screen text-center
+<div class="fixed top-0 left-0 z-30 w-screen min-w-screen min-h-screen h-screen text-center
   flex items-center justify-center bg-stone-500 bg-opacity-80 transition-opacity text-base font-display">
   <div class="relative flex flex-col w-96 bg-dark rounded-xl mx-auto
   overflow-hidden px-9 py-8">
@@ -22,12 +22,4 @@
     </div>
 
   </div>
-</div>
-
-<div *ngIf="showErrorModal">
-  <app-error-modal
-    [title]="errorTitle"
-    [description]="errorMessage"
-    (onClose)="closeErrorModal()"
-  ></app-error-modal>
 </div>

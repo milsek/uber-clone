@@ -228,24 +228,11 @@ export class AuthenticationService {
       colour: colour,
       licensePlateNumber: licensePlateNumber,
     };
-    const successfulLogin = axios
-      .post('http://localhost:8080/api/drivers/update', formData)
-      .then((resp) => {
-        if (resp.data) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
-    return successfulLogin;
+    return axios.post('http://localhost:8080/api/drivers/update', formData);
   }
 
   cancelRequest(username: string) {
-    axios
+    return axios
       .post(
         `http://localhost:8080/api/preupdate/cancel`,
         {
@@ -256,17 +243,6 @@ export class AuthenticationService {
             Authorization: `Bearer ${this.getToken()}`,
           },
         }
-      )
-      .then((resp) => {
-        if (resp.data) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
+      );
   }
 }

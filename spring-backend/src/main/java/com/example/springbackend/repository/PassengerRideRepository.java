@@ -16,8 +16,9 @@ import java.util.Optional;
 @Repository
 public interface PassengerRideRepository extends JpaRepository<PassengerRide, Integer> {
     @Query("SELECT pr FROM PassengerRide pr WHERE " +
-            "pr.passenger = :passenger AND pr.ride.rejected = false " +
-            "AND pr.ride.endTime is null")
+            "pr.passenger = :passenger AND " +
+            "pr.ride.status != com.example.springbackend.model.RideStatus.CANCELLED AND " +
+            "pr.ride.status != com.example.springbackend.model.RideStatus.COMPLETED")
     Optional<PassengerRide> getCurrentPassengerRide(@Param("passenger") Passenger passenger);
 
     Optional<PassengerRide> findByRideAndPassengerUsername(Ride ride, String username);

@@ -11,6 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PassengerRideDetailsComponent } from './passenger-ride-details/passenger-ride-details.component';
 import { SplitFareWaitComponent } from './modals/split-fare-wait/split-fare-wait.component';
 import { SharedModule } from 'src/app/shared/module/shared/shared.module';
+import { DriverRideDetailsComponent } from './driver-ride-details/driver-ride-details.component';
 
 
 
@@ -22,7 +23,8 @@ import { SharedModule } from 'src/app/shared/module/shared/shared.module';
     MainComponent,
     OrderMenuComponent,
     PassengerRideDetailsComponent,
-    SplitFareWaitComponent
+    SplitFareWaitComponent,
+    DriverRideDetailsComponent
   ],
   imports: [
     CommonModule,

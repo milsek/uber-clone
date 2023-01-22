@@ -2,7 +2,6 @@ package com.example.springbackend.model;
 
 import lombok.Data;
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,8 +14,10 @@ public class Ride {
 
     private Double distance;
     private int expectedTime;
-    private String driverCancelled;
-    private Boolean rejected;
+    private String driverRejectionReason;
+    private RideStatus status;
+    private String startAddress;
+    private String destinationAddress;
     private Boolean passengersConfirmed;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
