@@ -1,0 +1,9 @@
+.time-bar{
+  animation: progress 4.5s linear forwards;
+}
+
+@keyframes progress {
+  100%{
+      right: 100%;
+  }
+}

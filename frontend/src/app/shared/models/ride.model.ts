@@ -13,6 +13,9 @@ export interface RideSimple {
   allConfirmed: boolean,
   passengerConfirmed: boolean,
   status: string,
+  startAddress: string,
+  endAddress: string,
+  delayInMinutes: number
 }
 
 export interface DriverRide {

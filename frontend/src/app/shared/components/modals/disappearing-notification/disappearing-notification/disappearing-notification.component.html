@@ -1,0 +1,26 @@
+<div class="fixed top-24 left-0 z-30 w-full flex justify-center
+ transition-opacity text-base font-display">
+  <div class="relative block w-80 bg-dark rounded-xl mx-auto
+  overflow-hidden px-4 py-4 select-none">
+
+    <div class="flex gap-x-4">
+      <div class="flex w-8 shrink-0 grow-0">
+        <fa-icon [icon]="faBell"
+        class="text-accent-light text-xl mx-auto my-auto"></fa-icon>
+      </div>
+
+      <div class="flex flex-col">
+        <h3 class="text-base font-medium text-gray-50 leading-5">
+          {{ title }}
+          <br>
+          <span class="text-sm text-stone-400">{{ description }}</span>
+        </h3>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-0 right-0 h-1 w-full bg-accent-light time-bar"
+    style="--duration: 5;">
+    </div>
+
+  </div>
+</div>

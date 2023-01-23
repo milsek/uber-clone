@@ -25,6 +25,9 @@ public class Ride {
     private Boolean driverInconsistency;
     private int price;
     private String vehicleType;
+    private boolean babySeatRequested;
+    private boolean petFriendlyRequested;
+    private int delayInMinutes;
 
     @ManyToOne
     @JoinColumn

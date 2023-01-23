@@ -4,7 +4,9 @@ sm:h-full select-none" id="order-menu">
   <div *ngIf="isOpened && ride" class="sm:static flex flex-col rounded-t-3xl sm:rounded-none
   w-screen h-140 sm:h-auto sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
     <h1 class="text-3xl font-bold text-gray-50 mt-4 sm:mt-0">Current ride</h1>
-    <div class="tracking-wide uppercase text-light font-medium rounded-2xl">{{ ride.status.replace('_', ' ') }}</div>
+    <div class="tracking-wide uppercase text-light font-medium rounded-2xl">
+      {{ ride.status.replace('_', ' ') }} {{ ride.status === 'RESERVED' && ride.delayInMinutes > 0 ? '[' + reservationTime + "]" : ''}}
+    </div>
 
     <div *ngIf="waypoints" class="flex flex-col shrink-0 gap-y-3 mt-6 max-h-72 overflow-auto">
       <div *ngFor="let waypoint of waypoints; let i=index;">
@@ -59,8 +61,8 @@ sm:h-full select-none" id="order-menu">
     </div>
 
     <!-- driver info -->
-    <h1 class="text-2xl font-bold text-gray-50 mt-10">Your driver</h1>
-    <div class="flex flex-col mt-4">
+    <h1 *ngIf="ride.driver" class="text-2xl font-bold text-gray-50 mt-10">Your driver</h1>
+    <div *ngIf="ride.driver" class="flex flex-col mt-4">
       <div class="flex gap-x-4 h-14">
 
         <div class="w-14 h-14 flex-shrink-0 my-auto cursor-pointer"

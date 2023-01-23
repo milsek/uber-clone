@@ -1,6 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { IconDefinition, faChevronRight, faChevronLeft, faChevronUp, faChevronDown, faCircle, faFlagCheckered, faStop, faPlus, faXmark, faStopwatch, faRoute, faPaw, faBabyCarriage, faHandHoldingUsd, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faChevronRight, faChevronLeft, faChevronUp, faChevronDown,
+  faCircle, faFlagCheckered, faStop, faPlus, faXmark, faStopwatch, faRoute, faPaw, 
+  faBabyCarriage, faHandHoldingUsd, faEnvelope, faStopwatch20 } from '@fortawesome/free-solid-svg-icons';
+import * as moment from 'moment';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
@@ -33,6 +36,7 @@ export class OrderMenuComponent implements OnInit {
   faPaw: IconDefinition = faPaw;
   faEnvelope: IconDefinition = faEnvelope;
   faHandHoldingUsd: IconDefinition = faHandHoldingUsd;
+  faStopwatch20: IconDefinition = faStopwatch20;
 
   accountType: string = this.authenticationService.getAccountType();
   isOpened: boolean = false;
@@ -46,6 +50,10 @@ export class OrderMenuComponent implements OnInit {
       Validators.pattern(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
     ]),
   });
+
+  expandReservations: boolean = false;
+  delayInHours: number = 0;
+  delayInMinutes: number = 0;
 
   coupeImg: string = 'assets/icons/car-coupe.png';
   minivanImg: string = 'assets/icons/car-minivan-gray.png';
@@ -95,6 +103,7 @@ export class OrderMenuComponent implements OnInit {
       usersToPay: this.linkedPassengers,
       startAddress: this.getAddressName(startWaypoint),
       destinationAddress: this.getAddressName(destinationWaypoint),
+      delayInMinutes: this.totalDelayInMinutes
     };
     if (orderData.usersToPay.length > 0) {
       this.rideService.orderSplitFareRide(orderData)
@@ -229,5 +238,58 @@ export class OrderMenuComponent implements OnInit {
     this.showErrorModal = false;
     this.errorMessage = '';
     this.errorTitle = '';
+  }
+  
+  get reservationTime(): string {
+    if (this.expandReservations && this.totalDelayInMinutes > 0) {
+      const now: moment.Moment = moment();
+      now.add(this.totalDelayInMinutes, 'minutes')
+      return now.format('HH:mm');
+    }
+    return '';
+  }
+
+  get totalDelayInMinutes(): number {
+    return 60 * this.delayInHours + this.delayInMinutes;
+  }
+
+  @ViewChild('hourdelayinput') hourDelayInput!: ElementRef;
+  @ViewChild('minutedelayinput') minuteDelayInput!: ElementRef;
+
+  get delayInHoursFormatted(): number {
+    return this.delayInHours;
+  }
+
+  set delayInHoursFormatted(value: number) {
+    if (!value) {
+      this.delayInHours = 0;
+    } else if (value < 0) {
+      this.delayInHours = 0;
+    } else if (value >= 5) {
+      this.delayInHours = 5;
+      this.delayInMinutes = 0;
+    } else {
+      this.delayInHours = value;
+    }
+    this.hourDelayInput.nativeElement.value = this.delayInHours;
+  }
+
+  get delayInMinutesFormatted(): number {
+    return this.delayInMinutes;
+  }
+
+  set delayInMinutesFormatted(value: number) {
+    if (!value) {
+      this.delayInMinutes = 0;
+    } else if (value < 0) {
+      this.delayInMinutes = 0;
+    } else if (value > 59) {
+      this.delayInMinutes = 59;
+    } else if (this.delayInHours >= 5) {
+      this.delayInMinutes = 0;
+    } else {
+      this.delayInMinutes = value;
+    }
+    this.minuteDelayInput.nativeElement.value = this.delayInMinutes;
   }
 }

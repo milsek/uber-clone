@@ -125,7 +125,7 @@ sm:h-full select-none" id="order-menu">
       </div>
 
       <!-- split fare -->
-      <div *ngIf="selectedVehicleType" class="mt-10">
+      <div *ngIf="selectedVehicleType && accountType === 'passenger'" class="mt-10">
 
         <h3 *ngIf="expandSplitFare"  class="text-xl font-bold text-gray-50 mt-4 sm:mt-0">Linked passengers</h3>
 
@@ -187,13 +187,59 @@ sm:h-full select-none" id="order-menu">
         <button *ngIf="accountType === 'passenger'" type="submit" class="w-full h-16 bg-accent-light
         active:bg-accent text-white font-medium tracking-wide mt-10" (click)="orderRide()">
           ORDER RIDE {{linkedPassengers.length > 0 ? 'WITH ' + linkedPassengers.length + ' OTHER PASSENGER'
-          + (linkedPassengers.length === 1 ? '' : 'S') : ''}}
+          + (linkedPassengers.length === 1 ? '' : 'S') : ''}} {{ totalDelayInMinutes > 0 ? 'AT ' + reservationTime : ''}}
         </button>
         <div *ngIf="accountType === 'anonymous'" class="text-light text-center mt-6">
           You must
           <span class="text-accent-light cursor-pointer font-bold"><a routerLink="/login">Log In</a></span>
           before ordering a ride
         </div>
+      </div>
+
+      <!-- reservations -->
+      <div *ngIf="selectedVehicleType && accountType === 'passenger'" class="mt-4">
+
+        <div *ngIf="!expandReservations" class="text-sm italic text-light hover:text-accent-light
+        cursor-pointer text-center" (click)="expandReservations = true">
+          <fa-icon [icon]="faStopwatch20"></fa-icon>
+          <span class="ml-2">Order in advance</span>
+        </div>
+        
+
+        <div *ngIf="expandReservations">
+          <div class="text-base italic text-light text-left">
+            I want the ride to start after:
+          </div>
+
+          <div class="flex justify-start gap-x-2">
+
+            <div class="flex gap-x-2">
+              <input class="appearance-none block w-16 text-white tracking-wide
+              placeholder-stone-400 caret-light border-b border-light focus:border-accent-light
+              bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+              [(ngModel)]="delayInHoursFormatted" #hourdelayinput
+              id="delay-ride-hours" type="number" placeholder="h">
+              <label class="flex flex-col justify-end tracking-wide text-light text-sm font-bold mb-1 text-left"
+              for="delay-ride-hours">
+                hours and
+              </label>
+            </div>
+
+            <div class="flex gap-x-2">
+              <input class="appearance-none block w-16 text-white tracking-wide
+              placeholder-stone-400 caret-light border-b border-light focus:border-accent-light
+              bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+              [(ngModel)]="delayInMinutesFormatted" #minutedelayinput
+              id="delay-ride-minutes" type="number" placeholder="min">
+              <label class="flex flex-col justify-end tracking-wide text-light text-sm font-bold mb-1 text-left"
+              for="delay-ride-minutes">
+                minutes.
+              </label>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
     

@@ -59,6 +59,14 @@ public class ControllerAdvisor {
                 "Not all linked passengers are distinct.");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ReservationTooSoonException.class)
+    public ExceptionResponseBody handleReservationTooSoonException(ReservationTooSoonException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                "Reservation must be made at least 20 minutes in advance.");
+    }
+
     @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
     @ExceptionHandler(InsufficientFundsException.class)
     public ExceptionResponseBody handleInsufficientFundsException(InsufficientFundsException ex) {
@@ -73,6 +81,14 @@ public class ControllerAdvisor {
         return new ExceptionResponseBody(
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 "Adequate driver not found.");
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(PassengerAlreadyHasAnActiveRideException.class)
+    public ExceptionResponseBody handlePassengerAlreadyHasActiveRideException(PassengerAlreadyHasAnActiveRideException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Passenger already has an active ride.");
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)

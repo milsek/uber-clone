@@ -23,12 +23,16 @@ export class MainComponent implements OnInit {
   errorTitle: string = ''
   errorMessage: string = '';
 
+  showDisappearingNotification: boolean = false;
+  disappearingNotificationTitle: string = '';
+  disappearingNotificationMessage: string = '';
+
   constructor(
     private driverService: DriverService,
     private passengerService: PassengerService, 
     private authenticationService: AuthenticationService,
     private socketService: SocketService
-    ) { }
+    ) {}
 
   async ngOnInit(): Promise<void> {
     if (this.authenticationService.getAccountType() === 'driver') {
@@ -36,12 +40,33 @@ export class MainComponent implements OnInit {
       await this.driverService.fetchRides();
       this.subscribeDriverToRideMessages();
       this.subscribeDriverToOvertimeMessage();
+      this.subscribeToDisappearingMessages();
     }
     if (this.authenticationService.getAccountType() === 'passenger') {
       await this.passengerService.fetchCurrentRide();
       this.subscribePassengerToRideMessages();
+      this.subscribeToDisappearingMessages();
     }
     this.isMainLoaded = true;
+  }
+
+  subscribeToDisappearingMessages() {
+    const session: Session | null = this.authenticationService.getSession();
+    if (session) {
+      this.socketService.stompClient.subscribe(`/user/${ session.username }/private/ride/disappearing`, (message: any) => {
+        let messageData = JSON.parse(message.body);
+        if (messageData.type === 'DISAPPEARING') {
+          this.showDisappearingNotification = true;
+          this.disappearingNotificationTitle = 'Heads-Up!';
+          this.disappearingNotificationMessage = messageData.content;
+          setTimeout(() => {
+            this.showDisappearingNotification = false;
+            this.disappearingNotificationTitle = '';
+            this.disappearingNotificationMessage = '';
+          }, 4625);
+        }
+      });
+    }
   }
   
   subscribePassengerToRideMessages() {

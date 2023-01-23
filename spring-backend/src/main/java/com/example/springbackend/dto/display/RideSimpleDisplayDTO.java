@@ -16,4 +16,7 @@ public class RideSimpleDisplayDTO {
     private boolean allConfirmed;
     private boolean passengerConfirmed;
     private String status;
+    private String startAddress;
+    private String destinationAddress;
+    private int delayInMinutes;
 }

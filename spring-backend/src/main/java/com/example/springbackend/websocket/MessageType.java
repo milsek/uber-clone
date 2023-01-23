@@ -6,5 +6,6 @@ public enum MessageType {
     DISCONNECT,
     NOTIFICATION,
     RIDE_UPDATE,
-    RIDE_ERROR
+    RIDE_ERROR,
+    DISAPPEARING
 }

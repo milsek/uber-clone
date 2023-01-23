@@ -21,6 +21,12 @@ public interface PassengerRideRepository extends JpaRepository<PassengerRide, In
             "pr.ride.status != com.example.springbackend.model.RideStatus.COMPLETED")
     Optional<PassengerRide> getCurrentPassengerRide(@Param("passenger") Passenger passenger);
 
+    @Query("SELECT pr FROM PassengerRide pr WHERE " +
+            "pr.passenger.username in :usernames AND " +
+            "pr.ride.status != com.example.springbackend.model.RideStatus.CANCELLED AND " +
+            "pr.ride.status != com.example.springbackend.model.RideStatus.COMPLETED")
+    List<PassengerRide> getCurrentPassengerRidesByUsername(@Param("usernames") List<String> usernames);
+
     Optional<PassengerRide> findByRideAndPassengerUsername(Ride ride, String username);
     Optional<PassengerRide> findByRideIdAndPassengerUsername(Integer rideId, String username);
     List<PassengerRide> findByRideId(Integer rideId);

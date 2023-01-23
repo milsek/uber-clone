@@ -26,7 +26,7 @@
   </div>
 
   <div *ngIf="mapComponent && accountType === 'passenger' && currentRide">
-    <div *ngIf="currentRide.allConfirmed && currentRide.driver" class="absolute h-full z-40 left-0 top-0">
+    <div *ngIf="currentRide.allConfirmed" class="absolute h-full z-40 left-0 top-0">
       <app-passenger-ride-details
       [waypoints]="waypoints"
       ></app-passenger-ride-details>
@@ -49,6 +49,14 @@
       [description]="errorMessage"
       (onClose)="closeErrorModal()"
     ></app-error-modal>
+  </div>
+
+  <div *ngIf="showDisappearingNotification" class="z-100">
+    <app-disappearing-notification
+      [title]="disappearingNotificationTitle"
+      [description]="disappearingNotificationMessage"
+      (onClose)="closeErrorModal()"
+    ></app-disappearing-notification>
   </div>
 
 </div>

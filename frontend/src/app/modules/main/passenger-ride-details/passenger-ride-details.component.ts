@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircle, faFlagCheckered, faHandHoldingUsd, faRoute, faStop, faStopwatch, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import * as moment from 'moment';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 
@@ -67,6 +68,16 @@ export class PassengerRideDetailsComponent implements OnInit {
     if (!this.ride) return ''
     if (this.ride.driver.totalRatingSum === 0) return '-';
     return parseFloat((this.ride.driver.totalRatingSum / this.ride.driver.numberOfReviews).toString()).toFixed(2);
+  }
+
+  get reservationTime(): string {
+    if (this.ride) {
+      const creationTime: moment.Moment = moment(this.ride.createdAt);
+      creationTime.add(this.ride.delayInMinutes, 'minutes')
+  
+      return creationTime.format('HH:mm');
+    }
+    return '';
   }
 
   get vehicleImage(): string {
