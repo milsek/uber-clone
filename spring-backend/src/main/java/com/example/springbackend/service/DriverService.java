@@ -5,6 +5,8 @@ import com.example.springbackend.dto.display.DriverCurrentAndNextRideDisplayDTO;
 import com.example.springbackend.dto.display.DriverDisplayDTO;
 import com.example.springbackend.dto.display.DriverRideDisplayDTO;
 import com.example.springbackend.dto.display.PassengerDisplayDTO;
+import com.example.springbackend.dto.display.DriverSearchDisplayDTO;
+import com.example.springbackend.dto.search.SearchDTO;
 import com.example.springbackend.exception.UserAlreadyExistsException;
 import com.example.springbackend.model.*;
 import com.example.springbackend.dto.update.DriverUpdateDTO;
@@ -237,5 +239,13 @@ public class DriverService {
         else
             dto.setRoute(rideService.createRouteDisplayDtoFromRoute(ride.getActualRoute()));
         return dto;
+    }
+
+    public DriverSearchDisplayDTO searchDrivers(SearchDTO searchDTO) {
+        List<Driver> drivers = driverRepository.searchDrivers(searchDTO.getName(), searchDTO.getSurname(), searchDTO.getUsername());
+        DriverSearchDisplayDTO driverSearchDisplayDTO = new DriverSearchDisplayDTO();
+        driverSearchDisplayDTO.setDrivers(drivers.subList(searchDTO.getPage()*7, Math.min((searchDTO.getPage()+1)*7, drivers.size())));
+        driverSearchDisplayDTO.setNumberOfDrivers(drivers.size());
+        return driverSearchDisplayDTO;
     }
 }

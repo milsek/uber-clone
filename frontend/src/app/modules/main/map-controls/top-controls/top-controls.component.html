@@ -23,7 +23,6 @@
       >
         <!-- admin -->
         <div *ngIf="accountType === 'admin'">
-
           <button
             class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
             routerLink="/admin/driver-registration"
@@ -47,7 +46,13 @@
             <fa-icon [icon]="faCircleXmark" class="text-xl w-6"></fa-icon>
             <span class="my-auto">View ride rejection requests</span>
           </button>
-          
+          <button
+            class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+            routerLink="/admin/users-search"
+          >
+            <fa-icon [icon]="faSearch" class="text-xl"></fa-icon>
+            <span class="my-auto">Search users</span>
+          </button>
         </div>
       </div>
     </div>

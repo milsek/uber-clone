@@ -1,5 +1,6 @@
 package com.example.springbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ public class Note {
 
     @ManyToOne
     @JoinColumn(name = "member_username")
+    @JsonIgnore
     Member member;
 
     @ManyToOne

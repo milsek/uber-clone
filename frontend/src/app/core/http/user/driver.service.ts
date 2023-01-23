@@ -7,7 +7,8 @@ import { AuthenticationService } from '../../authentication/authentication.servi
   providedIn: 'root',
 })
 export class DriverService {
-  private rides: { currentRide: DriverRide, nextRide: DriverRide} | null = null;
+  private rides: { currentRide: DriverRide; nextRide: DriverRide } | null =
+    null;
 
   constructor(private authenticationService: AuthenticationService) {}
 
@@ -20,23 +21,24 @@ export class DriverService {
   }
 
   fetchRides = async () => {
-    await axios.get(`/api/drivers/current-rides`, {
-      headers: {
-        Authorization: `Bearer ${this.authenticationService.getToken()}`
-      }
-    })
-    .then((res) => {
-      console.log(res.data)
-      if (res.data) this.rides = res.data;
-    })
-    .catch((err) => {
-      this.rides = null;
-    });
-  }
+    await axios
+      .get(`/api/drivers/current-rides`, {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) this.rides = res.data;
+      })
+      .catch((err) => {
+        this.rides = null;
+      });
+  };
 
   getCurrentRides = () => {
     return this.rides;
-  }
+  };
 
   async getDriverActivity(): Promise<boolean> {
     const activity: boolean = await axios
@@ -52,13 +54,15 @@ export class DriverService {
   }
 
   async register(data: any): Promise<any> {
-    await axios.post(`/api/drivers`, data, {
-      headers: {
-        Authorization: `Bearer ${this.authenticationService.getToken()}`
-      }
-    }).then((res => {
-      return res.data;
-    }));
+    await axios
+      .post(`/api/drivers`, data, {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      })
+      .then((res) => {
+        return res.data;
+      });
   }
 
   toggleActivity(): void {
@@ -89,16 +93,38 @@ export class DriverService {
     });
   }
 
-  sendRideRejectionRequestVerdict(rideId: number, accepted: boolean): Promise<any> {
-    return axios.patch(`/api/rides/driver-rejection-verdict`,
-    {
-      rideId,
-      accepted
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${this.authenticationService.getToken()}`,
+  sendRideRejectionRequestVerdict(
+    rideId: number,
+    accepted: boolean
+  ): Promise<any> {
+    return axios.patch(
+      `/api/rides/driver-rejection-verdict`,
+      {
+        rideId,
+        accepted,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  getDrivers(
+    name: string,
+    surname: string,
+    username: string,
+    page: number
+  ): Promise<any> {
+    return axios.post(
+      `/api/drivers/search`,
+      { name: name, surname: surname, username: username, page: page },
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
   }
 }

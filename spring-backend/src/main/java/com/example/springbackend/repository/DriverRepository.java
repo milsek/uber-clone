@@ -45,4 +45,8 @@ public interface DriverRepository extends JpaRepository<Driver, String> {
 
     @Query("SELECT d FROM Driver d WHERE d.currentRide = :ride OR d.nextRide = :ride")
     Optional<Driver> getDriverForRide( @Param("ride") Ride currentRide);
+
+    //query for searching drivers by name, surname and username
+    @Query("SELECT d FROM Driver d WHERE d.name LIKE %:name% AND d.surname LIKE %:surname% AND d.username LIKE %:username%")
+    List<Driver> searchDrivers(String name, String surname, String username);
 }

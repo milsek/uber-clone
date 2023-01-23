@@ -1,6 +1,7 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.update.LeaveNoteDTO;
+import com.example.springbackend.dto.update.RemoveNoteDTO;
 import com.example.springbackend.dto.update.UserUpdateDTO;
 import com.example.springbackend.dto.update.UsernameDTO;
 import com.example.springbackend.service.*;
@@ -36,6 +37,13 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> leaveNote(@RequestBody LeaveNoteDTO leaveNoteDTO){
         adminService.leaveNote(leaveNoteDTO.getContent(),leaveNoteDTO.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/remove-note")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> removeNote(@RequestBody RemoveNoteDTO removeNoteDTO){
+        adminService.removeNote(removeNoteDTO.getContent(), removeNoteDTO.getUsername(), removeNoteDTO.getAdmin());
         return ResponseEntity.ok().build();
     }
 

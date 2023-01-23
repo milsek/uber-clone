@@ -10,6 +10,7 @@ export interface Passenger {
   tokenBalance: number;
   email?: string;
   accountType?: string;
+  accountStatus?: string;
 }
 
 export interface PassengerSimple {

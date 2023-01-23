@@ -5,6 +5,8 @@ import com.example.springbackend.dto.display.DriverCurrentAndNextRideDisplayDTO;
 import com.example.springbackend.dto.display.DriverDisplayDTO;
 import com.example.springbackend.dto.display.DriverRideDisplayDTO;
 import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
+import com.example.springbackend.dto.display.DriverSearchDisplayDTO;
+import com.example.springbackend.dto.search.SearchDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.dto.update.DriverUpdateDTO;
 import com.example.springbackend.service.DriverService;
@@ -65,5 +67,10 @@ public class DriverController {
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<DriverCurrentAndNextRideDisplayDTO> getCurrentRides(Authentication auth) {
         return ResponseEntity.ok(driverService.getCurrentRides(auth));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<DriverSearchDisplayDTO> searchDrivers(@RequestBody SearchDTO searchDTO){
+        return ResponseEntity.ok(driverService.searchDrivers(searchDTO));
     }
 }

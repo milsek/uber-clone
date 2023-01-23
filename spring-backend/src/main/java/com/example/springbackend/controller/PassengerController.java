@@ -1,7 +1,9 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.creation.UserCreationDTO;
+import com.example.springbackend.dto.display.PassengerSearchDisplayDTO;
 import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
+import com.example.springbackend.dto.search.SearchDTO;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.service.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +32,10 @@ public class PassengerController {
     @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<RideSimpleDisplayDTO> getCurrentRide(Authentication auth) {
         return ResponseEntity.ok(passengerService.getCurrentRide(auth));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<PassengerSearchDisplayDTO> searchPassengers(@RequestBody SearchDTO searchDTO) {
+        return ResponseEntity.ok(passengerService.searchPassengers(searchDTO));
     }
 }

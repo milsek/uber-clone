@@ -1,3 +1,4 @@
+import { Note } from './note.model';
 import { Vehicle } from './vehicle.model';
 
 export interface Driver {
@@ -15,7 +16,9 @@ export interface Driver {
   active: boolean;
   email?: string;
   accountType?: string;
+  accountStatus?: string;
   userImage: string;
+  notes: Array<Note>;
 }
 
 export interface DriverSimple {

@@ -2,6 +2,7 @@ package com.example.springbackend.service;
 
 import com.example.springbackend.dto.update.UserUpdateDTO;
 import com.example.springbackend.model.*;
+import com.example.springbackend.repository.AdminRepository;
 import com.example.springbackend.repository.MemberRepository;
 import com.example.springbackend.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class AdminService {
     MemberRepository memberRepository;
     @Autowired
     NoteRepository noteRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     public void banMember(String username){
         Member member = memberRepository.findByUsername(username).get();
@@ -36,6 +39,13 @@ public class AdminService {
         note.setContent(content);
         note.setAdmin( (Admin) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         noteRepository.save(note);
+    }
+
+    public void removeNote(String content, String username, String adminUsername){
+        Member member = memberRepository.findByUsername(username).get();
+        Admin admin = adminRepository.findByUsername(adminUsername).get();
+        Note note = noteRepository.findByMemberAndAdminAndContent(member,admin,content).get();
+        noteRepository.delete(note);
     }
 
     public boolean updateAdmin(UserUpdateDTO userUpdateDTO) {
