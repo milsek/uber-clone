@@ -1,5 +1,6 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -11,17 +12,20 @@ import { UserModule } from './modules/user/user.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { ChatComponent } from './modules/chat/chat.component';
 import { SocketService } from './core/socket/socket.service';
+import { ReportsModule } from './modules/reports/reports.module';
 
 @NgModule({
   declarations: [AppComponent, ChatComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FontAwesomeModule,
     AuthModule,
     MainModule,
     UserModule,
     AdminModule,
+    ReportsModule,
   ],
   providers: [
     AuthenticationService,

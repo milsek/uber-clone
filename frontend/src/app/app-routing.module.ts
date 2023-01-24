@@ -18,6 +18,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/admin/admin.module').then(m => m.AdminModule)
   },
+  { 
+    path: 'reports',
+    loadChildren: () =>
+      import('./modules/reports/reports.module').then(m => m.ReportsModule)
+  },
   { path: 'driver/:username', component: DriverPageComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },

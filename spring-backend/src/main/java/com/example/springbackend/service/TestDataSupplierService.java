@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -29,7 +30,11 @@ public class TestDataSupplierService {
     @Autowired
     RoleRepository roleRepository;
     @Autowired
+    RouteRepository routeRepository;
+    @Autowired
     RideRepository rideRepository;
+    @Autowired
+    PassengerRideRepository passengerRideRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -46,6 +51,7 @@ public class TestDataSupplierService {
         addAdmins();
         addUsers();
         addDrivers();
+        addRides();
     }
 
 
@@ -147,6 +153,58 @@ public class TestDataSupplierService {
         driverRepository.save(driver);
         driver.setUsername("driver4@noemail.com");
         driverRepository.save(driver);
+    }
+
+    private void addRides(){
+        List<Passenger> passengers = new ArrayList<>();
+        passengers.add(passengerRepository.findByUsername("passenger1@noemail.com").get());
+        passengers.add(passengerRepository.findByUsername("passenger2@noemail.com").get());
+        Ride ride = new Ride();
+        ride.setStartTime(LocalDateTime.now());
+        ride.setEndTime(LocalDateTime.now().minusMonths(3));
+        ride.setDriver(driverRepository.findByUsername("driver1@noemail.com").get());
+        ride.setDistance(600.0);
+        Route route = new Route();
+        route.setPassengers(passengers);
+        routeRepository.save(route);
+        ride.setActualRoute(route);
+        ride.setPassengersConfirmed(true);
+        ride.setExpectedRoute(route);
+        ride.setCreatedAt(LocalDateTime.now().minusMonths(3));
+        ride.setPrice(50);
+        ride.setId(1);
+        ride.setStatus(RideStatus.COMPLETED);
+        rideRepository.save(ride);
+        PassengerRide passengerRide = new PassengerRide();
+        passengerRide.setRide(ride);
+        passengerRide.setPassenger(passengerRepository.findByUsername("passenger1@noemail.com").get());
+        passengerRide.setFare(80);
+        passengerRide.setId(1);
+        passengerRideRepository.save(passengerRide);
+        ride.setDriver(driverRepository.findByUsername("driver2@noemail.com").get());
+
+
+        ride.setId(2);
+        rideRepository.save(ride);
+        passengerRide.setRide(ride);
+        passengerRide.setPassenger(passengerRepository.findByUsername("passenger1@noemail.com").get());
+        passengerRide.setFare(60);
+        passengerRide.setId(2);
+        passengers.remove(1);
+        ride.setId(3);
+        ride.setPrice(90);
+        ride.setDistance(630.0);
+        ride.setStartTime(LocalDateTime.now().minusMonths(4));
+        ride.setDriver(driverRepository.findByUsername("driver1@noemail.com").get());
+        rideRepository.save(ride);
+        passengerRideRepository.save(passengerRide);
+
+
+        passengers.add(passengerRepository.findByUsername("passenger3@noemail.com").get());
+        passengerRide.setPassenger(passengerRepository.findByUsername("passenger3@noemail.com").get());
+        passengerRide.setFare(80);
+        passengerRide.setId(8);
+        passengerRideRepository.save(passengerRide);
     }
 
     private void addOtherDrivers() {

@@ -562,9 +562,9 @@ public class RideService {
     }
 
     public Date getDateFromString(String dateString){
-        int startYear = Integer.parseInt(dateString.split("-")[2]);
+        int startYear = Integer.parseInt(dateString.split("-")[0]);
         int startMonth = Integer.parseInt(dateString.split("-")[1]);
-        int startDay = Integer.parseInt(dateString.split("-")[0]);
+        int startDay = Integer.parseInt(dateString.split("-")[2]);
         return new Date(startYear-1900,startMonth,startDay);
     }
 

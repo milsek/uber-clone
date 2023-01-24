@@ -34,7 +34,10 @@ export class TopControlsComponent implements OnInit {
   showActionsDropdown: boolean = false;
   clickedActionsDropdown: boolean = false;
   showProfileDropdown: boolean = false;
+  showProfileDropdown2: boolean = false;
   clickedProfileDropdown: boolean = false;
+  showHambrugerDropdown: boolean = false;
+  clickedHambrugerDropdown: boolean = false;
 
   constructor(
     private driverService: DriverService,

@@ -6,14 +6,43 @@
     <div
       class="relative flex flex-col justify-center text-center text-xl w-11 h-11 my-auto rounded-full cursor-pointer hover:text-light shrink-0"
     >
-      <fa-icon
-        [icon]="faBars"
-        class=""
+    
+    <div *ngIf="accountType !== 'anonymous'" class="relative block my-auto">
+      <!-- profile -->
+      <div
         (click)="
-          showActionsDropdown = !showActionsDropdown;
-          clickedActionsDropdown = true
+        showHambrugerDropdown = !showHambrugerDropdown;
+        clickedHambrugerDropdown = true
         "
-      ></fa-icon>
+        class="flex flex-col justify-center text-center text-xl w-10 h-10 my-auto rounded-full cursor-pointer hover:text-light shadow-sm"
+      >
+      <fa-icon
+      [icon]="faBars"
+      class=""
+      (click)="
+        showActionsDropdown = !showActionsDropdown;
+        clickedActionsDropdown = true
+      "
+    ></fa-icon>
+      </div>
+
+      <!-- profile dropdown -->
+      <div
+        *ngIf="showHambrugerDropdown && accountType !== 'admin'"
+        class="absolute z-20 left-0 top-14 rounded-lg bg-dark w-72 p-1.5 px-2 flex flex-col font-medium text-light"
+        (click)="clickedHambrugerDropdown = true"
+      >
+      <button
+        class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+        routerLink="/reports"
+      >
+        <fa-icon [icon]="faUser" class="text-xl"></fa-icon>
+        <span class="my-auto">Ride report</span>
+      </button>
+
+        <hr class="my-1 border-stone-500" />
+      </div>
+    </div>
 
       <!-- change when new options are added for other users -->
       <div
@@ -52,6 +81,13 @@
           >
             <fa-icon [icon]="faSearch" class="text-xl"></fa-icon>
             <span class="my-auto">Search users</span>
+          </button>
+          <button
+            class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+            routerLink="/reports"
+          >
+            <fa-icon [icon]="faSearch" class="text-xl"></fa-icon>
+            <span class="my-auto">Ride report</span>
           </button>
         </div>
       </div>
@@ -115,13 +151,13 @@
         class="absolute z-20 right-0 top-14 rounded-lg bg-dark w-72 p-1.5 px-2 flex flex-col font-medium text-light"
         (click)="clickedProfileDropdown = true"
       >
-        <button
-          class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
-          routerLink="/account"
-        >
-          <fa-icon [icon]="faUser" class="text-xl"></fa-icon>
-          <span class="my-auto">Account</span>
-        </button>
+      <button
+        class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+        routerLink="/account"
+      >
+        <fa-icon [icon]="faUser" class="text-xl"></fa-icon>
+        <span class="my-auto">Account</span>
+      </button>
 
         <hr class="my-1 border-stone-500" />
 

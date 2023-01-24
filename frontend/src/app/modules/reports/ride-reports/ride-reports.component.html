@@ -1,0 +1,139 @@
+<div class="min-h-screen h-full w-full bg-dark flex flex-col justify-center">
+<style></style>
+<div class="w-11/12 sm:w-300 mx-auto text-center my-9">
+    <div
+      class="relative border h-180 border-stone-500 rounded-lg py-16 px-4 sm:p-16"
+    >
+    <h1 class="text-white text-xl"> Ride report </h1>
+<div>
+    <form [formGroup] = "rideReportForm">
+      <div class="flex justify-between gap-x-4 p-7">
+        <div class="w-full">
+            <ngx-charts-bar-vertical
+            *ngIf="graphLoaded"
+            [results]="graphData"
+            [xAxisLabel]="xAxisName"
+            [yAxisLabel]="yAxisName"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            [showGridLines]="false"
+            [xAxis]="true"
+            [yAxis]="true"
+            [gradient]="true"
+            style="fill: #93959b;">
+        </ngx-charts-bar-vertical>
+            </div>
+        </div>
+        <div class="flex justify-between gap-x-6">
+        <div class="w-full">
+          <label
+            class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-first-name"
+          >
+            Start Date
+          </label>
+          <input
+            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-startDate"
+            type="date"
+            placeholder="Start date"
+            formControlName="startDate"
+          />
+          <div class="h-1">
+            <p *ngIf="startDate && startDate.invalid && startDate.touched"
+              class="text-yellow-400 text-xs italic">
+              <span *ngIf="startDate.errors?.['required']">
+                Start date is required.
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="w-full">
+          <label
+            class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-endDate"
+          >
+            End Date
+          </label>
+          <input
+            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-endDate"
+            type="date"
+            placeholder="End Date"
+            formControlName="endDate"
+          />
+          
+          <div class="h-1">
+            <p *ngIf="endDate && endDate.invalid && endDate.touched"
+              class="text-yellow-400 text-xs italic">
+              <span *ngIf="endDate.errors?.['required']">
+                End date is required.
+              </span>
+            </p>
+          </div>
+        </div>
+        
+          <div *ngIf="accountType === 'admin'" class="w-full">
+            <label
+              class="block tracking-wide text-light text-xs font-bold mb-1"
+              for="register-type"
+            >
+              User type
+            </label>
+            <select   class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            name="cars" id="cars" formControlName="adminGraphType" (change)="changeAdminActiveSelect()">
+              <option class="bg-dark" [ngClass]="{'text-light': activeAdminSelect!=='driver'}" value="driver">Driver</option>
+              <option class="bg-dark"  [ngClass]="{'text-light': activeAdminSelect!=='passenger'}" value="passenger">Passenger</option>
+            </select>
+            <div class="h-1">
+              <p *ngIf="adminGraphType && adminGraphType.invalid && adminGraphType.touched"
+                class="text-yellow-400 text-xs italic">
+                <span *ngIf="adminGraphType.errors?.['required']">
+                  Type is required.
+                </span>
+              </p>
+            </div>
+          </div>
+        <div class="w-full">
+          <label
+            class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-type"
+          >
+            Type
+          </label>
+          <select   class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+          name="cars" id="cars" formControlName="type" (change)="changeActiveSelect()">
+            <option class="bg-dark" [ngClass]="{'text-light': activeSelect!=='MONEY_SPENT_EARNED'}" value="MONEY_SPENT_EARNED">Money</option>
+            <option class="bg-dark"  [ngClass]="{'text-light': activeSelect!=='NUM_OF_KM'}" value="NUM_OF_KM">Distance</option>
+            <option class="bg-dark"  [ngClass]="{'text-light': activeSelect!=='NUM_OF_RIDES'}" value="NUM_OF_RIDES">Number of rides</option>
+          </select>
+          <div class="h-1">
+            <p *ngIf="type && type.invalid && type.touched"
+              class="text-yellow-400 text-xs italic">
+              <span *ngIf="type.errors?.['required']">
+                Type is required.
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="block mt-4">
+        <div class="flex rounded-lg w-full ml-1 text-white p-5">
+            <div class="w-full">
+            <button (click)="getReport()">
+                Search
+            </button>
+        </div>
+    </div>
+      </div>
+      <br />
+    </form>
+  </div>
+  <br />
+  
+  
+</div></div>
+
+
+
+
