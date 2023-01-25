@@ -60,6 +60,13 @@ public class AuthenticationController {
                 .build();
     }
 
+    @GetMapping("/auth-login/{token}")
+    public ResponseEntity<String> authLogin(@PathVariable String token) {
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create("http://localhost:4200/google-login?token="+token))
+                .build();
+    }
+
     @PostMapping("/confirm-password-reset")
     public boolean confirmPasswordReset(@RequestBody PasswordResetDTO passwordResetDTO){
         return memberService.confirmPasswordReset(passwordResetDTO.getToken(),passwordResetDTO.getNewPassword());

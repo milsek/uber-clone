@@ -18,10 +18,11 @@ export class AuthenticationService {
   }
 
   whoami(): void {
+    console.log(this.getToken() || localStorage.getItem('token2'));
     axios
       .get(`/api/users/whoami`, {
         headers: {
-          Authorization: `Bearer ${this.getToken()}`,
+          Authorization: `Bearer ${this.getToken() || localStorage.getItem('token2')}`,
         },
       })
       .then((response) => {
@@ -29,6 +30,11 @@ export class AuthenticationService {
         if (!this.getSession()) reload = true;
         this.saveSession(response.data);
         if (reload) window.location.href = '/';
+
+        if(!localStorage.getItem('token')){
+          localStorage.setItem('token',localStorage.getItem('token2')!);
+        }
+        localStorage.removeItem('token2');
       })
       .catch((err) => {
         this.logout();

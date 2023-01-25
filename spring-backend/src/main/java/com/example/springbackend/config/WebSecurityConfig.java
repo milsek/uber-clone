@@ -3,6 +3,7 @@ package com.example.springbackend.config;
 import com.example.springbackend.model.security.CustomOAuth2User;
 import com.example.springbackend.security.RestAuthenticationEntryPoint;
 import com.example.springbackend.security.TokenAuthenticationFilter;
+import com.example.springbackend.security.UserTokenState;
 import com.example.springbackend.service.CustomOAuth2UserService;
 import com.example.springbackend.service.CustomUserDetailsService;
 import com.example.springbackend.service.UserService;
@@ -111,8 +112,8 @@ public class WebSecurityConfig {
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                         Authentication authentication) throws IOException, ServletException {
                         CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-                        userService.processOAuthPostLogin(oauthUser);
-
+                        UserTokenState userTokenState = userService.processOAuthPostLogin(oauthUser);
+                        response.sendRedirect("/api/auth/auth-login/"+userTokenState.getAccessToken());
                     }
                 }).and()
                 .cors()

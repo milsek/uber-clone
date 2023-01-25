@@ -60,7 +60,6 @@
       </div>
 
     </div>
-
     <button type="submit" class="w-full h-16 bg-accent-light active:bg-accent text-white font-medium tracking-wide">
       LOGIN
     </button>
@@ -75,11 +74,19 @@
 
   </form>
 
-  <div class="text-light text-sm text-center mt-8">
+  <div class="text-light text-sm text-center mt-4">
+
+    <div class="text-light text-sm text-center mt-2">
+      Continue with <span class="text-accent-light cursor-pointer"> <a href="http://localhost:8080/oauth2/authorization/facebook"> Facebook  </a></span> / 
+      <span class="text-accent-light cursor-pointer"> <a href="http://localhost:8080/oauth2/authorization/google"> Google  </a> </span>
+    </div>
+
+    <div class="text-light text-sm text-center mt-2">
     Don't have an account?
     <span class="text-accent-light cursor-pointer"><a routerLink="/register">Sign Up</a></span>
+  </div>
     
-    <div class="text-light text-sm text-center mt-1">
+    <div class="text-light text-sm text-center mt-2">
       Forgot password?
       <span class="text-accent-light cursor-pointer" (click)="resetPassword()">Reset password</span>
     </div>

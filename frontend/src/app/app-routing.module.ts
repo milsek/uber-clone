@@ -5,6 +5,7 @@ import { RegisterComponent } from './modules/auth/register/register.component';
 import { MainComponent } from './modules/main/main.component';
 import { DriverPageComponent } from './modules/user/profile/driver/driver.component';
 import { PasswordResetComponent } from './modules/auth/password-reset/password-reset.component';
+import { GoogleLoginComponent } from './modules/auth/google-login/google-login.component';
 
 const routes: Routes = [
   { path: '', component: MainComponent },
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'driver/:username', component: DriverPageComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'google-login', component:  GoogleLoginComponent},
   { path: 'reset-password', component: PasswordResetComponent },
   { path: '**', redirectTo: '/auth/404' },
 ];
