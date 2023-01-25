@@ -32,7 +32,7 @@ export class DriverRideDetailsComponent implements OnInit {
   showRejectRideModal: boolean = false;
   rideRejectionReason: string = '';
   rideRejectionErrorMessage: string = '';
-  rideRejectionSent: boolean = false;
+  isRideRejectionSent: boolean = false;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -57,11 +57,23 @@ export class DriverRideDetailsComponent implements OnInit {
       this.rideService.driverRejectRide(this.ride.id, this.rideRejectionReason)
       .then(res => {
         this.showRejectRideModal = false;
-        this.rideRejectionSent = true;
+        this.isRideRejectionSent = true;
       })
       .catch(err => {
         this.rideRejectionErrorMessage = 'Something went wrong.';
       });
+  }
+
+  beginRide(): void {
+    if (this.ride && this.ride.status === 'DRIVER_ARRIVED') {
+      this.rideService.beginRide(this.ride.id);
+    }
+  }
+
+  completeRide(): void {
+    if (this.ride && this.ride.status === 'ARRIVED_AT_DESTINATION') {
+      this.rideService.completeRide(this.ride.id);
+    }
   }
 
   toggleOpened(): void {
@@ -91,6 +103,12 @@ export class DriverRideDetailsComponent implements OnInit {
 
   get ride(): DriverRide | undefined {
     return this.driverService.getCurrentRides()?.currentRide;
+  }
+
+  get rideStatus(): string {
+    if (this.ride)
+      return this.ride.status.replace(/_/g, ' ')
+    return '';
   }
 
   @HostListener('document:click')

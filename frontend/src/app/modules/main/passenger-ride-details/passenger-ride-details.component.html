@@ -5,7 +5,7 @@ sm:h-full select-none" id="order-menu">
   w-screen h-140 sm:h-auto sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
     <h1 class="text-3xl font-bold text-gray-50 mt-4 sm:mt-0">Current ride</h1>
     <div class="tracking-wide uppercase text-light font-medium rounded-2xl">
-      {{ ride.status.replace('_', ' ') }} {{ ride.status === 'RESERVED' && ride.delayInMinutes > 0 ? '[' + reservationTime + "]" : ''}}
+      {{ rideStatus }}
     </div>
 
     <div *ngIf="waypoints" class="flex flex-col shrink-0 gap-y-3 mt-6 max-h-72 overflow-auto">

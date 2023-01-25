@@ -90,4 +90,28 @@ export class RideService {
     });
   }
 
+  beginRide(rideId: number): Promise<any> {
+    return axios.patch(`/api/rides/begin`, 
+    {
+      rideId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`
+      }
+    });
+  }
+
+  completeRide(rideId: number): Promise<any> {
+    return axios.patch(`/api/rides/complete`, 
+    {
+      rideId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`
+      }
+    });
+  }
+
 }

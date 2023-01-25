@@ -4,7 +4,7 @@ sm:h-full select-none" id="order-menu">
   <div *ngIf="isOpened && ride" class="sm:static flex flex-col rounded-t-3xl sm:rounded-none
   w-screen h-140 sm:h-auto sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
     <h1 class="text-3xl font-bold text-gray-50 mt-4 sm:mt-0">Current ride</h1>
-    <div class="tracking-wide uppercase text-light font-medium rounded-2xl">{{ ride.status.replace('_', ' ') }}</div>
+    <div class="tracking-wide uppercase text-light font-medium rounded-2xl">{{ rideStatus }}</div>
 
     <div *ngIf="waypoints" class="flex flex-col shrink-0 gap-y-3 mt-6 max-h-72 overflow-auto">
       <div *ngFor="let waypoint of waypoints; let i=index;">
@@ -60,7 +60,7 @@ sm:h-full select-none" id="order-menu">
 
     <!-- driver info -->
     <h1 class="text-2xl font-bold text-gray-50 mt-10">Your passengers</h1>
-    <div *ngIf="ride.passengers" class="flex flex-col mt-4 max-h-72 overflow-auto">
+    <div *ngIf="ride.passengers" class="flex flex-col gap-y-2 mt-4 max-h-72 overflow-auto">
       <div *ngFor="let passenger of ride.passengers">
         <div class="flex w-full justify-between">
           
@@ -76,9 +76,19 @@ sm:h-full select-none" id="order-menu">
       </div>
     </div>
     
-    <button *ngIf="ride.status === 'DRIVER_ARRIVING'" class="w-full h-16 bg-accent-light
+    <button *ngIf="ride.status === 'DRIVER_ARRIVING' && !isRideRejectionSent" class="w-full h-16 bg-accent-light
     active:bg-accent text-white font-medium tracking-wide mt-8" (click)="openRejectRideModal()">
       REJECT RIDE
+    </button>
+
+    <button *ngIf="ride.status === 'DRIVER_ARRIVED'" class="w-full h-16 bg-accent-light
+    active:bg-accent text-white font-medium tracking-wide mt-8" (click)="beginRide()">
+      BEGIN RIDE
+    </button>
+
+    <button *ngIf="ride.status === 'ARRIVED_AT_DESTINATION'" class="w-full h-16 bg-accent-light
+    active:bg-accent text-white font-medium tracking-wide mt-8" (click)="completeRide()">
+      COMPLETE RIDE
     </button>
 
   </div>
@@ -123,7 +133,7 @@ sm:h-full select-none" id="order-menu">
             </div>
           </div>
 
-          <button *ngIf="!rideRejectionSent" class="py-1 px-8 border border-stone-500 text-stone-400
+          <button class="py-1 px-8 border border-stone-500 text-stone-400
           hover:bg-stone-500 hover:text-stone-300 rounded-2xl" (click)="rejectRide()">
             Reject ride
           </button>

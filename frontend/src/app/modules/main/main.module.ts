@@ -12,6 +12,7 @@ import { PassengerRideDetailsComponent } from './passenger-ride-details/passenge
 import { SplitFareWaitComponent } from './modals/split-fare-wait/split-fare-wait.component';
 import { SharedModule } from 'src/app/shared/module/shared/shared.module';
 import { DriverRideDetailsComponent } from './driver-ride-details/driver-ride-details.component';
+import { RideCompleteComponent } from './modals/ride-complete/ride-complete/ride-complete.component';
 
 
 
@@ -24,7 +25,8 @@ import { DriverRideDetailsComponent } from './driver-ride-details/driver-ride-de
     OrderMenuComponent,
     PassengerRideDetailsComponent,
     SplitFareWaitComponent,
-    DriverRideDetailsComponent
+    DriverRideDetailsComponent,
+    RideCompleteComponent
   ],
   imports: [
     CommonModule,

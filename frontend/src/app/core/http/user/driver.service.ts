@@ -28,7 +28,6 @@ export class DriverService {
         },
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data) this.rides = res.data;
       })
       .catch((err) => {

@@ -1,0 +1,32 @@
+<div class="fixed top-0 left-0 z-30 w-screen min-w-screen min-h-screen h-screen text-center
+  flex items-center justify-center bg-stone-500 bg-opacity-80 transition-opacity text-base font-display">
+  <div class="relative flex flex-col w-11/12 sm:w-132 bg-dark rounded-xl mx-auto
+  overflow-hidden px-9 py-8">
+
+    <div class="circle-loader load-complete mx-auto mb-4">
+      <div class="checkmark draw"></div>
+    </div>
+
+    <h3 class="text-xl font-medium text-gray-50">
+    Ride complete
+      <br>
+      <span class="text-base text-stone-400">We hope you've enjoyed your ride.
+        <br>
+      You can now choose to leave a review for your driver.</span>
+    </h3>
+    
+    <div class="flex justify-around gap-x-2">
+      <button class="py-1 w-48 px-8 mt-6 border border-light text-light font-medium tracking-wide
+      hover:bg-light hover:text-dark rounded-2xl" (click)="close()">
+        Close
+      </button>
+
+      <button class="py-1 w-48 px-8 mt-6 border border-accent-light text-accent-light font-medium tracking-wide
+      hover:bg-accent-light hover:text-gray-50 rounded-2xl">
+        Leave a review
+      </button>
+
+    </div>
+
+  </div>
+</div>

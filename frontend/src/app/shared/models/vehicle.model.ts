@@ -1,3 +1,4 @@
+import { Coordinates } from "./coordinates.model";
 import { VehicleType } from "./vehicle-type.model";
 
 export interface Vehicle {
@@ -8,4 +9,10 @@ export interface Vehicle {
     model: string,
     colour: string,
     licensePlateNumber: string,
+    id?: number,
+    currentCoordinates?: Coordinates,
+    nextCoordinates?: Coordinates,
+    coordinatesChangedAt?: string,
+    expectedTripTime?: number,
+    rideActive?: boolean
 }

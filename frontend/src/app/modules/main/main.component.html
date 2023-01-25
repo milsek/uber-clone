@@ -55,8 +55,13 @@
     <app-disappearing-notification
       [title]="disappearingNotificationTitle"
       [description]="disappearingNotificationMessage"
-      (onClose)="closeErrorModal()"
     ></app-disappearing-notification>
+  </div>
+  
+  <div *ngIf="showRideCompleteModal">
+    <app-ride-complete
+      (onClose)="closeRideCompleteModal()"
+    ></app-ride-complete>
   </div>
 
 </div>

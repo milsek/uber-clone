@@ -23,9 +23,6 @@ public class SimulatorService {
     @Autowired
     VehicleRepository vehicleRepository;
 
-    @Autowired
-    private DriverRepository driverRepository;
-
     private static final double r2d = 180.0D / 3.141592653589793D;
     private static final double d2r = 3.141592653589793D / 180.0D;
     private static final double d2km = 111189.57696D * r2d;
@@ -43,14 +40,19 @@ public class SimulatorService {
         vehicle.setCoordinatesChangedAt(LocalDateTime.now());
         vehicle.setRideActive(true);
 
-        double aerialDistance = calculateDistance(vehicle.getCurrentCoordinates(), vehicle.getNextCoordinates());
-        long estimatedTime = calculateTimeSeconds(aerialDistance);
+        long estimatedTime = getEstimatedTime(vehicle);
         vehicle.setExpectedTripTime(estimatedTime);
 
         vehicleRepository.save(vehicle);
 
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(() -> arriveAtLocation(vehicle), estimatedTime, TimeUnit.SECONDS);
+        executorService.schedule(() -> arriveAtLocation(vehicle, false), estimatedTime, TimeUnit.SECONDS);
+    }
+
+    public long getEstimatedTime(Vehicle vehicle) {
+        double aerialDistance = calculateDistance(vehicle.getCurrentCoordinates(), vehicle.getNextCoordinates());
+        long estimatedTime = calculateTimeSeconds(aerialDistance);
+        return estimatedTime;
     }
 
     private Coordinates getDifferentLocation(Vehicle vehicle) {
@@ -64,10 +66,10 @@ public class SimulatorService {
         return location;
     }
 
-    private void arriveAtLocation(Vehicle vehicle) {
+    public void arriveAtLocation(Vehicle vehicle, boolean setRideActive) {
         vehicle.setCurrentCoordinates(vehicle.getNextCoordinates());
         vehicle.setExpectedTripTime(0);
-        vehicle.setRideActive(false);
+        vehicle.setRideActive(setRideActive);
         vehicleRepository.save(vehicle);
     }
 

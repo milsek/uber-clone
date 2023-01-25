@@ -63,6 +63,43 @@ export class PassengerRideDetailsComponent implements OnInit {
   get ride() {
     return this.passengerService.getCurrentRide();
   }
+  
+  get rideStatus(): string {
+    let status: string = '';
+    if (this.ride) {
+      status = this.ride.status.replace(/_/g, ' ');
+      if (this.ride.status === 'RESERVED' && this.ride.delayInMinutes > 0) return status += ' [' + this.reservationTime + "]";
+      if (this.ride.status === 'DRIVER_ARRIVING') {
+        const arrivalTimeInMinutes: number = this.calculateArrivalTimeInMinutes()
+        if (arrivalTimeInMinutes > 0) status += ' IN ~' + arrivalTimeInMinutes + ' MINUTE' + (arrivalTimeInMinutes === 1 ? '' : 'S');
+        if (arrivalTimeInMinutes === 0) status += ' IN LESS THAN A MINUTE';
+        return status;
+      }
+      if (this.ride.status === 'IN_PROGRESS') {
+        const arrivalTimeInMinutes: number = this.calculateArrivalTimeInMinutes()
+        if (arrivalTimeInMinutes > 0) status += ' │ ARRIVAL IN ~' + arrivalTimeInMinutes + ' MINUTE' + (arrivalTimeInMinutes === 1 ? '' : 'S');
+        if (arrivalTimeInMinutes === 0) status += ' │ ARRIVAL IN LESS THAN A MINUTE';
+        return status;
+      }
+      return status;
+    }
+    return '';
+  }
+
+  calculateArrivalTimeInMinutes(): number {
+    if (this.ride) {
+      const vehicle = this.ride.driver.vehicle;
+      if (vehicle.expectedTripTime) {
+        let startingMoment = moment(vehicle.coordinatesChangedAt);
+        let currentMoment = moment();
+        const difference = currentMoment.diff(startingMoment, 'seconds');
+        const remainingTime = vehicle.expectedTripTime - difference;
+        if (remainingTime <= 0) return -1;
+        return Math.round(remainingTime / 60);
+      }
+    }
+    return -1;
+  }
 
   get driverRating(): string {
     if (!this.ride) return ''

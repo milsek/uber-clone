@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class VehiclePositionDisplayDTO {
+public class VehiclePositionDisplayDTO extends VehicleDisplayDTO {
     private int id;
     private CoordinatesDisplayDTO currentCoordinates;
     private CoordinatesDisplayDTO nextCoordinates;

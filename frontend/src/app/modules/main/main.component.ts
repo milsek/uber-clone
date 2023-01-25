@@ -27,6 +27,8 @@ export class MainComponent implements OnInit {
   disappearingNotificationTitle: string = '';
   disappearingNotificationMessage: string = '';
 
+  showRideCompleteModal: boolean = false;
+
   constructor(
     private driverService: DriverService,
     private passengerService: PassengerService, 
@@ -79,6 +81,9 @@ export class MainComponent implements OnInit {
           this.errorTitle = 'Sorry';
           this.errorMessage = messageData.content;
         }
+        if (messageData.type === 'RIDE_COMPLETE') {
+          this.showRideCompleteModal = true;
+        }
       });
     }
   }
@@ -117,9 +122,14 @@ export class MainComponent implements OnInit {
     }
   }
 
-  closeErrorModal () {
+  closeErrorModal(): void {
     this.showErrorModal = false;
-    window.location.href="/";
+    window.location.href = "/";
+  }
+
+  closeRideCompleteModal(): void {
+    this.showRideCompleteModal = false;
+    window.location.href = "/";
   }
 
   addNewStop(event: string): void {

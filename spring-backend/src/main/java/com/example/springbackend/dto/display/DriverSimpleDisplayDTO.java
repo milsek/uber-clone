@@ -11,5 +11,5 @@ public class DriverSimpleDisplayDTO {
     private String profilePicture;
     private int totalRatingSum;
     private int numberOfReviews;
-    private VehicleDisplayDTO vehicle;
+    private VehiclePositionDisplayDTO vehicle;
 }

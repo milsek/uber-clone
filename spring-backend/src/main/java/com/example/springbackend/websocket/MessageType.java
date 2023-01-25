@@ -7,5 +7,6 @@ public enum MessageType {
     NOTIFICATION,
     RIDE_UPDATE,
     RIDE_ERROR,
+    RIDE_COMPLETE,
     DISAPPEARING
 }

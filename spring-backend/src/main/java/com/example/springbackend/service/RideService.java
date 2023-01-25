@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +50,8 @@ public class RideService {
     ModelMapper modelMapper;
     @Autowired
     UserService userService;
+    @Autowired
+    SimulatorService simulatorService;
     private final SimpMessagingTemplate template;
     @Autowired
     RideService(SimpMessagingTemplate template) {
@@ -145,7 +146,6 @@ public class RideService {
 
     private void processReservation(Ride ride, List<PassengerRide> passengerRides) {
         Driver driver = findDriver(ride);
-        System.out.println(driver);
         if (driver == null) {
             sendMessageToMultiplePassengers(
                     passengerRides.stream().map(pr -> pr.getPassenger().getUsername()).toList(),
@@ -169,10 +169,46 @@ public class RideService {
         rideRepository.save(ride);
         if (driver.getCurrentRide() == null) {
             driver.setCurrentRide(ride);
+            directDriverToCurrentRideStart(driver, ride);
         } else {
             driver.setNextRide(ride);
         }
         driverRepository.save(driver);
+    }
+
+    private void directDriverToCurrentRideStart(Driver driver, Ride ride) {
+        directDriverToLocation(driver, ride.getActualRoute().getWaypoints().get(0));
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.schedule(() -> markDriverArrived(ride),
+                driver.getVehicle().getExpectedTripTime(), TimeUnit.SECONDS);
+    }
+
+    private void markDriverArrived(Ride ride) {
+        if (ride.getStatus() == RideStatus.CANCELLED) return;
+        ride.setStatus(RideStatus.DRIVER_ARRIVED);
+        rideRepository.save(ride);
+        sendRefreshMessageToDriverAndAllPassengers(ride);
+    }
+
+    private void markArrivedAtDestination(Ride ride) {
+        if (ride.getStatus() == RideStatus.CANCELLED) return;
+        ride.setStatus(RideStatus.ARRIVED_AT_DESTINATION);
+        rideRepository.save(ride);
+        sendRefreshMessageToDriverAndAllPassengers(ride);
+    }
+
+    private void directDriverToLocation(Driver driver, Coordinates coordinates) {
+        Vehicle vehicle = driver.getVehicle();
+        vehicle.setNextCoordinates(coordinates);
+        vehicle.setRideActive(true);
+        vehicle.setCoordinatesChangedAt(LocalDateTime.now());
+        long estimatedTime = simulatorService.getEstimatedTime(vehicle);
+        vehicle.setExpectedTripTime(estimatedTime);
+        vehicleRepository.save(driver.getVehicle());
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.schedule(() -> simulatorService.arriveAtLocation(vehicle, true),
+                estimatedTime, TimeUnit.SECONDS);
     }
 
     private void createPassengerRideForUsers(SplitFareRideCreationDTO dto, Ride ride,int fare, Passenger passenger) {
@@ -308,6 +344,47 @@ public class RideService {
 
         if (dto.getDelayInMinutes() != 0 && dto.getDelayInMinutes() < 20) {
             throw new ReservationTooSoonException();
+        }
+    }
+
+    public Boolean beginRide(RideIdDTO dto, Authentication auth) {
+        Driver driver = (Driver) auth.getPrincipal();
+        Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
+        ride.setStatus(RideStatus.IN_PROGRESS);
+        rideRepository.save(ride);
+        List<Coordinates> waypoints = ride.getActualRoute().getWaypoints();
+        directDriverToLocation(driver, waypoints.get(waypoints.size() - 1));
+        sendRefreshMessageToDriverAndAllPassengers(ride);
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.schedule(() -> markArrivedAtDestination(ride),
+                driver.getVehicle().getExpectedTripTime(), TimeUnit.SECONDS);
+        return true;
+    }
+
+    public Boolean completeRide(RideIdDTO dto, Authentication auth) {
+        Driver driver = (Driver) auth.getPrincipal();
+        Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
+        ride.setStatus(RideStatus.COMPLETED);
+        rideRepository.save(ride);
+        List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
+        sendMessageToMultiplePassengers(passengerRides.stream().map(pr -> pr.getPassenger().getUsername()).toList(),
+                "", MessageType.RIDE_COMPLETE);
+
+        updateCurrentDriverRide(driver);
+        sendRefreshMessage(driver.getUsername());
+        return true;
+    }
+
+    private void updateCurrentDriverRide(Driver driver) {
+        driver.setCurrentRide(driver.getNextRide());
+        driver.setNextRide(null);
+        driverRepository.save(driver);
+        if (driver.getCurrentRide() != null)
+            directDriverToCurrentRideStart(driver, driver.getCurrentRide());
+        else {
+            driver.getVehicle().setRideActive(false);
+            vehicleRepository.save(driver.getVehicle());
         }
     }
 
@@ -530,7 +607,7 @@ public class RideService {
             DetailedRideHistoryPassengerDTO returnDTO = modelMapper.map(optRide.get(), DetailedRideHistoryPassengerDTO.class);
             for(PassengerRide passengerRide : passengerRides){
                 if(passengerRide.getDriverRating() != 0)
-                returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getDriverRating());
+                    returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getDriverRating());
                 if(passengerRide.getVehicleRating() != 0)
                     returnDTO.getVehicleRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getVehicleRating());
             }
@@ -573,14 +650,14 @@ public class RideService {
         Date endDate = getDateFromString(endDateString);
         Passenger passenger = (Passenger) authentication.getPrincipal();
         List<Object[]> queryRet;
-         ReportDisplayDTO reportDisplayDTO = new ReportDisplayDTO();
+        ReportDisplayDTO reportDisplayDTO = new ReportDisplayDTO();
         switch(reportParameter){
             case MONEY_SPENT_EARNED -> {queryRet = passengerRideRepository.getPassengersMoneyReport(startDate, endDate, passenger.getUsername());
                 reportDisplayDTO.setYAxisName("Money spent"); break;}
             case NUM_OF_RIDES ->  {queryRet = passengerRideRepository.getPassengerRidesReport(startDate, endDate, passenger.getUsername());
                 reportDisplayDTO.setYAxisName("Number of rides");  break;}
             default -> {queryRet = passengerRideRepository.getPassengerDistanceReport(startDate, endDate, passenger.getUsername());
-            reportDisplayDTO.setYAxisName("Distance traveled"); }
+                reportDisplayDTO.setYAxisName("Distance traveled"); }
         }
         return generateReportDisplayDTO(queryRet, reportDisplayDTO);
     }
@@ -689,6 +766,13 @@ public class RideService {
                 .sentDateTime(LocalDateTime.now())
                 .build();
         this.template.convertAndSendToUser(receiverUsername, "/private/ride/disappearing", message);
+    }
+
+    private void sendRefreshMessageToDriverAndAllPassengers(Ride ride) {
+        List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
+        sendRefreshMessage(ride.getDriver().getUsername());
+        sendRefreshMessageToMultipleUsers(
+                passengerRides.stream().map(pr -> pr.getPassenger().getUsername()).toList());
     }
 
     private void sendRefreshMessage(String receiverUsername) {

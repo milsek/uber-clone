@@ -75,9 +75,9 @@ export class MapComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.initMap();
     this.getVehiclePositions();
-    // setInterval(() => {
-    //   this.getVehiclePositions();
-    // }, 10000);
+    setInterval(() => {
+      this.getVehiclePositions();
+    }, 10000);
   }
 
   private initMap(): void {
@@ -186,6 +186,7 @@ export class MapComponent implements AfterViewInit {
     ride.route.waypoints?.forEach((e : any) => {
       L.marker({lat: e.lat, lng: e.lng}).addTo(this.map);
     });
+    this.map.setView([ride.route.waypoints[0].lat, ride.route.waypoints[0].lng], 15);
   }
   
   getVehiclePositions = () => {
@@ -201,7 +202,8 @@ export class MapComponent implements AfterViewInit {
 
   drawVehiclePositions = () => {
     this.vehiclePositions.forEach(vehicle => {
-      if (this.areSameCoordinates(vehicle.currentCoordinates, vehicle.nextCoordinates)) {
+      // if (this.areSameCoordinates(vehicle.currentCoordinates, vehicle.nextCoordinates)) {
+      if (!vehicle.rideActive) {
         if (this.vehicleMarkers[vehicle.id]) this.vehicleMarkers[vehicle.id].removeFrom(this.map);
         const marker = L.marker(vehicle.currentCoordinates, { icon: this.unoccupiedTaxiIcon }).addTo(this.map);
         this.vehicleMarkers[vehicle.id] = marker;
