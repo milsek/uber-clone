@@ -3,8 +3,10 @@ package com.example.springbackend.service;
 import com.example.springbackend.dto.creation.RideIdDTO;
 import com.example.springbackend.dto.creation.RouteIdDTO;
 import com.example.springbackend.model.Passenger;
+import com.example.springbackend.model.PassengerRide;
 import com.example.springbackend.model.Route;
 import com.example.springbackend.repository.PassengerRepository;
+import com.example.springbackend.repository.PassengerRideRepository;
 import com.example.springbackend.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,9 @@ public class RouteService {
 
     @Autowired
     PassengerRepository passengerRepository;
+
+    @Autowired
+    PassengerRideRepository passengerRideRepository;
 
 
     public Boolean markRouteAsFavourite(RouteIdDTO routeIdDTO, Authentication authentication) {
@@ -55,5 +60,18 @@ public class RouteService {
         Passenger passenger = (Passenger) authentication.getPrincipal();
         Page<Route> routes = routeRepository.getRoutesByPassengersContains(passenger, paging);
         return routes;
+    }
+
+    public Boolean isRouteFavourite(RouteIdDTO routeIdDTO, Authentication authentication){
+        Optional<Route> route = routeRepository.findById(routeIdDTO.getRouteId());
+        if(route.isPresent()){
+            Passenger passenger = (Passenger) authentication.getPrincipal();
+            for(Route favouriteRoute : passenger.getFavouriteRoutes()){
+                if(Objects.equals(favouriteRoute.getId(), route.get().getId())){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

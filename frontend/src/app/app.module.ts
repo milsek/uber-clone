@@ -13,6 +13,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { ChatComponent } from './modules/chat/chat.component';
 import { SocketService } from './core/socket/socket.service';
 import { ReportsModule } from './modules/reports/reports.module';
+import { PassengerModule } from './modules/passenger/passenger.module';
 
 @NgModule({
   declarations: [AppComponent, ChatComponent],
@@ -26,16 +27,18 @@ import { ReportsModule } from './modules/reports/reports.module';
     UserModule,
     AdminModule,
     ReportsModule,
+    PassengerModule,
   ],
   providers: [
     AuthenticationService,
     SocketService,
     {
       provide: APP_INITIALIZER,
-      useFactory: (socketService: SocketService) => () => socketService.initWS(),
+      useFactory: (socketService: SocketService) => () =>
+        socketService.initWS(),
       deps: [SocketService],
-      multi: true
-    }
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

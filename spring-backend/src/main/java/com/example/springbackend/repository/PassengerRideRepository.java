@@ -3,6 +3,7 @@ package com.example.springbackend.repository;
 import com.example.springbackend.model.Passenger;
 import com.example.springbackend.model.PassengerRide;
 import com.example.springbackend.model.Ride;
+import com.example.springbackend.model.Route;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -84,5 +85,9 @@ public interface PassengerRideRepository extends JpaRepository<PassengerRide, In
     @Query("SELECT pr.passenger.username FROM PassengerRide pr WHERE " +
             "pr.ride.id = :rideId")
     List<String> getPassengersForRide(@Param("rideId") Integer rideId);
+
+    @Query("SELECT pr FROM PassengerRide pr WHERE " +
+            "pr.ride.expectedRoute.id = :routeId AND pr.passenger.username = :username" )
+    Optional<PassengerRide> findByRideRouteAndUsername(@Param("routeId") Integer routeId, @Param("username") String username);
 }
 

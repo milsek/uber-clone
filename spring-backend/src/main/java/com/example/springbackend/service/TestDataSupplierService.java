@@ -164,8 +164,37 @@ public class TestDataSupplierService {
         ride.setEndTime(LocalDateTime.now().minusMonths(3));
         ride.setDriver(driverRepository.findByUsername("driver1@noemail.com").get());
         ride.setDistance(600.0);
+        ride.setStartAddress("Djordja Niksica Johana 2, Bistrica, Novi Sad City");
+        ride.setDestinationAddress("Bulevar Slobodana Jovanovića 18, Bistrica, Novi Sad City");
+        ride.setVehicleType("COUPE");
         Route route = new Route();
         route.setPassengers(passengers);
+        route.setCoordinates(new ArrayList<>(){{
+            add(new Coordinates(45.25634, 19.80225));
+            add(new Coordinates(45.25631, 19.80215));
+            add(new Coordinates(45.25631, 19.80215));
+            add(new Coordinates(45.25628, 19.80207));
+            add(new Coordinates(45.2554, 19.80266));
+            add(new Coordinates(45.25534, 19.8027));
+            add(new Coordinates(45.25411, 19.80354));
+            add(new Coordinates(45.25376, 19.80377));
+            add(new Coordinates(45.25357, 19.80391));
+            add(new Coordinates(45.25336, 19.80404));
+            add(new Coordinates(45.25333, 19.80406));
+            add(new Coordinates(45.2532, 19.80415));
+            add(new Coordinates(45.25312, 19.8042));
+            add(new Coordinates(45.25317, 19.80433));
+            add(new Coordinates(45.25323, 19.80427));
+            add(new Coordinates(45.25337, 19.80417));
+            add(new Coordinates(45.25339, 19.80415));
+            add(new Coordinates(45.25361, 19.804));
+            add(new Coordinates(45.25366, 19.80397));
+            add(new Coordinates(45.25366, 19.80397));
+        }});
+        route.setWaypoints(new ArrayList<>(){{
+            add(new Coordinates(45.256336, 19.802247));
+            add(new Coordinates(45.253658, 19.803968));
+        }});
         routeRepository.save(route);
         ride.setActualRoute(route);
         ride.setPassengersConfirmed(true);
@@ -181,30 +210,30 @@ public class TestDataSupplierService {
         passengerRide.setFare(80);
         passengerRide.setId(1);
         passengerRideRepository.save(passengerRide);
-        ride.setDriver(driverRepository.findByUsername("driver2@noemail.com").get());
-
-
-        ride.setId(2);
-        rideRepository.save(ride);
-        passengerRide.setRide(ride);
-        passengerRide.setPassenger(passengerRepository.findByUsername("passenger1@noemail.com").get());
-        passengerRide.setFare(60);
-        passengerRide.setId(2);
-        passengers.remove(1);
-        ride.setId(3);
-        ride.setPrice(90);
-        ride.setDistance(630.0);
-        ride.setStartTime(LocalDateTime.now().minusMonths(4));
-        ride.setDriver(driverRepository.findByUsername("driver1@noemail.com").get());
-        rideRepository.save(ride);
-        passengerRideRepository.save(passengerRide);
-
-
-        passengers.add(passengerRepository.findByUsername("passenger3@noemail.com").get());
-        passengerRide.setPassenger(passengerRepository.findByUsername("passenger3@noemail.com").get());
-        passengerRide.setFare(80);
-        passengerRide.setId(8);
-        passengerRideRepository.save(passengerRide);
+//        ride.setDriver(driverRepository.findByUsername("driver2@noemail.com").get());
+//
+//
+//        ride.setId(2);
+//        rideRepository.save(ride);
+//        passengerRide.setRide(ride);
+//        passengerRide.setPassenger(passengerRepository.findByUsername("passenger1@noemail.com").get());
+//        passengerRide.setFare(60);
+//        passengerRide.setId(2);
+//        passengers.remove(1);
+//        ride.setId(3);
+//        ride.setPrice(90);
+//        ride.setDistance(630.0);
+//        ride.setStartTime(LocalDateTime.now().minusMonths(4));
+//        ride.setDriver(driverRepository.findByUsername("driver1@noemail.com").get());
+//        rideRepository.save(ride);
+//        passengerRideRepository.save(passengerRide);
+//
+//
+//        passengers.add(passengerRepository.findByUsername("passenger3@noemail.com").get());
+//        passengerRide.setPassenger(passengerRepository.findByUsername("passenger3@noemail.com").get());
+//        passengerRide.setFare(80);
+//        passengerRide.setId(8);
+//        passengerRideRepository.save(passengerRide);
     }
 
     private void addOtherDrivers() {

@@ -9,6 +9,8 @@ import {
   faUserEdit,
   faCircleXmark,
   faSearch,
+  faStar,
+  faRoute,
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { DriverService } from 'src/app/core/http/user/driver.service';
@@ -30,6 +32,8 @@ export class TopControlsComponent implements OnInit {
   faUserEdit: IconDefinition = faUserEdit;
   faCircleXmark: IconDefinition = faCircleXmark;
   faSearch: IconDefinition = faSearch;
+  faStar: IconDefinition = faStar;
+  faRoute: IconDefinition = faRoute;
 
   showActionsDropdown: boolean = false;
   clickedActionsDropdown: boolean = false;

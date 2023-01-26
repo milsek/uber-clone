@@ -8,6 +8,7 @@ import { UpdateRequestsComponent } from './update-requests/update-requests.compo
 import { RideRejectionRequestsComponent } from './ride-rejection-requests/ride-rejection-requests.component';
 import { SharedModule } from 'src/app/shared/module/shared/shared.module';
 import { UsersSearchComponent } from './users-search/users-search.component';
+import { MainModule } from '../main/main.module';
 
 @NgModule({
   declarations: [

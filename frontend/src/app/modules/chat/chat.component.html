@@ -1,11 +1,13 @@
 <div class="mt-auto" *ngIf="user.username != ''">
   <div
-    class="bg-dark z-50 w-120 h-140 rounded-xl overflow-hidden flex absolute right-16 bottom-24"
+    class="bg-medium z-50 w-120 h-140 rounded-xl overflow-hidden flex absolute right-16 bottom-24"
     [ngClass]="{ 'w-80': user.role !== 'admin' }"
     *ngIf="showChat"
   >
     <div *ngIf="user.role === 'admin'" class="mt-12">
-      <div class="w-30 max-w-[160px] bg-dark select-none h-full overflow-auto overflow-y-auto hidden-scrollbar">
+      <div
+        class="w-30 max-w-[160px] bg-medium select-none h-full overflow-auto overflow-y-auto hidden-scrollbar"
+      >
         <ul role="list" class="w-full">
           <li
             *ngFor="let chat of chats"
@@ -30,11 +32,11 @@
       </div>
     </div>
 
-    <div class="bg-dark z-40 w-80 overflow-hidden relative rounded-xl">
-      <div class="flex h-12 bg-accent-light my-auto justify-between select-none">
-        <div
-          class="text-lg text-white font-medium my-auto ml-4 truncate"
-        >
+    <div class="bg-medium z-40 w-80 overflow-hidden relative rounded-xl">
+      <div
+        class="flex h-12 bg-accent-light my-auto justify-between select-none"
+      >
+        <div class="text-lg text-white font-medium my-auto ml-4 truncate">
           {{ receiver === "admin" ? "Live support" : receiver }}
         </div>
       </div>
@@ -75,9 +77,7 @@
         <textarea
           id="chat-text-area"
           type="text"
-          class="w-full py-1 bg-transparent rounded-xl border px-4 border-stone-500
-          focus:border-accent-light text-gray-50 border-opacity-75 outline-none
-          caret-light placeholder-stone-400 resize-none hidden-scrollbar"
+          class="w-full py-1 bg-transparent rounded-xl border px-4 border-stone-500 focus:border-accent-light text-gray-50 border-opacity-75 outline-none caret-light placeholder-stone-400 resize-none hidden-scrollbar"
           placeholder="Type message..."
           rows="1"
           [value]="newMessage"
@@ -89,7 +89,7 @@
   </div>
   <div class="absolute right-6 bottom-16 z-50">
     <button
-      class="bg-dark text-white w-10 h-10 rounded-2xl"
+      class="bg-medium text-white w-10 h-10 rounded-2xl"
       (click)="changeShowChat()"
     >
       <svg
@@ -113,7 +113,9 @@
     </button>
   </div>
   <div *ngIf="numOfNewMessages > 0" class="absolute right-5 bottom-24 z-50">
-    <div class="bg-accent-light rounded-2xl w-5 h-5 text-center text-white text-sm">
+    <div
+      class="bg-accent-light rounded-2xl w-5 h-5 text-center text-white text-sm"
+    >
       {{ numOfNewMessages }}
     </div>
   </div>

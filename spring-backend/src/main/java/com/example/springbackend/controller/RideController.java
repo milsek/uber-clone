@@ -82,7 +82,7 @@ public class RideController {
 
 
     @GetMapping("/ride-history")
-    public Page<RideHistoryDisplayDTO> getRideHistory(@Valid @RequestParam String username, @RequestParam Integer page, @RequestParam Integer amount, @RequestParam String sortBy, Authentication authentication){
+    public Page<RideHistoryDisplayDTO> getRideHistory(@Valid @RequestParam(value="username") String username, @RequestParam(value="page") Integer page, @RequestParam(value="amount") Integer amount, @RequestParam(value="sortBy") String sortBy, Authentication authentication){
         Pageable paging = PageRequest.of(page, amount, Sort.by(sortBy));
         return rideService.getRideHistory(username, authentication, paging);
     }

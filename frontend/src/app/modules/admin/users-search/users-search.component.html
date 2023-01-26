@@ -157,6 +157,7 @@
         <button
           class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-r hover:bg-medium"
           (click)="prev()"
+          disabled="{{ startElem === 0 }}"
         >
           <svg
             aria-hidden="true"
@@ -176,6 +177,7 @@
         <button
           class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-r hover:bg-medium"
           (click)="next()"
+          disabled="{{ startElem + 7 >= numOfElements }}"
         >
           Next
           <svg

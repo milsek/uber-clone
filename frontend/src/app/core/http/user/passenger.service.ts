@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
-import { RideSimple } from 'src/app/shared/models/ride.model';
+import { PassengerRide, RideSimple } from 'src/app/shared/models/ride.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
 @Injectable({
@@ -85,6 +85,62 @@ export class PassengerService {
     return axios.post(
       `/api/passengers/search`,
       { name: name, surname: surname, username: username, page: page },
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  getRides(page: number, amount: number, sortBy: string): Promise<any> {
+    const username = '';
+    return axios.get(
+      `/api/rides/ride-history?username=${username}&page=${page}&amount=${amount}&sortBy=${sortBy}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  markFavouriteRoute(routeId: number): Promise<boolean> {
+    return axios.post(
+      `/api/routes/mark-route-as-favourite`,
+      { routeId },
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  unmarkFavouriteRoute(routeId: number): Promise<boolean> {
+    return axios.post(
+      `/api/routes/unmark-route-as-favourite`,
+      { routeId },
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  getFavouriteRoute(page: number): Promise<any> {
+    return axios.get(`/api/routes/favourite-routes?page=${page}&amount=${1}`, {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`,
+      },
+    });
+  }
+
+  isFavouriteRoute(routeId: number): Promise<any> {
+    return axios.post(
+      `/api/routes/is-route-favourite`,
+      { routeId },
       {
         headers: {
           Authorization: `Bearer ${this.authenticationService.getToken()}`,

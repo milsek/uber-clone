@@ -46,7 +46,10 @@
 
       <!-- change when new options are added for other users -->
       <div
-        *ngIf="showActionsDropdown && accountType === 'admin'"
+        *ngIf="
+          showActionsDropdown &&
+          (accountType === 'admin' || accountType === 'passenger')
+        "
         class="absolute z-20 left-0 top-14 rounded-lg bg-dark w-72 p-1.5 px-2 flex flex-col font-medium text-light text-base"
         (click)="clickedActionsDropdown = true"
       >
@@ -88,6 +91,24 @@
           >
             <fa-icon [icon]="faSearch" class="text-xl"></fa-icon>
             <span class="my-auto">Ride report</span>
+          </button>
+        </div>
+
+        <div *ngIf="accountType === 'passenger'">
+          <button
+            class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+            routerLink="/passenger/ride-history"
+          >
+            <fa-icon [icon]="faRoute" class="text-xl w-6"></fa-icon>
+            <span class="my-auto">Ride history</span>
+          </button>
+
+          <button
+            class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+            routerLink="/passenger/fav-routes"
+          >
+            <fa-icon [icon]="faStar" class="text-xl w-6"></fa-icon>
+            <span class="my-auto">Favourite routes</span>
           </button>
         </div>
       </div>

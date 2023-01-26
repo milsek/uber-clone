@@ -14,10 +14,17 @@ const routes: Routes = [
     loadChildren: () =>
       import('./modules/user/user.module').then((m) => m.UserModule),
   },
-  { 
+  {
     path: 'admin',
     loadChildren: () =>
-      import('./modules/admin/admin.module').then(m => m.AdminModule)
+      import('./modules/admin/admin.module').then((m) => m.AdminModule),
+  },
+  {
+    path: 'passenger',
+    loadChildren: () =>
+      import('./modules/passenger/passenger.module').then(
+        (m) => m.PassengerModule
+      ),
   },
   { 
     path: 'reports',
