@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -351,6 +352,7 @@ public class RideService {
         Driver driver = (Driver) auth.getPrincipal();
         Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
         ride.setStatus(RideStatus.IN_PROGRESS);
+        ride.setStartTime(LocalDateTime.now());
         rideRepository.save(ride);
         List<Coordinates> waypoints = ride.getActualRoute().getWaypoints();
         directDriverToLocation(driver, waypoints.get(waypoints.size() - 1));
@@ -366,6 +368,7 @@ public class RideService {
         Driver driver = (Driver) auth.getPrincipal();
         Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
         ride.setStatus(RideStatus.COMPLETED);
+        ride.setEndTime(LocalDateTime.now());
         rideRepository.save(ride);
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
         sendMessageToMultiplePassengers(passengerRides.stream().map(pr -> pr.getPassenger().getUsername()).toList(),
@@ -586,18 +589,21 @@ public class RideService {
         return dto;
     }
 
-    public Page<RideHistoryDisplayDTO> getRideHistory(String username, Authentication authentication, Pageable paging) {
-        User user = (User) authentication.getPrincipal();
-        if(username.isEmpty()){
-            username = user.getUsername();
-        }
-        else{
-            if(!adminRepository.findById(username).isPresent()){
-                return null;
-            }
-        }
-        Page<PassengerRide> passengerRides = passengerRideRepository.findByPassengerUsername(username, paging);
-        return passengerRides.map(passengerRide -> modelMapper.map(passengerRide.getRide(), RideHistoryDisplayDTO.class));
+    public Page<RideHistoryDisplayDTO> getRideHistory(Authentication auth, Pageable paging) {
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        Page<PassengerRide> passengerRides = passengerRideRepository.findByPassengerUsername(passenger.getUsername(), paging);
+        Page<RideHistoryDisplayDTO> page = passengerRides.map(passengerRide -> modelMapper
+                .map(passengerRide.getRide(), RideHistoryDisplayDTO.class));
+        page.getContent().stream().map(entry -> {
+            entry.setDriverRating(passengerRides.stream()
+                    .filter(pr -> pr.getRide().getId() == entry.getId())
+                    .findFirst().get().getDriverRating());
+            entry.setVehicleRating(passengerRides.stream()
+                    .filter(pr -> pr.getRide().getId() == entry.getId())
+                    .findFirst().get().getVehicleRating());
+            return entry;
+        }).toList();
+        return page;
     }
 
     public DetailedRideHistoryPassengerDTO detailedRideHistoryPassenger(Integer rideId, Authentication authentication) {
@@ -624,14 +630,15 @@ public class RideService {
         return detailedRideHistoryDriverDTO;
     }
 
-    public Boolean leaveReview(ReviewDTO reviewDTO, Authentication authentication) {
+    public Boolean leaveReview(ReviewCreationDTO reviewCreationDTO, Authentication authentication) {
         Passenger passenger = (Passenger) authentication.getPrincipal();
-        Optional<PassengerRide> optPassengerRide = passengerRideRepository.findByRideIdAndPassengerUsername(reviewDTO.getRideId(),passenger.getUsername());
-        if(optPassengerRide.isPresent()){
-            PassengerRide passengerRide = optPassengerRide.get();
-            passengerRide.setComment(reviewDTO.getComment());
-            passengerRide.setVehicleRating(reviewDTO.getVehicleRating());
-            passengerRide.setDriverRating(reviewDTO.getDriverRating());
+        PassengerRide passengerRide = passengerRideRepository.
+                findByRideIdAndPassengerUsername(reviewCreationDTO.getRideId(), passenger.getUsername()).orElseThrow();
+        LocalDateTime rideEnd = passengerRide.getRide().getEndTime();
+        if (rideEnd.plus(72, ChronoUnit.HOURS).isAfter(LocalDateTime.now())) {
+            passengerRide.setComment(reviewCreationDTO.getComment());
+            passengerRide.setVehicleRating(reviewCreationDTO.getVehicleRating());
+            passengerRide.setDriverRating(reviewCreationDTO.getDriverRating());
             passengerRideRepository.save(passengerRide);
             return true;
         }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
 import { Coordinates } from 'src/app/shared/models/coordinates.model';
+import { ReviewData } from 'src/app/shared/models/data-transfer-interfaces/review-data.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
 interface RideOrderData {
@@ -107,6 +108,16 @@ export class RideService {
     {
       rideId,
     },
+    {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`
+      }
+    });
+  }
+
+  sendReview(data: ReviewData): Promise<any> {
+    return axios.post(`/api/rides/reviews`, 
+    data,
     {
       headers: {
         Authorization: `Bearer ${this.authenticationService.getToken()}`

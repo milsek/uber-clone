@@ -208,6 +208,9 @@ public class TestDataSupplierService {
         passengerRide.setRide(ride);
         passengerRide.setPassenger(passengerRepository.findByUsername("passenger1@noemail.com").get());
         passengerRide.setFare(80);
+        passengerRide.setDriverRating(4);
+        passengerRide.setVehicleRating(3);
+        passengerRide.setComment("The car was old and dirty.");
         passengerRide.setId(1);
         passengerRideRepository.save(passengerRide);
 //        ride.setDriver(driverRepository.findByUsername("driver2@noemail.com").get());

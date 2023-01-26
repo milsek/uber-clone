@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { RideReportService } from 'src/app/core/http/ride/rideReportService';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
+import { faChevronLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-ride-reports',
   templateUrl: './ride-reports.component.html',
 })
 export class RideReportsComponent implements OnInit {
+  faChevronLeft: IconDefinition = faChevronLeft;
   graphData : { name: string; value: number; }[] = [];
   graphLoaded = true;
   xAxisName : string = '';

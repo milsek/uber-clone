@@ -47,4 +47,6 @@ export interface PassengerRide {
     coordinates: Coordinates[];
     waypoints: Coordinates[];
   };
+  driverRating: number;
+  vehicleRating: number;
 }

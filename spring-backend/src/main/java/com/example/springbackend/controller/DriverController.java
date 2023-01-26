@@ -70,6 +70,7 @@ public class DriverController {
     }
 
     @PostMapping("/search")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DriverSearchDisplayDTO> searchDrivers(@RequestBody SearchDTO searchDTO){
         return ResponseEntity.ok(driverService.searchDrivers(searchDTO));
     }

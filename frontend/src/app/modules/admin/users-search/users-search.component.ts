@@ -78,7 +78,7 @@ export class UsersSearchComponent implements OnInit {
   getImage(profilePicture: string): void {
     for (let user of this.users) {
       if (user.profilePicture === profilePicture) {
-        user.userImage = ' ';
+        user.userImage = '';
       }
     }
     this.photoService.loadImage(profilePicture).then((response) => {
@@ -91,15 +91,19 @@ export class UsersSearchComponent implements OnInit {
   }
 
   prev(): void {
-    this.page--;
-    this.startElem -= 7;
-    this.getUsers();
+    if (this.page !== 0) {
+      this.page--;
+      this.startElem -= 7;
+      this.getUsers();
+    }
   }
 
   next(): void {
-    this.page++;
-    this.startElem += 7;
-    this.getUsers();
+    if (this.startElem + 7 <= this.numOfElements) {
+      this.page++;
+      this.startElem += 7;
+      this.getUsers();
+    }
   }
 
   ban(): void {
@@ -174,5 +178,9 @@ export class UsersSearchComponent implements OnInit {
       this.showUserNotesModal = false;
     }
     this.clickedInsideModal = false;
+  }
+
+  get accountType(): string {
+    return this.authenticationService.getAccountType();
   }
 }

@@ -35,6 +35,7 @@ public class PassengerController {
     }
 
     @PostMapping("/search")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PassengerSearchDisplayDTO> searchPassengers(@RequestBody SearchDTO searchDTO) {
         return ResponseEntity.ok(passengerService.searchPassengers(searchDTO));
     }

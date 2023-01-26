@@ -1,158 +1,173 @@
 <div>
-  <form [formGroup]="userEditForm" (submit)="onSubmitUserUpdate()">
-    <div class="flex justify-between gap-x-4">
-      <div class="w-full">
+  <form [formGroup]="userEditForm" (submit)="onSubmitUserUpdate()"
+  class="flex flex-col justify-between text-left">
+    
+    <div class="h-120">
+      <!-- image -->
+      <div class="block mb-8">
+        <div class="flex rounded-lg w-full ml-1">
+          <label
+            id="label-input"
+            class="mx-auto outline-dashed outline-2 outline-offset-2 outline-gray-400 hover:outline-gray-600 hover:border-gray-300 cursor-pointer"
+          >
+            <img
+              [src]="newImage ? newImage : currentImage"
+              class="flex-none w-24 h-24 rounded-xl object-cover"
+              alt="Profile Picture"
+            />
+
+            <input
+              id="image-input"
+              type="file"
+              accept="image/*"
+              (change)="readURL($event)"
+              class="opacity-0 hidden h-0 w-0"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="flex justify-between gap-x-4">
+        <div class="w-full">
+          <label
+            class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-first-name"
+          >
+            First Name
+          </label>
+          <input
+            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-first-name"
+            type="text"
+            placeholder="Your First Name"
+            formControlName="name"
+          />
+          <div class="h-1">
+            <p
+              *ngIf="name && name.invalid && name.touched"
+              class="text-yellow-400 text-xs italic"
+            >
+              <span *ngIf="name.errors?.['required']">
+                First name is required.
+              </span>
+              <span *ngIf="name.errors?.['minlength']">
+                First name is too short.
+              </span>
+              <span *ngIf="name.errors?.['maxlength']">
+                First name is too long.
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="w-full">
+          <label
+            class="block tracking-wide text-light text-xs font-bold mb-1"
+            for="register-last-name"
+          >
+            Last Name
+          </label>
+          <input
+            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            id="register-last-name"
+            type="text"
+            placeholder="Your Last Name"
+            formControlName="surname"
+          />
+          <div class="h-1">
+            <p
+              *ngIf="surname && surname.invalid && surname.touched"
+              class="text-yellow-400 text-xs italic"
+            >
+              <span *ngIf="surname.errors?.['required']">
+                Last name is required.
+              </span>
+              <span *ngIf="surname.errors?.['minlength']">
+                Last name is too short.
+              </span>
+              <span *ngIf="surname.errors?.['maxlength']">
+                Last name is too long.
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="w-full my-2">
         <label
           class="block tracking-wide text-light text-xs font-bold mb-1"
           for="register-first-name"
         >
-          First Name
+          Phone Number
         </label>
         <input
           class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
-          id="register-first-name"
+          id="register-phone-number"
           type="text"
-          placeholder="Your First Name"
-          formControlName="name"
+          placeholder="Your Phone Number"
+          formControlName="phoneNumber"
         />
         <div class="h-1">
           <p
-            *ngIf="name && name.invalid && name.touched"
+            *ngIf="phoneNumber && phoneNumber.invalid && phoneNumber.touched"
             class="text-yellow-400 text-xs italic"
           >
-            <span *ngIf="name.errors?.['required']">
-              First name is required.
+            <span *ngIf="phoneNumber.errors?.['minlength']">
+              Phone Number is too short.
             </span>
-            <span *ngIf="name.errors?.['minlength']">
-              First name is too short.
+            <span *ngIf="phoneNumber.errors?.['maxlength']">
+              Phone Number is too long.
             </span>
-            <span *ngIf="name.errors?.['maxlength']">
-              First name is too long.
+            <span *ngIf="phoneNumber.errors?.['pattern']">
+              Phone Number is too long.
             </span>
           </p>
         </div>
       </div>
-      <div class="w-full">
+      <div class="w-full my-2">
         <label
           class="block tracking-wide text-light text-xs font-bold mb-1"
-          for="register-last-name"
+          for="register-first-name"
         >
-          Last Name
+          City
         </label>
         <input
           class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
-          id="register-last-name"
+          id="register-city"
           type="text"
-          placeholder="Your Last Name"
-          formControlName="surname"
+          placeholder="Your City"
+          formControlName="city"
         />
         <div class="h-1">
-          <p
-            *ngIf="surname && surname.invalid && surname.touched"
-            class="text-yellow-400 text-xs italic"
-          >
-            <span *ngIf="surname.errors?.['required']">
-              Last name is required.
-            </span>
-            <span *ngIf="surname.errors?.['minlength']">
-              Last name is too short.
-            </span>
-            <span *ngIf="surname.errors?.['maxlength']">
-              Last name is too long.
-            </span>
+          <p *ngIf="city && city.invalid && city.touched"
+            class="text-yellow-400 text-xs italic">
+            <span *ngIf="city.errors?.['minlength']"> City is too short. </span>
+            <span *ngIf="city.errors?.['maxlength']"> City is too long. </span>
           </p>
         </div>
       </div>
-    </div>
-    <div class="w-full my-2">
-      <label
-        class="block tracking-wide text-light text-xs font-bold mb-1"
-        for="register-first-name"
-      >
-        Phone Number
-      </label>
-      <input
-        class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
-        id="register-phone-number"
-        type="text"
-        placeholder="Your Phone Number"
-        formControlName="phoneNumber"
-      />
-      <div class="h-1">
-        <p
-          *ngIf="phoneNumber && phoneNumber.invalid && phoneNumber.touched"
-          class="text-yellow-400 text-xs italic"
-        >
-          <span *ngIf="phoneNumber.errors?.['minlength']">
-            Phone Number is too short.
-          </span>
-          <span *ngIf="phoneNumber.errors?.['maxlength']">
-            Phone Number is too long.
-          </span>
-          <span *ngIf="phoneNumber.errors?.['pattern']">
-            Phone Number is too long.
-          </span>
-        </p>
-      </div>
-    </div>
-    <div class="w-full my-2">
-      <label
-        class="block tracking-wide text-light text-xs font-bold mb-1"
-        for="register-first-name"
-      >
-        City
-      </label>
-      <input
-        class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
-        id="register-city"
-        type="text"
-        placeholder="Your City"
-        formControlName="city"
-      />
-      <div class="h-1">
-        <p
-          *ngIf="city && city.invalid && city.touched"
-          class="text-yellow-400 text-xs italic"
-        >
-          <span *ngIf="city.errors?.['minlength']"> City is too short. </span>
-          <span *ngIf="city.errors?.['maxlength']"> City is too long. </span>
-        </p>
-      </div>
-    </div>
-    <div class="block mt-4">
-      <div class="flex rounded-lg w-full ml-1">
-        <label
-          id="label-input"
-          class="mx-auto outline-dashed outline-2 outline-offset-2 outline-gray-400 hover:outline-gray-600 hover:border-gray-300 cursor-pointer"
-        >
-          <img
-            [src]="newImage ? newImage : currentImage"
-            class="flex-none w-24 h-24 rounded-xl object-cover"
-            alt="Profile Picture"
-          />
 
-          <input
-            id="image-input"
-            type="file"
-            accept="image/*"
-            (change)="readURL($event)"
-            class="opacity-0 hidden h-0 w-0"
-          />
-        </label>
+    </div>
+
+    <div class="text-center">
+      <button type="submit" class="w-full h-16 bg-accent-light active:bg-accent
+      text-white font-medium tracking-wide">
+        UPDATE PROFILE
+      </button>
+
+      <div class="mx-auto mt-7">
+        <span class="text-accent-light cursor-pointer mx-auto" (click)="resetPassword()">
+          Change password
+        </span >
       </div>
     </div>
-    <br />
-    <button
-      type="submit"
-      class="w-full h-16 bg-accent-light active:bg-accent text-white font-medium tracking-wide"
-    >
-      UPDATE PROFILE
-    </button>
+
   </form>
 </div>
-<br />
-<div class="mx-auto">
-  <span class="text-accent-light cursor-pointer" (click)="resetPassword()"
-    >Change password</span
-  >
+
+<div *ngIf="showResetPasswordConfirmationModal">
+  <app-error-modal 
+  [title]="'Success!'"
+  [description]="'An email was sent to your address.'"
+  (onClose)="closeResetPasswordConfirmationModal()">
+  </app-error-modal>
 </div>
+

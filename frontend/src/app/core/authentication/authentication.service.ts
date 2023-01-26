@@ -18,7 +18,6 @@ export class AuthenticationService {
   }
 
   whoami(): void {
-    console.log(this.getToken() || localStorage.getItem('token2'));
     axios
       .get(`/api/users/whoami`, {
         headers: {
@@ -148,7 +147,6 @@ export class AuthenticationService {
         if (resp.data) {
           return true;
         } else {
-          console.log('Bad credentials');
           return false;
         }
       })

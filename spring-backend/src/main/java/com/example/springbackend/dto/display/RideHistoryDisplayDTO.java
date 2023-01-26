@@ -18,4 +18,6 @@ public class RideHistoryDisplayDTO {
     private String destinationAddress;
     private String vehicleType;
     private RideStatus status;
+    private double driverRating;
+    private double vehicleRating;
 }

@@ -14,6 +14,8 @@ export class PassengerEditComponent implements OnInit {
   newImage: any = '';
   newFile: File | undefined;
 
+  showResetPasswordConfirmationModal: boolean = false;
+
   @Output() changeView = new EventEmitter<void>();
 
   userEditForm = new FormGroup(
@@ -91,7 +93,7 @@ export class PassengerEditComponent implements OnInit {
 
   async resetPassword() {
     this.authenticationService.resetPasword(this.passenger.email!);
-    alert('Email sent');
+    this.showResetPasswordConfirmationModal = true;
   }
 
   async onSubmitUserUpdate() {
@@ -125,5 +127,9 @@ export class PassengerEditComponent implements OnInit {
       reader.readAsDataURL(file);
       this.newFile = file;
     }
+  }
+
+  closeResetPasswordConfirmationModal(): void {
+    this.showResetPasswordConfirmationModal = false;
   }
 }

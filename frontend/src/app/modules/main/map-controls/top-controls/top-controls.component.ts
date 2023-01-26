@@ -11,6 +11,7 @@ import {
   faSearch,
   faStar,
   faRoute,
+  faPieChart
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { DriverService } from 'src/app/core/http/user/driver.service';
@@ -34,14 +35,13 @@ export class TopControlsComponent implements OnInit {
   faSearch: IconDefinition = faSearch;
   faStar: IconDefinition = faStar;
   faRoute: IconDefinition = faRoute;
+  faPieChart: IconDefinition = faPieChart;
 
   showActionsDropdown: boolean = false;
   clickedActionsDropdown: boolean = false;
   showProfileDropdown: boolean = false;
   showProfileDropdown2: boolean = false;
   clickedProfileDropdown: boolean = false;
-  showHambrugerDropdown: boolean = false;
-  clickedHambrugerDropdown: boolean = false;
 
   constructor(
     private driverService: DriverService,

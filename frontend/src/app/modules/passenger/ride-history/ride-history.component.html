@@ -1,142 +1,66 @@
 <div class="min-h-screen h-full w-full bg-dark flex flex-col">
   <div class="absolute top-6 left-6">
     <div
-      class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
+      class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400
+      hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
       routerLink="/"
     >
       <fa-icon [icon]="faChevronLeft"></fa-icon>
     </div>
   </div>
 
-  <div class="mx-auto my-auto flex gap-x-5 w-5/6 h-200">
-    <div
-      class="w-1/3 h-full my-auto text-center border border-stone-500 rounded-lg p-4 text-stone-500 relative"
-    >
-      <div class="text-3xl"><strong>Ride History</strong></div>
-      <br />
-      <div *ngIf="rides.length === 0" class="text-xl">
-        You didn't had any ride yet
+  <div class="mx-auto flex flex-col lg:flex-row gap-x-5 w-11/12 xl:w-5/6 h-300 lg:h-192 my-20">
+    <div class="flex flex-col justify-between w-full lg:w-1/3 h-2/5 overflow-y-auto lg:h-full
+    text-center borderborder-stone-500 rounded-lg p-4 text-stone-500 relative">
+      <div>
+        <div class="text-xl"><strong>Ride History</strong></div>
+        <br />
+        <div *ngIf="rides.length === 0" class="text-xl">
+          You haven't had any rides yet
+        </div>
+
+        <ul role="list" class="flex flex-col gap-y-3">
+          <li *ngFor="let ride of rides">
+            <div
+              class="flex flex-col items-center cursor-pointer text-white rounded-md py-2 px-4"
+              (click)="selectRide(ride.id)"
+              [ngClass]="ride.id === selectedRide?.id ? 'bg-medium' : 'bg-dark'"
+            >
+
+              <div class="text-center w-full">
+                <div class="text-stone-400 text-sm font-medium">
+                  {{ getDateTime(ride.startTime) }}
+                </div>
+                <div class="lg:text-sm truncate w-full">
+                  {{ ride.startAddress }}
+                </div>
+                <fa-icon [icon]="faChevronCircleDown"></fa-icon>
+                <div class="lg:text-sm truncate w-full">
+                  {{ ride.destinationAddress }}
+                </div>
+              </div>
+
+              <div class="w-full mt-2">
+                <div class="w-full flex justify-center divide-x divide-light">
+                  <div class="font-medium px-2 w-1/2 text-right">
+                    <span class="font-bold text-accent-light">T</span> {{ ride.price }}
+                  </div>
+                  <div class="font-medium px-2 w-1/2 text-left">
+                    {{ ride.distance }} km
+                  </div>
+                </div>
+                <div class="font-bold mt-2"
+                [ngClass]="ride.status === 'COMPLETED' ? 'text-accent-light' : 'text-base'">
+                  {{ getRideStatus(ride) }}
+                </div>
+              </div>
+
+            </div>
+          </li>
+        </ul>
       </div>
-      <ul role="list" class="-my-5 divide-y divide-gray-200">
-        <li *ngFor="let ride of rides" class="py-4">
-          <div
-            class="flex items-center space-x-3 cursor-pointer text-white"
-            (click)="selectRide(ride.id)"
-            [ngClass]="ride.id === selectedRide?.id ? 'bg-medium' : 'bg-dark'"
-          >
-            <div>
-              <div class="flex select-none">
-                <div
-                  class="flex flex-col justify-end text-center"
-                  *ngIf="ride.vehicleType === 'COUPE'"
-                >
-                  <img
-                    [src]="
-                      ride.vehicleType === 'COUPE'
-                        ? 'assets/icons/car-coupe.png'
-                        : 'assets/icons/car-coupe-gray.png'
-                    "
-                    class="w-16"
-                    title="Coupe"
-                  />
-                  <p
-                    class="text-sm font-medium mt-1"
-                    [ngClass]="
-                      ride.vehicleType === 'COUPE'
-                        ? 'text-gray-50'
-                        : 'text-light'
-                    "
-                  >
-                    Coupe
-                  </p>
-                </div>
-                <div
-                  class="flex flex-col justify-end text-center"
-                  *ngIf="ride.vehicleType === 'MINIVAN'"
-                >
-                  <img
-                    [src]="
-                      ride.vehicleType === 'MINIVAN'
-                        ? 'assets/icons/car-minivan.png'
-                        : 'assets/icons/car-minivan-gray.png'
-                    "
-                    class="w-16"
-                    title="Minivan"
-                  />
-                  <p
-                    class="text-sm font-medium mt-1"
-                    [ngClass]="
-                      ride.vehicleType === 'MINIVAN'
-                        ? 'text-gray-50'
-                        : 'text-light'
-                    "
-                  >
-                    Minivan
-                  </p>
-                </div>
-                <div
-                  class="flex flex-col justify-end text-center"
-                  *ngIf="ride.vehicleType === 'STATION'"
-                >
-                  <img
-                    [src]="
-                      ride.vehicleType === 'STATION'
-                        ? 'assets/icons/car-station.png'
-                        : 'assets/icons/car-station-gray.png'
-                    "
-                    class="w-16"
-                    title="Station"
-                  />
-                  <p
-                    class="text-sm font-medium mt-1"
-                    [ngClass]="
-                      ride.vehicleType === 'STATION'
-                        ? 'text-gray-50'
-                        : 'text-light'
-                    "
-                  >
-                    Station
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="w-3/4 text-left">
-              <div>
-                Ride at
-                <strong>{{ getDateTime(ride.startTime) }}</strong>
-              </div>
-              <div>
-                Start:
-                <strong>{{ ride.startAddress }}</strong>
-              </div>
-              <div>
-                Destination:
-                <strong>{{ ride.destinationAddress }}</strong>
-              </div>
-            </div>
-            <div class="w-1/3 text-right">
-              <div>
-                T <strong>{{ ride.price }}</strong>
-              </div>
-              <div>
-                Distance: <strong>{{ ride.distance }}</strong> km
-              </div>
-              <div
-                [ngClass]="
-                  ride.status === 'COMPLETED'
-                    ? 'text-accent-light'
-                    : 'text-base'
-                "
-              >
-                <strong>{{ ride.status }}</strong>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div
-        class="flex flex-col items-center mt-7 mb-3 absolute bottom-0 text-center w-full"
-      >
+
+      <div class="flex flex-col items-center mt-7 mb-3 bottom-0 text-center w-full">
         <span class="text-sm text-gray-700 dark:text-gray-400">
           Showing
           <span class="font-semibold text-gray-900 dark:text-white">{{
@@ -154,7 +78,8 @@
         </span>
         <div class="inline-flex mt-1 xs:mt-0">
           <button
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-r hover:bg-medium disabled:text-gray-500"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0
+            border-l border-gray-700 rounded-l hover:bg-medium disabled:text-gray-500"
             (click)="prev()"
             [disabled]="startElem === 0"
           >
@@ -174,7 +99,8 @@
             Prev
           </button>
           <button
-            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-r hover:bg-medium disabled:text-gray-500"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0
+            border-l border-gray-700 rounded-r hover:bg-medium disabled:text-gray-500"
             (click)="next()"
             [disabled]="startElem + 4 >= numOfElements"
           >
@@ -196,19 +122,67 @@
         </div>
       </div>
     </div>
-    <div
-      class="w-2/3 text-center border border-stone-500 rounded-lg font-bold text-2xl relative"
-    >
-      <button
-        class="absolute top-3 right-3 z-50 text-3xl"
-        (click)="changeFavouriteStatus()"
-      >
-        <fa-icon
-          [icon]="faStar"
-          [ngClass]="selectedIsFavourite ? 'text-accent' : 'text-stone-500'"
-        ></fa-icon>
+
+    <div class="relative w-full lg:w-2/3 h-3/5 lg:h-full mt-4 lg:mt-0 text-center border 
+    border-stone-500 rounded-lg font-bold text-2xl">
+      <button  class="absolute top-3 right-3 z-50 text-3xl" (click)="changeFavouriteStatus()">
+        <fa-icon [ngClass]="selectedIsFavourite ? 'text-accent' : 'text-stone-500'"
+        [icon]="faStar"></fa-icon>
       </button>
-      <div id="map" class="w-full h-full z-10"></div>
+      <div id="map" class="w-full h-full z-10 rounded-lg"></div>
+
+      <!-- ratings -->
+      <div class="absolute bottom-3 left z-50 w-full flex justify-center">
+        <div *ngIf="selectedRide && selectedRide.driverRating"
+        class="flex gap-x-6 h-12 bg-dark rounded-full px-6">
+
+          <!-- driver rating -->
+          <div class="flex flex-col justify-center my-auto">
+            <fa-icon [icon]="faUser" class="text-stone-400 text-base leading-5"></fa-icon>
+
+            <!-- stars -->
+            <div class="flex gap-x-0.5 leading-5 -mt-1.5">
+              <div *ngFor='let in of setArrayFromNumber(5); let i = index'>
+                  <fa-icon [icon]="faStar" class="inline cursor-pointer text-xs"
+                    [ngClass]="selectedRide.driverRating - 1 >= i ? 'text-accent-light' : 'text-stone-500'">
+                  </fa-icon>
+              </div>
+            </div>
+          </div>
+
+          <!-- vehicle rating -->
+          <div class="flex flex-col justify-center my-auto">
+            <fa-icon [icon]="faTaxi" class="text-stone-400 text-base leading-5"></fa-icon>
+
+            <!-- stars -->
+            <div class="flex gap-x-0.5 leading-5 -mt-1.5">
+              <div *ngFor='let in of setArrayFromNumber(5); let i = index'>
+                  <fa-icon [icon]="faStar" class="inline cursor-pointer text-xs"
+                    [ngClass]="selectedRide.vehicleRating - 1 >= i ? 'text-accent-light' : 'text-stone-500'">
+                  </fa-icon>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- rate button -->
+        <button *ngIf="selectedRide && canUserRateRide()"
+        class="py-1 w-44 px-4 text-accent-light font-medium  h-12 bg-dark rounded-full text-base shadow-md
+        tracking-wide transition hover:-translate-y-0.5" (click)="openReviewModal()">
+          Leave review
+        </button>
+
+      </div>
+
     </div>
+
+  </div>
+
+  <div *ngIf="showReviewModal">
+    <app-ride-review-modal
+    [rideId]="selectedRide?.id"
+    (reviewSent)="onReviewSent()">
+    </app-ride-review-modal>
   </div>
 </div>

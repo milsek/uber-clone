@@ -94,9 +94,8 @@ export class PassengerService {
   }
 
   getRides(page: number, amount: number, sortBy: string): Promise<any> {
-    const username = '';
     return axios.get(
-      `/api/rides/ride-history?username=${username}&page=${page}&amount=${amount}&sortBy=${sortBy}`,
+      `/api/rides/history?page=${page}&amount=${amount}&sortBy=${sortBy}`,
       {
         headers: {
           Authorization: `Bearer ${this.authenticationService.getToken()}`,

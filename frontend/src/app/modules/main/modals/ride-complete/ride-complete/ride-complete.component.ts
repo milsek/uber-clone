@@ -1,5 +1,4 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 
 @Component({
@@ -9,13 +8,21 @@ import { PassengerService } from 'src/app/core/http/user/passenger.service';
 })
 export class RideCompleteComponent implements OnInit {
   @Output() onClose: EventEmitter<void> = new EventEmitter();
+  showReviewModal: boolean = false;
 
   constructor(
     private passengerService: PassengerService,
-    private rideService: RideService,
     ) { }
 
   ngOnInit(): void {
+  }
+
+  openReviewModal(): void {
+    this.showReviewModal = true;
+  }
+
+  onReviewSent(): void {
+    window.location.href = '/';
   }
 
   close () {

@@ -1,0 +1,71 @@
+<div class="fixed top-0 left-0 z-30 w-full min-h-screen h-screen
+    flex items-center justify-center bg-stone-500 bg-opacity-80 transition-opacity text-base font-display">
+      <div class="relative flex flex-col w-120 bg-dark rounded-xl mx-auto
+      overflow-hidden px-9 py-7">
+        <h3 class="text-xl font-medium text-gray-50 text-center">Ride review</h3>
+
+        <div class="flex justify-between gap-y-2 mt-2">
+
+          <div class="flex flex-col">
+            <h4 class="text-base font-medium text-stone-400">Driver rating</h4>
+            <div class="flex">
+              <div *ngFor='let in of setArrayFromNumber(5); let i = index' (click)="setSelectedDriverRating(i)"
+              (mouseover)="setHoveredDriverRating(i)" (mouseout)="setHoveredDriverRating(-1)">
+                <span [ngClass]="i !== 0 ? 'pl-0.5' : ''">
+                    <fa-icon [icon]="faStar" class="inline my-auto w-5 h-5 cursor-pointer text-sm"
+                    [ngClass]="(hoveredDriverRating > -1 ? hoveredDriverRating : selectedDriverRating) >= i ? 
+                    'text-accent-light transition duration-300 ease-in-out transform -translate-y-0.5' :
+                    'text-stone-500'">
+                  </fa-icon>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col">
+            <h4 class="text-base font-medium text-stone-400">Vehicle rating</h4>
+            <div class="flex justify-end">
+              <div *ngFor='let in of setArrayFromNumber(5); let i = index' (click)="setSelectedVehicleRating(i)"
+              (mouseover)="setHoveredVehicleRating(i)" (mouseout)="setHoveredVehicleRating(-1)">
+                <span [ngClass]="i !== 0 ? 'pl-0.5' : ''">
+                    <fa-icon [icon]="faStar" class="inline my-auto w-5 h-5 cursor-pointer text-sm"
+                    [ngClass]="(hoveredVehicleRating > -1 ? hoveredVehicleRating : selectedVehicleRating) >= i ? 
+                    'text-accent-light transition duration-300 ease-in-out transform -translate-y-0.5' :
+                    'text-stone-500'">
+                  </fa-icon>
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="flex flex-col justify-between h-full mt-4">
+          <div clase="w-full mt-2">
+            <textarea class="w-full border border-solid border-stone-500 bg-dark resize-none h-32 md:h-32
+            text text-thin text-stone-100 placeholder-stone-400 p-2 leading-tight rounded-md focus:outline-none focus:border-accent-light"
+            [(ngModel)]="comment" placeholder="Please describe your experience..."
+            (input)="errorMessage = ''"></textarea>
+            <div class="h-1 text-center">
+              <p *ngIf="errorMessage"
+                class="text-accent-light text-xs italic">
+                {{ errorMessage }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-x-4 mt-5">
+            <button class="py-1 w-32 px-8 border border-stone-500 text-stone-400 font-medium
+              tracking-widehover:bg-stone-500 hover:text-stone-300 rounded-2xl" (click)="close()">
+              Cancel
+            </button>
+
+            <button class="py-1 w-32 px-8 border border-accent-light text-accent-light font-medium
+            tracking-wide hover:bg-accent-light hover:text-gray-50 rounded-2xl" (click)="sendReview()">
+              Send
+            </button>
+          </div>
+
+        </div>
+      </div>
+  </div>
