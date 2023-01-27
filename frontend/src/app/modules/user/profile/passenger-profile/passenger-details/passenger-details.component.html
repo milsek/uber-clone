@@ -3,8 +3,8 @@
   <div>
     <!-- image -->
     <div class="relative h-28 w-28 mx-auto">
-      <img src="/assets/images/placeholders/taxi-passenger.png" alt=""
-      class="rounded-full">
+      <img [src]="userImage ? userImage : '/assets/images/placeholders/default.png'"
+      alt="" class="h-28 w-28 rounded-full object-cover">
     </div>
 
     <div class="mt-2 text-gray-50 text-2xl tracking-tight leading-5">

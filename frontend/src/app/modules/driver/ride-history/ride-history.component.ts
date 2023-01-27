@@ -112,7 +112,6 @@ export class RideHistoryComponent implements OnInit {
 
   getRides(): void {
     this.driverService.getRides(this.page, 4, this.sortBy, '').then((res) => {
-      console.log(res);
       this.startElem = this.page * 4;
       this.numOfElements = res.data.totalElements;
       this.rides = res.data.content;

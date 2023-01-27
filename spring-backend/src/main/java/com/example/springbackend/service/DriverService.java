@@ -97,7 +97,7 @@ public class DriverService {
 
     public boolean toggleActivity(Authentication auth) {
         Driver driver = (Driver) auth.getPrincipal();
-        if(driver.getActiveMinutesToday() < 480){
+        if(driver.getActiveMinutesToday() < 480 && driver.getCurrentRide() == null && driver.getNextRide() == null) {
             triggerActivity(driver);
             driver.setActive(!driver.getActive());
             driverRepository.save(driver);
@@ -162,6 +162,7 @@ public class DriverService {
         driver.setAuthenticationProvider(AuthenticationProvider.LOCAL);
         driver.setPassword(passwordEncoder.encode(dto.getPassword()));
         driver.setRoles(roleService.findByName("ROLE_DRIVER"));
+        driver.setProfilePicture("/default.png");
         driver.setActive(false);
         driver.setDistanceTravelled(0);
         driver.setRidesCompleted(0);
@@ -246,7 +247,7 @@ public class DriverService {
 
     public Page<DriverReviewDisplayDTO> getDriverReviews(String username, Pageable pageable, Authentication auth) {
         Driver driver = driverRepository.findByUsername(username).orElseThrow();
-        Page<PassengerRide> passengerRides = passengerRideRepository.findByDriver(driver, pageable);
+        Page<PassengerRide> passengerRides = passengerRideRepository.findByDriverWithPresentRating(driver, pageable);
         return passengerRides.map(passengerRide -> modelMapper.map(passengerRide, DriverReviewDisplayDTO.class));
     }
 }

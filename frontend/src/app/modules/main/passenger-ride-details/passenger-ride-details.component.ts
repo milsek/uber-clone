@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
+import { PhotoService } from 'src/app/core/http/user/photo.service';
 import { RideSimple } from 'src/app/shared/models/ride.model';
 import { Vehicle } from 'src/app/shared/models/vehicle.model';
 
@@ -37,10 +38,12 @@ export class PassengerRideDetailsComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private passengerService: PassengerService,
-    private rideService: RideService
+    private rideService: RideService,
+    private photoService: PhotoService
     ) { }
 
   ngOnInit(): void { 
+    this.fetchDriverImage();
   }
 
   reportInconsistency(): void {
@@ -97,6 +100,14 @@ export class PassengerRideDetailsComponent implements OnInit {
       return status;
     }
     return '';
+  }
+
+  fetchDriverImage(): void {
+    const ride: RideSimple | null = this.ride;
+    if (ride)
+      this.photoService.loadImage(ride.driver.profilePicture).then((response) => {
+        ride.driver.profilePicture = response.data;
+      });
   }
 
   calculateArrivalTimeInMinutes(): number {

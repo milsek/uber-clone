@@ -3,8 +3,8 @@
   <div class="grow-0">
     <!-- image -->
     <div class="relative h-28 w-28 mx-auto">
-      <img src="/assets/images/placeholders/taxi-driver.jpg" alt=""
-      class="rounded-full">
+      <img [src]="userImage ? userImage : '/assets/images/placeholders/default.png'"
+      alt="" class="h-28 w-28 rounded-full object-cover">
       <span class="absolute bottom-1 right-1 h-6 w-6">
         <span class="relative flex w-6 h-6 bg-dark rounded-full text-center">
           <span *ngIf="driver.active" class="absolute inline-flex w-4 h-4 top-1 left-1 bg-accent-light rounded-full animate-ping my-auto mx-auto"></span>

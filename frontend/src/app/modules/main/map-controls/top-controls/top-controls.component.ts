@@ -15,7 +15,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { DriverService } from 'src/app/core/http/user/driver.service';
+import { PhotoService } from 'src/app/core/http/user/photo.service';
 import { DriverInfo } from 'src/app/shared/models/data-transfer-interfaces/driver-info.model';
+import { Session } from 'src/app/shared/models/session.model';
 
 @Component({
   selector: 'app-top-controls',
@@ -43,12 +45,17 @@ export class TopControlsComponent implements OnInit {
   showProfileDropdown2: boolean = false;
   clickedProfileDropdown: boolean = false;
 
+  userImage: string = '';
+
   constructor(
     private driverService: DriverService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private photoService: PhotoService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadImage();
+  }
 
   toggleActivity = (): void => {
     this.driverInfo.isActive = !this.driverInfo.isActive;
@@ -58,6 +65,16 @@ export class TopControlsComponent implements OnInit {
   logout(): void {
     this.authenticationService.logout();
     window.location.href = '/';
+  }
+
+  loadImage(): void {
+    const session: Session | null = this.authenticationService.getSession();
+    if (session && session.profilePicture) {
+      this.photoService.loadImage(session.profilePicture)
+      .then((response) => {
+        this.userImage = response.data;
+      });
+    }
   }
 
   @HostListener('document:click')

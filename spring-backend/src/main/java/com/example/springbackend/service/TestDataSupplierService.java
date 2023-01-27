@@ -64,7 +64,7 @@ public class TestDataSupplierService {
         admin.setPhoneNumber("+2624035735");
         admin.setCity("Marseille");
         admin.setRoles(roleRepository.findByName("ROLE_ADMIN"));
-        admin.setProfilePicture("/default.png");
+        admin.setProfilePicture("/admin1@noemail.com.png");
         adminRepository.save(admin);
     }
 
@@ -78,21 +78,29 @@ public class TestDataSupplierService {
         passenger.setPhoneNumber("+25346014691");
         passenger.setCity("Marseille");
         passenger.setAccountStatus(AccountStatus.ACTIVE);
-        passenger.setDistanceTravelled(79.28);
-        passenger.setRidesCompleted(28);
+        passenger.setDistanceTravelled(5.00);
+        passenger.setRidesCompleted(1);
         passenger.setRoles(roleRepository.findByName("ROLE_PASSENGER"));
         passenger.setTokenBalance(1000);
-        passenger.setProfilePicture("/default.png");
+        passenger.setProfilePicture("/passenger1@noemail.com.png");
         passengerRepository.save(passenger);
         passenger.setTokenBalance(600);
+        passenger.setDistanceTravelled(0.0);
+        passenger.setRidesCompleted(0);
+        passenger.setName("Karl Gustav");
+        passenger.setSurname("Jung");
         passenger.setUsername("passenger2@noemail.com");
         passenger.setEmail("passenger2@noemail.com");
         passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
+        passenger.setName("Sigmund");
+        passenger.setSurname("Freud");
         passenger.setUsername("passenger3@noemail.com");
         passenger.setEmail("passenger3@noemail.com");
         passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
+        passenger.setName("Erich");
+        passenger.setSurname("Fromm");
         passenger.setUsername("passenger4@noemail.com");
         passenger.setEmail("passenger4@noemail.com");
         passenger.setTokenBalance(690);
@@ -136,7 +144,7 @@ public class TestDataSupplierService {
         driver.setNumberOfReviews(1);
         driver.setAccountStatus(AccountStatus.ACTIVE);
         driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
-        driver.setProfilePicture("/default.png");
+        driver.setProfilePicture("/driver1@noemail.com.jpeg");
 //        Ride mockRide = new Ride();
 //        mockRide.setCreatedAt(LocalDateTime.now());
 //        mockRide.setStartTime(LocalDateTime.now());

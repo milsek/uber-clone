@@ -126,19 +126,26 @@
       <li *ngFor="let user of users">
         <div class="flex items-center space-x-4">
           <div class="flex-shrink-0">
-            <img
-              [src]="
-                user.userImage ? user.userImage : getImage(user.profilePicture)
-              "
-              class="h-10 w-10 rounded-full"
+            <img *ngIf="user.userImage"
+              [src]="user.userImage"
+              class="h-10 w-10 object-cover rounded-full"
+              [ngClass]="type === 'DRIVER' ? 'cursor-pointer' : ''"
               alt="No Profile Pic"
+              [routerLink]="type === 'DRIVER' ? '/driver/' + user.username : null"
             />
+            <div *ngIf="!user.userImage" class="h-10 w-10 rounded-full border-2 border-stone-500">
+              
+            </div>
           </div>
           <div class="min-w-0 flex-1">
-            <p class="truncate font-medium text-gray-50 text-lg">
+            <p class="truncate font-medium text-gray-50 text-lg"
+            [ngClass]="type === 'DRIVER' ? 'cursor-pointer' : ''"
+            [routerLink]="type === 'DRIVER' ? '/driver/' + user.username : null">
               {{ user.name }} {{ user.surname }}
             </p>
-            <p class="truncate text-sm text-light font-medium">
+            <p class="truncate text-sm text-light font-medium"
+            [ngClass]="type === 'DRIVER' ? 'cursor-pointer' : ''"
+            [routerLink]="type === 'DRIVER' ? '/driver/' + user.username : null">
               {{ user.username }}
             </p>
           </div>

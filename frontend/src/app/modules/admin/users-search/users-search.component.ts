@@ -66,6 +66,7 @@ export class UsersSearchComponent implements OnInit {
         .then((res) => {
           this.users = res.data.drivers;
           this.numOfElements = res.data.numberOfDrivers;
+          this.users.filter(u => !u.userImage).forEach(u => this.getImage(u.profilePicture));
         });
     } else {
       this.passengerService
@@ -73,6 +74,7 @@ export class UsersSearchComponent implements OnInit {
         .then((res) => {
           this.users = res.data.passengers;
           this.numOfElements = res.data.numberOfPassengers;
+          this.users.filter(u => !u.userImage).forEach(u => this.getImage(u.profilePicture));
         });
     }
   }

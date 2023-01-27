@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IconDefinition, faCar, faEnvelope, faPaperPlane, faMobileRetro, faBabyCarriage, faPaw } from '@fortawesome/free-solid-svg-icons';
+import { PhotoService } from 'src/app/core/http/user/photo.service';
 import { Driver } from 'src/app/shared/models/driver.model';
 
 @Component({
@@ -8,6 +9,7 @@ import { Driver } from 'src/app/shared/models/driver.model';
 })
 export class DriverDetailsComponent implements OnInit {
   @Input() driver!: Driver;
+  userImage: string = '';
 
   faCar: IconDefinition = faCar;
   faPaperPlane: IconDefinition = faPaperPlane;
@@ -16,9 +18,19 @@ export class DriverDetailsComponent implements OnInit {
   faPaw: IconDefinition = faPaw;
   faEnvelope: IconDefinition = faEnvelope;
 
-  constructor() { }
+  constructor(private photoService: PhotoService) { }
 
   ngOnInit(): void {
+    this.loadImage();
+  }
+
+  loadImage(): void {
+    if (this.driver.profilePicture) {
+      this.photoService.loadImage(this.driver.profilePicture)
+      .then((response) => {
+        this.userImage = response.data;
+      });
+    }
   }
 
   getDriverRating(): string {

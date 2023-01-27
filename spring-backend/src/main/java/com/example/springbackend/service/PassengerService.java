@@ -57,6 +57,7 @@ public class PassengerService {
             passenger.setRoles(roleService.findByName("ROLE_PASSENGER"));
             passenger.setAccountStatus(AccountStatus.WAITING);
             passenger.setTokenBalance(0);
+            passenger.setProfilePicture("/default.png");
             passengerRepository.save(passenger);
             String jwt = tokenUtils.generateConfirmationToken(userCreationDTO.getUsername());
             emailService.sendRegistrationEmail(passenger, jwt);

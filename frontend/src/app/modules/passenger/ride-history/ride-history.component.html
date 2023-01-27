@@ -155,7 +155,7 @@
       </button>
       <div class="flex -space-x-2 absolute top-3 left-3" *ngIf="driver">
         <img
-          class="inline-block h-8 w-8 rounded-full ring-2 cursor-pointer ring-accent z-50 hover:z-100"
+          class="inline-block h-8 w-8 object-cover rounded-full ring-2 cursor-pointer ring-accent z-50 hover:z-100"
           [src]="driver.userImage ? driver.userImage : ''"
           alt="Image Description"
           [title]="driver.name + ' ' + driver.surname + '\n' + driver.username"

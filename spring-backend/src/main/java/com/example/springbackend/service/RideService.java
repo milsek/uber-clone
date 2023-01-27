@@ -401,6 +401,13 @@ public class RideService {
         sendMessageToMultiplePassengers(passengerRides.stream().map(pr -> pr.getPassenger().getUsername()).toList(),
                 "", MessageType.RIDE_COMPLETE);
 
+        for (PassengerRide pr : passengerRides) {
+            Passenger passenger = pr.getPassenger();
+            passenger.setRidesCompleted(passenger.getRidesCompleted() + 1);
+            passenger.setDistanceTravelled(pr.getPassenger().getDistanceTravelled() + ride.getDistance());
+            passengerRepository.save(passenger);
+        }
+
         updateCurrentDriverRide(driver);
         sendRefreshMessage(driver.getUsername());
         return true;
@@ -446,7 +453,15 @@ public class RideService {
         rideRepository.save(ride);
 
         Driver driver = ride.getDriver();
-        Optional<Ride> optionalNextRide = rideRepository.findById(driver.getNextRide().getId());
+
+        if (driver.getNextRide() != null) {
+            Ride nextRide = rideRepository.findById(driver.getNextRide().getId()).get();
+            nextRide.setStatus(RideStatus.CANCELLED);
+            rideRepository.save(nextRide);
+            List<PassengerRide> nextRidePassengerRides = passengerRideRepository.findByRide(nextRide);
+            handleRejectedRidePassengers(nextRidePassengerRides);
+        }
+
         driver.setActive(false);
         driver.setCurrentRide(null);
         driver.setNextRide(null);
@@ -455,19 +470,12 @@ public class RideService {
         Vehicle vehicle = driver.getVehicle();
         vehicle.setCurrentCoordinates(vehicle.getNextCoordinates());
         vehicle.setExpectedTripTime(0);
+        vehicle.setRideActive(false);
         vehicle.setCoordinatesChangedAt(LocalDateTime.now());
         vehicleRepository.save(vehicle);
 
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
         handleRejectedRidePassengers(passengerRides);
-
-        if (optionalNextRide.isPresent()) {
-            Ride nextRide = optionalNextRide.get();
-            nextRide.setStatus(RideStatus.CANCELLED);
-            rideRepository.save(nextRide);
-            List<PassengerRide> nextRidePassengerRides = passengerRideRepository.findByRide(nextRide);
-            handleRejectedRidePassengers(nextRidePassengerRides);
-        }
 
         sendMessageToDriver(ride.getDriver().getUsername(),
                 "Your rejection is accepted and your rides are cancelled.",

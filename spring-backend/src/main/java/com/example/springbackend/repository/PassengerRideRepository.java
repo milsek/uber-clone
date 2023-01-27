@@ -87,7 +87,7 @@ public interface PassengerRideRepository extends JpaRepository<PassengerRide, In
             "pr.ride.route.id = :routeId AND pr.passenger.username = :username" )
     Optional<PassengerRide> findByRideRouteAndUsername(@Param("routeId") Integer routeId, @Param("username") String username);
 
-    @Query("SELECT pr FROM PassengerRide pr WHERE pr.ride.driver = :driver")
-    Page<PassengerRide> findByDriver(@Param("driver") Driver driver, Pageable pageable);
+    @Query("SELECT pr FROM PassengerRide pr WHERE pr.ride.driver = :driver AND pr.driverRating > 0")
+    Page<PassengerRide> findByDriverWithPresentRating(@Param("driver") Driver driver, Pageable pageable);
 }
 

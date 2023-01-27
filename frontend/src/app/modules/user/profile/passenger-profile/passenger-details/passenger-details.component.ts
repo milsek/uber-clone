@@ -2,6 +2,7 @@ import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { faCar, faEnvelope, faMobileRetro, faPaperPlane, IconDefinition, faMoneyBill1Wave, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Passenger } from 'src/app/shared/models/passenger.model';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
+import { PhotoService } from 'src/app/core/http/user/photo.service';
 
 @Component({
   selector: 'app-passenger-details',
@@ -9,6 +10,7 @@ import { PassengerService } from 'src/app/core/http/user/passenger.service';
 })
 export class PassengerDetailsComponent implements OnInit {
   @Input() passenger!: Passenger;
+  userImage: string = '';
 
   faCar: IconDefinition = faCar;
   faPaperPlane: IconDefinition = faPaperPlane;
@@ -23,9 +25,10 @@ export class PassengerDetailsComponent implements OnInit {
   tokensToBuy: Number = 100;
   buyTokensErrorMessage: string = '';
 
-  constructor(private passengerService: PassengerService) { }
+  constructor(private passengerService: PassengerService, private photoService: PhotoService) { }
 
   ngOnInit(): void {
+    this.loadImage();
   }
 
   getDistanceTravelled(): string {
@@ -50,6 +53,15 @@ export class PassengerDetailsComponent implements OnInit {
       return;
     }
     this.passengerService.addTokens(this.tokensToBuy / 100);
+  }
+
+  loadImage(): void {
+    if (this.passenger.profilePicture) {
+      this.photoService.loadImage(this.passenger.profilePicture)
+      .then((response) => {
+        this.userImage = response.data;
+      });
+    }
   }
 
   @HostListener('document:click')

@@ -67,8 +67,13 @@ sm:h-full select-none" id="order-menu">
 
         <div class="w-14 h-14 flex-shrink-0 my-auto cursor-pointer"
         [routerLink]="['/driver', ride.driver.username]">
-          <img src="/assets/images/placeholders/taxi-driver.jpg" alt=""
-          class="rounded-full">
+          <img *ngIf="ride.driver.profilePicture"
+          [src]="ride.driver.profilePicture"
+          alt="" class="w-14 h-14 object-cover rounded-full">
+          <div *ngIf="!ride.driver.profilePicture"
+          class="h-10 w-10 rounded-full border-2 border-stone-500">
+          
+          </div>
         </div>
         
         <div class="flex flex-col justify-between my-auto text-gray-50 text-lg tracking-wide">

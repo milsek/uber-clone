@@ -2,12 +2,12 @@
   <!-- main info -->
   <div>
     <!-- image -->
-    <div class="relative h-28 w-28 mx-auto">
-      <img src="/assets/images/placeholders/taxi-admin.png" alt=""
-      class="rounded-full">
+    <div class="relative h-28 w-28 object-cover mx-auto">
+      <img [src]="userImage ? userImage : '/assets/images/placeholders/default.png'"
+      alt="" class="rounded-full">
     </div>
 
-    <div class="mt-2 text-gray-50 text-2xl tracking-tight leading-5">
+    <div class="mt-6 text-gray-50 text-2xl tracking-tight leading-5">
       {{ admin.name }} {{ admin.surname }}
     </div>
     <div class="mt-0 text-light text-sm tracking-widest font-medium">

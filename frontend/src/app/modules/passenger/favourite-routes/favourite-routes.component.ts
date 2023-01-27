@@ -80,7 +80,6 @@ export class FavouriteRoutesComponent implements OnInit {
 
   getRoute(): void {
     this.passengerService.getFavouriteRoute(this.page).then((res) => {
-      console.log(res);
       if (res.data.content.length === 0) {
         this.selectedRoute = null;
         this.elemNumber = 0;
