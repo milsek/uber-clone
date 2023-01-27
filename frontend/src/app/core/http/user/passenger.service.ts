@@ -93,9 +93,14 @@ export class PassengerService {
     );
   }
 
-  getRides(page: number, amount: number, sortBy: string): Promise<any> {
+  getRides(
+    page: number,
+    amount: number,
+    sortBy: string,
+    username: string
+  ): Promise<any> {
     return axios.get(
-      `/api/rides/history?page=${page}&amount=${amount}&sortBy=${sortBy}`,
+      `/api/rides/history?page=${page}&amount=${amount}&sortBy=${sortBy}&username=${username}`,
       {
         headers: {
           Authorization: `Bearer ${this.authenticationService.getToken()}`,
@@ -140,6 +145,17 @@ export class PassengerService {
     return axios.post(
       `/api/routes/is-route-favourite`,
       { routeId },
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  getRideDetails(rideId: number): Promise<any> {
+    return axios.get(
+      `/api/rides/detailed-ride-history-passenger?rideId=${rideId}`,
       {
         headers: {
           Authorization: `Bearer ${this.authenticationService.getToken()}`,

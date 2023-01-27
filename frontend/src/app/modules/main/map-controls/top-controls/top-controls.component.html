@@ -6,22 +6,23 @@
     <div
       class="relative flex flex-col justify-center text-center text-xl w-11 h-11 my-auto rounded-full cursor-pointer hover:text-light shrink-0"
     >
-    
       <div *ngIf="accountType !== 'anonymous'" class="relative block my-auto">
-        <div (click)="showActionsDropdown = !showActionsDropdown; clickedActionsDropdown = true;"
-        class="flex flex-col justify-center text-center text-xl w-10 h-10 my-auto mx-auto rounded-full cursor-pointer hover:text-light shadow-sm">
-          <fa-icon
-            [icon]="faBars"
-            class="mx-auto"> 
-          </fa-icon>
+        <div
+          (click)="
+            showActionsDropdown = !showActionsDropdown;
+            clickedActionsDropdown = true
+          "
+          class="flex flex-col justify-center text-center text-xl w-10 h-10 my-auto mx-auto rounded-full cursor-pointer hover:text-light shadow-sm"
+        >
+          <fa-icon [icon]="faBars" class="mx-auto"> </fa-icon>
         </div>
       </div>
 
-      <div *ngIf="showActionsDropdown && accountType !== 'anonymous'"
-        class="absolute z-20 left-0 top-14 rounded-lg bg-dark w-72 p-1.5 px-2
-        flex flex-col font-medium text-light text-base"
-        (click)="clickedActionsDropdown = true">
-
+      <div
+        *ngIf="showActionsDropdown && accountType !== 'anonymous'"
+        class="absolute z-20 left-0 top-14 rounded-lg bg-dark w-72 p-1.5 px-2 flex flex-col font-medium text-light text-base"
+        (click)="clickedActionsDropdown = true"
+      >
         <!-- admin -->
         <div *ngIf="accountType === 'admin'">
           <button
@@ -55,7 +56,6 @@
             <fa-icon [icon]="faSearch" class="text-xl"></fa-icon>
             <span class="my-auto">Search users</span>
           </button>
-          
         </div>
 
         <div *ngIf="accountType === 'passenger'">
@@ -75,21 +75,33 @@
             <span class="my-auto">Favourite routes</span>
           </button>
         </div>
-        
+        <div *ngIf="accountType === 'driver'">
+          <button
+            class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+            routerLink="/drivers/ride-history"
+          >
+            <fa-icon [icon]="faRoute" class="text-xl w-6"></fa-icon>
+            <span class="my-auto">Ride history</span>
+          </button>
+        </div>
+
         <!-- passenger, driver, admin-->
         <div>
-          <button class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
-            routerLink="/reports">
+          <button
+            class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+            routerLink="/reports"
+          >
             <fa-icon [icon]="faPieChart" class="text-xl"></fa-icon>
             <span class="my-auto">Ride reports</span>
           </button>
         </div>
-
       </div>
     </div>
 
-    <div *ngIf="accountType !== 'driver'" class="flex flex-col justify-center text-center
-    text-xl my-auto rounded-full font-medium">
+    <div
+      *ngIf="accountType !== 'driver'"
+      class="flex flex-col justify-center text-center text-xl my-auto rounded-full font-medium"
+    >
       Suber
     </div>
 
@@ -144,13 +156,13 @@
         class="absolute z-20 right-0 top-14 rounded-lg bg-dark w-72 p-1.5 px-2 flex flex-col font-medium text-light"
         (click)="clickedProfileDropdown = true"
       >
-      <button
-        class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
-        routerLink="/account"
-      >
-        <fa-icon [icon]="faUser" class="text-xl"></fa-icon>
-        <span class="my-auto">Account</span>
-      </button>
+        <button
+          class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
+          routerLink="/account"
+        >
+          <fa-icon [icon]="faUser" class="text-xl"></fa-icon>
+          <span class="my-auto">Account</span>
+        </button>
 
         <hr class="my-1 border-stone-500" />
 

@@ -26,15 +26,20 @@ const routes: Routes = [
         (m) => m.PassengerModule
       ),
   },
-  { 
+  {
+    path: 'drivers',
+    loadChildren: () =>
+      import('./modules/driver/driver.module').then((m) => m.DriverModule),
+  },
+  {
     path: 'reports',
     loadChildren: () =>
-      import('./modules/reports/reports.module').then(m => m.ReportsModule)
+      import('./modules/reports/reports.module').then((m) => m.ReportsModule),
   },
   { path: 'driver/:username', component: DriverPageComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'google-login', component:  GoogleLoginComponent},
+  { path: 'google-login', component: GoogleLoginComponent },
   { path: 'reset-password', component: PasswordResetComponent },
   { path: '**', redirectTo: '/auth/404' },
 ];

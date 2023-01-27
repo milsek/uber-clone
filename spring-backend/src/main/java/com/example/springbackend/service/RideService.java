@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -589,9 +588,17 @@ public class RideService {
         return dto;
     }
 
-    public Page<RideHistoryDisplayDTO> getRideHistory(Authentication auth, Pageable paging) {
-        Passenger passenger = (Passenger) auth.getPrincipal();
-        Page<PassengerRide> passengerRides = passengerRideRepository.findByPassengerUsername(passenger.getUsername(), paging);
+    public Page<RideHistoryDisplayDTO> getRideHistory(Authentication auth, Pageable paging, String username) {
+        User user = (User) auth.getPrincipal();
+        if (username.isEmpty()) {
+            username = user.getUsername();
+        }
+        else {
+            if (!user.getRoles().get(0).getName().equals("ROLE_ADMIN")) {
+                return null;
+            }
+        }
+        Page<PassengerRide> passengerRides = passengerRideRepository.findByPassengerUsername(username, paging);
         Page<RideHistoryDisplayDTO> page = passengerRides.map(passengerRide -> modelMapper
                 .map(passengerRide.getRide(), RideHistoryDisplayDTO.class));
         page.getContent().stream().map(entry -> {
@@ -603,6 +610,22 @@ public class RideService {
                     .findFirst().get().getVehicleRating());
             return entry;
         }).toList();
+        return page;
+    }
+
+    public Page<RideHistoryDisplayDTO> getDriverRideHistory(Authentication auth, Pageable paging, String username) {
+        User user = (User) auth.getPrincipal();
+        if (username.isEmpty()) {
+            username = user.getUsername();
+        }
+        else {
+            if (!user.getRoles().get(0).getName().equals("ROLE_ADMIN")) {
+                return null;
+            }
+        }
+        Page<Ride> rides = rideRepository.findByDriverUsername(username, paging);
+        Page<RideHistoryDisplayDTO> page = rides.map(ride -> modelMapper
+                .map(ride, RideHistoryDisplayDTO.class));
         return page;
     }
 

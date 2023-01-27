@@ -1,26 +1,31 @@
 <div class="min-h-screen h-full w-full bg-dark flex flex-col">
   <div class="absolute top-6 left-6">
-    <div class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400
-    hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2" routerLink="/">
+    <div
+      class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
+      routerLink="/"
+    >
       <fa-icon [icon]="faChevronLeft"></fa-icon>
     </div>
   </div>
 
-  <div *ngIf="accountType === 'admin'" class="w-11/12 xl:w-5/6 mx-auto text border border-stone-500 rounded-lg
-  py-10 px-5 md:px-8 xl:px-10 text-stone-500 mt-20">
+  <div
+    *ngIf="accountType === 'admin'"
+    class="w-11/12 xl:w-5/6 mx-auto text border border-stone-500 rounded-lg py-10 px-5 md:px-8 xl:px-10 text-stone-500 mt-20"
+  >
     <div class="h-full">
-      <div class="grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-5 
-      gap-y-4 gap-x-4 tracking-wide">
-
+      <div
+        class="grid grid-rows-2 grid-cols-3 lg:grid-rows-1 lg:grid-cols-5 gap-y-4 gap-x-4 tracking-wide"
+      >
         <!-- username -->
         <div class="w-full">
-          <label class="block tracking-wide text-light text-sm font-bold mb-1"
-          for="search-username">
+          <label
+            class="block tracking-wide text-light text-sm font-bold mb-1"
+            for="search-username"
+          >
             Username
           </label>
           <input
-            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b
-            border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
             id="search-username"
             type="text"
             placeholder="Enter a username"
@@ -38,8 +43,7 @@
             Name
           </label>
           <input
-            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b
-            border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
             id="search-name"
             type="text"
             placeholder="Enter a name"
@@ -56,8 +60,7 @@
             Surname
           </label>
           <input
-            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b
-            border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
+            class="appearance-none block w-full text-white tracking-wide placeholder-light caret-light border-b border-light focus:border-accent-light bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
             id="search-surname"
             type="text"
             placeholder="Enter a surname"
@@ -66,8 +69,9 @@
         </div>
 
         <!-- user type -->
-        <div class="flex justify-center h-12 my-auto text-center font-medium col-span-2 md:col-span-1">
-
+        <div
+          class="flex justify-center h-12 my-auto text-center font-medium col-span-2 md:col-span-1"
+        >
           <div class="w-1/2">
             <input
               class="hidden peer"
@@ -78,12 +82,10 @@
               (change)="onItemChange($event)"
               checked
             />
-            <label class="h-full w-full flex flex-col justify-center rounded-l-2xl
-              border-2 border-r-0 cursor-pointer
-              border-light text-light 
-              peer-checked:border-accent-light peer-checked:bg-accent-light peer-checked:text-white
-              hover:bg-zinc-700"
-              for="search-driver-radio-button">
+            <label
+              class="h-full w-full flex flex-col justify-center rounded-l-2xl border-2 border-r-0 cursor-pointer border-light text-light peer-checked:border-accent-light peer-checked:bg-accent-light peer-checked:text-white hover:bg-zinc-700"
+              for="search-driver-radio-button"
+            >
               Driver
             </label>
           </div>
@@ -97,39 +99,39 @@
               id="search-passenger-radio-button"
               (change)="onItemChange($event)"
             />
-            <label class="h-full w-full flex flex-col justify-center rounded-r-2xl 
-              border-2 border-l-0 cursor-pointer
-              border-light text-light 
-              peer-checked:border-accent-light peer-checked:bg-accent-light peer-checked:text-white
-              hover:bg-zinc-700"
-              for="search-passenger-radio-button">
+            <label
+              class="h-full w-full flex flex-col justify-center rounded-r-2xl border-2 border-l-0 cursor-pointer border-light text-light peer-checked:border-accent-light peer-checked:bg-accent-light peer-checked:text-white hover:bg-zinc-700"
+              for="search-passenger-radio-button"
+            >
               Passenger
             </label>
           </div>
-
         </div>
 
-        <button type="submit" class="w-full col-start-3 lg:col-start-auto h-12 bg-accent-light
-        active:bg-accent-light text-white font-medium tracking-wide rounded-2xl my-auto"
-        (click)="search()">
+        <button
+          type="submit"
+          class="w-full col-start-3 lg:col-start-auto h-12 bg-accent-light active:bg-accent-light text-white font-medium tracking-wide rounded-2xl my-auto"
+          (click)="search()"
+        >
           Search
         </button>
-        
       </div>
     </div>
   </div>
 
   <!-- results -->
-  <div *ngIf="accountType === 'admin' && users.length > 0" class="w-11/12 xl:w-5/6 mx-auto mt-6 text-left
-    py-8 px-5 md:px-8 xl:px-10 border border-stone-500 rounded-lg">
-
+  <div
+    *ngIf="accountType === 'admin' && users.length > 0"
+    class="w-11/12 xl:w-5/6 mx-auto mt-6 text-left py-8 px-5 md:px-8 xl:px-10 border border-stone-500 rounded-lg"
+  >
     <ul role="list" class="flex flex-col gap-y-3">
-
       <li *ngFor="let user of users">
         <div class="flex items-center space-x-4">
           <div class="flex-shrink-0">
             <img
-              [src]="user.userImage ? user.userImage : getImage(user.profilePicture)"
+              [src]="
+                user.userImage ? user.userImage : getImage(user.profilePicture)
+              "
               class="h-10 w-10 rounded-full"
               alt="No Profile Pic"
             />
@@ -144,23 +146,26 @@
           </div>
           <div class="flex gap-x-2">
             <button
-              class="w-24 inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5
-              text-white shadow-sm hover:bg-accent justify-center"
+              class="w-24 inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5 text-white shadow-sm hover:bg-accent justify-center"
               (click)="showBanModal(user.username)"
             >
               {{ user.accountStatus === "ACTIVE" ? "Ban User" : "Unban User" }}
             </button>
             <button
-              class="inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5
-              text-white shadow-sm hover:bg-accent"
+              class="inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5 text-white shadow-sm hover:bg-accent"
               (click)="showUserNotes(user.username)"
             >
               User Notes
             </button>
+            <button
+              class="w-32 inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5 text-white shadow-sm hover:bg-accent justify-center"
+              (click)="showRideHistory(user.username)"
+            >
+              Ride history
+            </button>
           </div>
         </div>
       </li>
-      
     </ul>
 
     <div class="flex flex-col items-center mt-7 mb-3">
@@ -181,8 +186,7 @@
       </span>
       <div class="inline-flex mt-2 xs:mt-0">
         <button
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white
-          bg-dark border-0 border-l border-gray-700 rounded-l hover:bg-medium"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-l hover:bg-medium"
           (click)="prev()"
           disabled="{{ startElem === 0 }}"
         >
@@ -317,9 +321,11 @@
     </div>
   </div>
 
-  <div *ngIf="accountType !== 'admin'" class="w-11/12 sm:w-120 mx-auto my-auto text-center border
-    border-stone-500 rounded-lg py-16 px-4 sm:p-16 text-stone-500
-    font-bold text-2xl">
-      Session invalid. <br> Please log in again.
+  <div
+    *ngIf="accountType !== 'admin'"
+    class="w-11/12 sm:w-120 mx-auto my-auto text-center border border-stone-500 rounded-lg py-16 px-4 sm:p-16 text-stone-500 font-bold text-2xl"
+  >
+    Session invalid. <br />
+    Please log in again.
   </div>
 </div>

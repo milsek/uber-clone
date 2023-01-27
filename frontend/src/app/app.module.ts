@@ -14,6 +14,7 @@ import { ChatComponent } from './modules/chat/chat.component';
 import { SocketService } from './core/socket/socket.service';
 import { ReportsModule } from './modules/reports/reports.module';
 import { PassengerModule } from './modules/passenger/passenger.module';
+import { DriverModule } from './modules/driver/driver.module';
 
 @NgModule({
   declarations: [AppComponent, ChatComponent],
@@ -28,6 +29,7 @@ import { PassengerModule } from './modules/passenger/passenger.module';
     AdminModule,
     ReportsModule,
     PassengerModule,
+    DriverModule,
   ],
   providers: [
     AuthenticationService,

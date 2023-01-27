@@ -1,4 +1,5 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   IconDefinition,
   faChevronLeft,
@@ -42,7 +43,8 @@ export class UsersSearchComponent implements OnInit {
     private driverService: DriverService,
     private passengerService: PassengerService,
     private authenticationService: AuthenticationService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {}
@@ -168,6 +170,12 @@ export class UsersSearchComponent implements OnInit {
   removeNote(note: Note): void {
     this.adminService.removeNote(note, this.selectedUser);
     this.userNotes = this.userNotes.filter((n) => n !== note);
+  }
+
+  showRideHistory(username: string): void {
+    this.router.navigate(['admin/ride-history'], {
+      queryParams: { username: username, type: this.type },
+    });
   }
 
   @HostListener('document:click')

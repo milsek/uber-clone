@@ -7,4 +7,5 @@ public class PassengerDisplayDTO {
     private String username;
     private String name;
     private String surname;
+    private String profilePicture;
 }

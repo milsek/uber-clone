@@ -11,12 +11,10 @@ import * as L from 'leaflet';
 import 'leaflet-routing-machine';
 import * as GeoSearch from 'leaflet-geosearch';
 import { PassengerRide } from 'src/app/shared/models/ride.model';
-import { PassengerService } from 'src/app/core/http/user/passenger.service';
 import * as moment from 'moment';
-import { User } from 'src/app/shared/models/user.model';
 import { Driver } from 'src/app/shared/models/driver.model';
 import { PhotoService } from 'src/app/core/http/user/photo.service';
-import { Router } from '@angular/router';
+import { DriverService } from 'src/app/core/http/user/driver.service';
 
 const service_url = 'https://nominatim.openstreetmap.org/reverse?format=json';
 const API_KEY = null;
@@ -35,21 +33,20 @@ export class RideHistoryComponent implements OnInit {
   private control: any;
   private provider!: GeoSearch.OpenStreetMapProvider;
   faChevronCircleDown: IconDefinition = faChevronCircleDown;
-  sortBy: string = 'ride.startTime';
+  sortBy: string = 'startTime';
   startElem: number = 0;
   numOfElements: number = 0;
   page: number = 0;
   selectedRide: PassengerRide | null = null;
   selectedIsFavourite: boolean = false;
   rides: Array<PassengerRide> = [];
-  driver: Driver | null = null;
+  passengers: Array<Driver> = [];
 
   showReviewModal: boolean = false;
 
   constructor(
-    private passengerService: PassengerService,
-    private photoService: PhotoService,
-    private router: Router
+    private driverService: DriverService,
+    private photoService: PhotoService
   ) {}
 
   ngOnInit(): void {
@@ -105,7 +102,6 @@ export class RideHistoryComponent implements OnInit {
     this.selectedRide! = this.rides.find((ride) => ride.id === id)!;
     this.map.setView(this.selectedRide.actualRoute.coordinates[0], 8);
     this.control.setWaypoints(this.selectedRide!.actualRoute.waypoints);
-    this.checkIsFavourite();
   }
 
   sortRides(event: Event): void {
@@ -115,26 +111,23 @@ export class RideHistoryComponent implements OnInit {
   }
 
   getRides(): void {
-    this.passengerService
-      .getRides(this.page, 4, this.sortBy, '')
-      .then((res) => {
-        console.log(res);
-        this.startElem = this.page * 4;
-        this.numOfElements = res.data.totalElements;
-        this.rides = res.data.content;
-        this.selectedRide = this.rides[0];
-        this.control.setWaypoints([
-          this.selectedRide.actualRoute.waypoints[0],
-          this.selectedRide.actualRoute.waypoints[1],
-        ]);
-        this.checkIsFavourite();
-        this.passengerService
-          .getRideDetails(this.selectedRide.id)
-          .then((res) => {
-            this.driver = res.data.driver;
-            this.getImage(this.driver!.profilePicture);
-          });
+    this.driverService.getRides(this.page, 4, this.sortBy, '').then((res) => {
+      console.log(res);
+      this.startElem = this.page * 4;
+      this.numOfElements = res.data.totalElements;
+      this.rides = res.data.content;
+      this.selectedRide = this.rides[0];
+      this.control.setWaypoints([
+        this.selectedRide.actualRoute.waypoints[0],
+        this.selectedRide.actualRoute.waypoints[1],
+      ]);
+      this.driverService.getRideDetails(this.selectedRide.id).then((res) => {
+        this.passengers = res.data.passengers;
+        for (let passenger of this.passengers) {
+          this.getImage(passenger.profilePicture);
+        }
       });
+    });
   }
 
   prev(): void {
@@ -145,29 +138,6 @@ export class RideHistoryComponent implements OnInit {
   next(): void {
     this.page++;
     this.getRides();
-  }
-
-  changeFavouriteStatus(): void {
-    if (!this.selectedIsFavourite)
-      this.passengerService
-        .markFavouriteRoute(this.selectedRide!.id)
-        .then(() => {
-          this.checkIsFavourite();
-        });
-    else
-      this.passengerService
-        .unmarkFavouriteRoute(this.selectedRide!.id)
-        .then(() => {
-          this.checkIsFavourite();
-        });
-  }
-
-  checkIsFavourite(): void {
-    this.passengerService
-      .isFavouriteRoute(this.selectedRide!.id)
-      .then((res) => {
-        this.selectedIsFavourite = res.data;
-      });
   }
 
   openReviewModal(): void {
@@ -203,10 +173,11 @@ export class RideHistoryComponent implements OnInit {
 
   getImage(profilePicture: string): void {
     this.photoService.loadImage(profilePicture).then((response) => {
-      this.driver!.userImage = response.data;
+      for (let passenger of this.passengers) {
+        if (passenger.profilePicture === profilePicture) {
+          passenger.userImage = response.data;
+        }
+      }
     });
-  }
-  openDriver(): void {
-    this.router.navigate(['driver/' + this.driver!.username]);
   }
 }

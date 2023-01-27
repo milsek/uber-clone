@@ -2,7 +2,7 @@
   <div class="absolute top-6 left-6">
     <div
       class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
-      routerLink="/"
+      (click)="back()"
     >
       <fa-icon [icon]="faChevronLeft"></fa-icon>
     </div>
@@ -144,98 +144,19 @@
     <div
       class="relative w-full lg:w-2/3 h-3/5 lg:h-full mt-4 lg:mt-0 text-center border border-stone-500 rounded-lg font-bold text-2xl"
     >
-      <button
-        class="absolute top-3 right-3 z-50 text-3xl"
-        (click)="changeFavouriteStatus()"
+      <div
+        class="flex -space-x-2 absolute top-3 left-3"
+        *ngFor="let user of users"
       >
-        <fa-icon
-          [ngClass]="selectedIsFavourite ? 'text-accent' : 'text-stone-500'"
-          [icon]="faStar"
-        ></fa-icon>
-      </button>
-      <div class="flex -space-x-2 absolute top-3 left-3" *ngIf="driver">
         <img
           class="inline-block h-8 w-8 rounded-full ring-2 ring-accent z-50 hover:z-100"
-          [src]="driver.userImage ? driver.userImage : ''"
+          [src]="user.userImage ? user.userImage : ''"
           alt="Image Description"
-          [title]="driver.name + ' ' + driver.surname + '\n' + driver.username"
-          (click)="openDriver()"
+          [title]="user.name + ' ' + user.surname + '\n' + user.username"
+          [routerLink]="['/driver', user.username]"
         />
       </div>
       <div id="map" class="w-full h-full z-10 rounded-lg"></div>
-
-      <!-- ratings -->
-      <div class="absolute bottom-3 left z-50 w-full flex justify-center">
-        <div
-          *ngIf="selectedRide && selectedRide.driverRating"
-          class="flex gap-x-6 h-12 bg-dark rounded-full px-6"
-        >
-          <!-- driver rating -->
-          <div class="flex flex-col justify-center my-auto">
-            <fa-icon
-              [icon]="faUser"
-              class="text-stone-400 text-base leading-5"
-            ></fa-icon>
-
-            <!-- stars -->
-            <div class="flex gap-x-0.5 leading-5 -mt-1.5">
-              <div *ngFor="let in of setArrayFromNumber(5); let i = index">
-                <fa-icon
-                  [icon]="faStar"
-                  class="inline cursor-pointer text-xs"
-                  [ngClass]="
-                    selectedRide.driverRating - 1 >= i
-                      ? 'text-accent-light'
-                      : 'text-stone-500'
-                  "
-                >
-                </fa-icon>
-              </div>
-            </div>
-          </div>
-
-          <!-- vehicle rating -->
-          <div class="flex flex-col justify-center my-auto">
-            <fa-icon
-              [icon]="faTaxi"
-              class="text-stone-400 text-base leading-5"
-            ></fa-icon>
-
-            <!-- stars -->
-            <div class="flex gap-x-0.5 leading-5 -mt-1.5">
-              <div *ngFor="let in of setArrayFromNumber(5); let i = index">
-                <fa-icon
-                  [icon]="faStar"
-                  class="inline cursor-pointer text-xs"
-                  [ngClass]="
-                    selectedRide.vehicleRating - 1 >= i
-                      ? 'text-accent-light'
-                      : 'text-stone-500'
-                  "
-                >
-                </fa-icon>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- rate button -->
-        <button
-          *ngIf="selectedRide && canUserRateRide()"
-          class="py-1 w-44 px-4 text-accent-light font-medium h-12 bg-dark rounded-full text-base shadow-md tracking-wide transition hover:-translate-y-0.5"
-          (click)="openReviewModal()"
-        >
-          Leave review
-        </button>
-      </div>
     </div>
-  </div>
-
-  <div *ngIf="showReviewModal">
-    <app-ride-review-modal
-      [rideId]="selectedRide?.id"
-      (reviewSent)="onReviewSent()"
-    >
-    </app-ride-review-modal>
   </div>
 </div>

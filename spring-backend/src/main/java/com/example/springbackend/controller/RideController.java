@@ -85,15 +85,26 @@ public class RideController {
 
 
     @GetMapping("/history")
-    @PreAuthorize("hasRole('PASSENGER')")
+    @PreAuthorize("hasAnyRole('PASSENGER', 'ADMIN')")
     public Page<RideHistoryDisplayDTO> getRideHistory(@Valid @RequestParam(value="page") Integer page,
                                                       @RequestParam(value="amount") Integer amount,
                                                       @RequestParam(value="sortBy") String sortBy,
+                                                      @RequestParam(value="username") String username,
                                                       Authentication auth){
         Pageable paging = PageRequest.of(page, amount, Sort.by(sortBy));
-        return rideService.getRideHistory(auth, paging);
+        return rideService.getRideHistory(auth, paging, username);
     }
 
+    @GetMapping("/driver-history")
+    @PreAuthorize("hasAnyRole('DRIVER', 'ADMIN')")
+    public Page<RideHistoryDisplayDTO> getDriverRideHistory(@Valid @RequestParam(value="page") Integer page,
+                                                            @RequestParam(value="amount") Integer amount,
+                                                            @RequestParam(value="sortBy") String sortBy,
+                                                            @RequestParam(value="username") String username,
+                                                            Authentication auth){
+        Pageable paging = PageRequest.of(page, amount, Sort.by(sortBy));
+        return rideService.getDriverRideHistory(auth, paging, username);
+    }
 
     @GetMapping("/detailed-ride-history-passenger")
     @PreAuthorize("hasAnyRole('PASSENGER', 'ADMIN')")

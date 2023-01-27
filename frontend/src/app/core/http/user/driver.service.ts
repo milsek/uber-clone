@@ -126,4 +126,31 @@ export class DriverService {
       }
     );
   }
+
+  getRides(
+    page: number,
+    amount: number,
+    sortBy: string,
+    username: string
+  ): Promise<any> {
+    return axios.get(
+      `/api/rides/driver-history?page=${page}&amount=${amount}&sortBy=${sortBy}&username=${username}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
+
+  getRideDetails(rideId: number): Promise<any> {
+    return axios.get(
+      `/api/rides/detailed-ride-history-driver?rideId=${rideId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      }
+    );
+  }
 }

@@ -13,10 +13,11 @@ import * as GeoSearch from 'leaflet-geosearch';
 import { PassengerRide } from 'src/app/shared/models/ride.model';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 import * as moment from 'moment';
-import { User } from 'src/app/shared/models/user.model';
 import { Driver } from 'src/app/shared/models/driver.model';
 import { PhotoService } from 'src/app/core/http/user/photo.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DriverService } from 'src/app/core/http/user/driver.service';
+import { Location } from '@angular/common';
 
 const service_url = 'https://nominatim.openstreetmap.org/reverse?format=json';
 const API_KEY = null;
@@ -35,24 +36,32 @@ export class RideHistoryComponent implements OnInit {
   private control: any;
   private provider!: GeoSearch.OpenStreetMapProvider;
   faChevronCircleDown: IconDefinition = faChevronCircleDown;
-  sortBy: string = 'ride.startTime';
+  sortBy: string = 'startTime';
   startElem: number = 0;
   numOfElements: number = 0;
   page: number = 0;
   selectedRide: PassengerRide | null = null;
   selectedIsFavourite: boolean = false;
   rides: Array<PassengerRide> = [];
-  driver: Driver | null = null;
+  users: Array<Driver> = [];
+  username: string = '';
+  type: string = '';
 
   showReviewModal: boolean = false;
 
   constructor(
     private passengerService: PassengerService,
     private photoService: PhotoService,
-    private router: Router
+    private route: ActivatedRoute,
+    private driverService: DriverService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe((params) => {
+      this.username = params.get('username')!;
+      this.type = params.get('type')!;
+    });
     setTimeout(() => {
       this.initMap();
       this.getRides();
@@ -115,8 +124,16 @@ export class RideHistoryComponent implements OnInit {
   }
 
   getRides(): void {
+    if (this.type === 'DRIVER') {
+      this.getDriverRides();
+    } else {
+      this.getPassengerRides();
+    }
+  }
+
+  getPassengerRides(): void {
     this.passengerService
-      .getRides(this.page, 4, this.sortBy, '')
+      .getRides(this.page, 4, 'ride.' + this.sortBy, this.username)
       .then((res) => {
         console.log(res);
         this.startElem = this.page * 4;
@@ -131,9 +148,31 @@ export class RideHistoryComponent implements OnInit {
         this.passengerService
           .getRideDetails(this.selectedRide.id)
           .then((res) => {
-            this.driver = res.data.driver;
-            this.getImage(this.driver!.profilePicture);
+            this.users = [res.data.driver];
+            this.getImage(this.users[0]!.profilePicture);
           });
+      });
+  }
+
+  getDriverRides(): void {
+    this.driverService
+      .getRides(this.page, 4, this.sortBy, this.username)
+      .then((res) => {
+        console.log(res);
+        this.startElem = this.page * 4;
+        this.numOfElements = res.data.totalElements;
+        this.rides = res.data.content;
+        this.selectedRide = this.rides[0];
+        this.control.setWaypoints([
+          this.selectedRide.actualRoute.waypoints[0],
+          this.selectedRide.actualRoute.waypoints[1],
+        ]);
+        this.driverService.getRideDetails(this.selectedRide.id).then((res) => {
+          this.users = res.data.passengers;
+          for (let passenger of this.users) {
+            this.getImage(passenger.profilePicture);
+          }
+        });
       });
   }
 
@@ -203,10 +242,15 @@ export class RideHistoryComponent implements OnInit {
 
   getImage(profilePicture: string): void {
     this.photoService.loadImage(profilePicture).then((response) => {
-      this.driver!.userImage = response.data;
+      for (let user of this.users) {
+        if (user.profilePicture === profilePicture) {
+          user.userImage = response.data;
+        }
+      }
     });
   }
-  openDriver(): void {
-    this.router.navigate(['driver/' + this.driver!.username]);
+
+  back(): void {
+    this.location.back();
   }
 }
