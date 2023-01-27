@@ -1,11 +1,7 @@
 package com.example.springbackend.service;
 
 import com.example.springbackend.dto.creation.DriverCreationDTO;
-import com.example.springbackend.dto.display.DriverCurrentAndNextRideDisplayDTO;
-import com.example.springbackend.dto.display.DriverDisplayDTO;
-import com.example.springbackend.dto.display.DriverRideDisplayDTO;
-import com.example.springbackend.dto.display.PassengerDisplayDTO;
-import com.example.springbackend.dto.display.DriverSearchDisplayDTO;
+import com.example.springbackend.dto.display.*;
 import com.example.springbackend.dto.search.SearchDTO;
 import com.example.springbackend.exception.UserAlreadyExistsException;
 import com.example.springbackend.model.*;
@@ -19,6 +15,8 @@ import com.example.springbackend.websocket.MessageType;
 import com.example.springbackend.websocket.WSMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
@@ -244,5 +242,11 @@ public class DriverService {
         driverSearchDisplayDTO.setDrivers(drivers.subList(searchDTO.getPage()*7, Math.min((searchDTO.getPage()+1)*7, drivers.size())));
         driverSearchDisplayDTO.setNumberOfDrivers(drivers.size());
         return driverSearchDisplayDTO;
+    }
+
+    public Page<DriverReviewDisplayDTO> getDriverReviews(String username, Pageable pageable, Authentication auth) {
+        Driver driver = driverRepository.findByUsername(username).orElseThrow();
+        Page<PassengerRide> passengerRides = passengerRideRepository.findByDriver(driver, pageable);
+        return passengerRides.map(passengerRide -> modelMapper.map(passengerRide, DriverReviewDisplayDTO.class));
     }
 }

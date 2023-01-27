@@ -7,6 +7,6 @@ import java.util.*;
 @Data
 public class DetailedRideHistoryPassengerDTO {
     private DriverDisplayDTO driver;
-    private Map<String, Double> driverRating = new HashMap<String, Double>() {};
-    private Map<String, Double> vehicleRating = new HashMap<String, Double>() {};
+    private Map<String, Integer> driverRating = new HashMap<String, Integer>() {};
+    private Map<String, Integer> vehicleRating = new HashMap<String, Integer>() {};
 }

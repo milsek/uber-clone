@@ -1,1 +1,181 @@
-<p class="text-xl text-stone-500 font-bold">To be implemented...</p>
+<div class="flex flex-col justify-between h-full">
+  <!-- reviews -->
+  <div class="flex flex-col gap-y-6 h-136 overflow-y-auto">
+
+    <div *ngFor="let review of reviews">
+
+      <div class="flex justify-between">
+        <!-- passenger info -->
+        <div class="flex gap-x-3">
+          <div class="w-12 h-12 flex-shrink-0 my-auto">
+            <img src="/assets/images/placeholders/taxi-passenger.png" alt=""
+            class="rounded-full">
+          </div>
+          
+          <div class="flex flex-col justify-between my-auto text-gray-50 text-lg
+          tracking-wide text-left">
+            <div  class="text-gray-50 font-bold">
+              {{ review.passenger.name }} {{ review.passenger.surname }}
+            </div>
+            <div class="text-light text-sm font-medium">
+              {{ review.passenger.username }}
+            </div>
+          </div>
+        </div>
+
+        <!-- ratings -->
+        <div class="hidden md:flex flex-col justify-between">
+          <!-- driver rating -->
+          <div class="flex gap-x-2 my-auto">
+
+            <!-- stars -->
+            <div class="flex gap-x-0.5">
+              <div *ngFor="let in of setArrayFromNumber(5); let i = index">
+                <fa-icon
+                  [icon]="faStar"
+                  class="inline text-xs my-auto"
+                  [ngClass]="review.driverRating - 1 >= i ? 'text-accent-light' : 'text-stone-500'">
+                </fa-icon>
+              </div>
+            </div>
+
+            <fa-icon [icon]="faUser"
+              class="text-stone-400 text-base my-auto">
+            </fa-icon>
+          </div>
+
+          <!-- vehicle rating -->
+          <div class="flex gap-x-2 my-auto">
+
+            <!-- stars -->
+            <div class="flex gap-x-0.5">
+              <div *ngFor="let in of setArrayFromNumber(5); let i = index">
+                <fa-icon
+                  [icon]="faStar"
+                  class="inline cursor-pointer text-xs"
+                  [ngClass]="review.vehicleRating - 1 >= i ? 'text-accent-light' : 'text-stone-500'">
+                </fa-icon>
+              </div>
+            </div>
+
+            <fa-icon [icon]="faTaxi"
+              class="text-stone-400 text-base my-auto">
+            </fa-icon>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="flex mt-1.5 w-full text-base text-stone-400 font-medium text-left">
+        {{ review.comment }}
+      </div>
+
+      <!-- ratings -->
+      <div class="flex md:hidden justify-start gap-x-6">
+        <!-- driver rating -->
+        <div class="flex gap-x-2 my-auto">
+
+          <fa-icon [icon]="faUser"
+            class="text-stone-400 text-base my-auto">
+          </fa-icon>
+
+          <!-- stars -->
+          <div class="flex gap-x-0.5">
+            <div *ngFor="let in of setArrayFromNumber(5); let i = index">
+              <fa-icon
+                [icon]="faStar"
+                class="inline text-xs my-auto"
+                [ngClass]="review.driverRating - 1 >= i ? 'text-accent-light' : 'text-stone-500'">
+              </fa-icon>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- vehicle rating -->
+        <div class="flex gap-x-2 my-auto">
+          <fa-icon [icon]="faTaxi"
+            class="text-stone-400 text-base my-auto">
+          </fa-icon>
+
+          <!-- stars -->
+          <div class="flex gap-x-0.5">
+            <div *ngFor="let in of setArrayFromNumber(5); let i = index">
+              <fa-icon
+                [icon]="faStar"
+                class="inline cursor-pointer text-xs"
+                [ngClass]="review.vehicleRating - 1 >= i ? 'text-accent-light' : 'text-stone-500'">
+              </fa-icon>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- pagination controls -->
+  <div class="flex flex-col items-center mt-8 mb-3 text-center w-full">
+        <span class="text-sm text-gray-700 dark:text-stone-400">
+          Showing
+          <span class="font-semibold text-gray-900 dark:text-white px-1">{{
+            numOfElements === 0 ? 0 : startElem + 1
+          }}</span>
+          to
+          <span class="font-semibold text-gray-900 dark:text-white px-1">{{
+            startElem + RESULTS_PER_PAGE < numOfElements ? startElem + RESULTS_PER_PAGE : numOfElements
+          }}</span>
+          of
+          <span class="font-semibold text-gray-900 dark:text-white px-1">{{
+            numOfElements
+          }}</span>
+          Entries
+        </span>
+        <div class="inline-flex mt-1 xs:mt-0">
+          <button
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l
+            border-gray-700 rounded-l hover:bg-medium disabled:text-stone-500"
+            (click)="prev()"
+            [disabled]="startElem === 0"
+          >
+            <svg
+              aria-hidden="true"
+              class="w-5 h-5 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            Prev
+          </button>
+          <button
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l 
+            border-gray-700 rounded-r hover:bg-medium disabled:text-stone-500"
+            (click)="next()"
+            [disabled]="startElem + RESULTS_PER_PAGE >= numOfElements"
+          >
+            Next
+            <svg
+              aria-hidden="true"
+              class="w-5 h-5 ml-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+</div>

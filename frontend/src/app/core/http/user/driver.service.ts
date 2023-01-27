@@ -39,6 +39,15 @@ export class DriverService {
     return this.rides;
   };
 
+  fetchReviews = (username: string, page: number, amount: number) => {
+    return axios
+      .get(`/api/drivers/reviews?username=${username}&page=${page}&amount=${amount}`, {
+        headers: {
+          Authorization: `Bearer ${this.authenticationService.getToken()}`,
+        },
+      });
+  }
+
   async getDriverActivity(): Promise<boolean> {
     const activity: boolean = await axios
       .get(`/api/drivers/activity`, {

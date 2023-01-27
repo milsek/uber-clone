@@ -1,17 +1,16 @@
 package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.creation.DriverCreationDTO;
-import com.example.springbackend.dto.display.DriverCurrentAndNextRideDisplayDTO;
-import com.example.springbackend.dto.display.DriverDisplayDTO;
-import com.example.springbackend.dto.display.DriverRideDisplayDTO;
-import com.example.springbackend.dto.display.RideSimpleDisplayDTO;
-import com.example.springbackend.dto.display.DriverSearchDisplayDTO;
+import com.example.springbackend.dto.display.*;
 import com.example.springbackend.dto.search.SearchDTO;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.dto.update.DriverUpdateDTO;
 import com.example.springbackend.service.DriverService;
 import com.example.springbackend.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -73,5 +72,16 @@ public class DriverController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DriverSearchDisplayDTO> searchDrivers(@RequestBody SearchDTO searchDTO){
         return ResponseEntity.ok(driverService.searchDrivers(searchDTO));
+    }
+
+    @GetMapping("/reviews")
+    @PreAuthorize("hasAnyRole('DRIVER', 'ADMIN', 'PASSENGER')")
+    public Page<DriverReviewDisplayDTO> getDriverReviews(
+            @RequestParam(value="username") String username,
+            @RequestParam(value="page") Integer page,
+            @RequestParam(value="amount") Integer amount,
+            Authentication auth) {
+        Pageable pageable = PageRequest.of(page, amount);
+        return driverService.getDriverReviews(username, pageable, auth);
     }
 }

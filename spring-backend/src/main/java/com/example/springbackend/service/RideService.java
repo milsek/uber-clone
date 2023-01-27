@@ -392,6 +392,11 @@ public class RideService {
         ride.setStatus(RideStatus.COMPLETED);
         ride.setEndTime(LocalDateTime.now());
         rideRepository.save(ride);
+
+        driver.setRidesCompleted(driver.getRidesCompleted() + 1);
+        driver.setDistanceTravelled(driver.getDistanceTravelled() + ride.getDistance());
+        driverRepository.save(driver);
+
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
         sendMessageToMultiplePassengers(passengerRides.stream().map(pr -> pr.getPassenger().getUsername()).toList(),
                 "", MessageType.RIDE_COMPLETE);
@@ -655,7 +660,7 @@ public class RideService {
             DetailedRideHistoryPassengerDTO returnDTO = modelMapper.map(optRide.get(), DetailedRideHistoryPassengerDTO.class);
             for(PassengerRide passengerRide : passengerRides){
                 if(passengerRide.getDriverRating() != 0)
-                    returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getDriverRating());
+                    returnDTO.getDriverRating().put(passengerRide.getPassenger().getUsername(), passengerRide.getDriverRating());
                 if(passengerRide.getVehicleRating() != 0)
                     returnDTO.getVehicleRating().put(passengerRide.getPassenger().getUsername(),passengerRide.getVehicleRating());
             }
@@ -682,6 +687,11 @@ public class RideService {
             passengerRide.setVehicleRating(reviewCreationDTO.getVehicleRating());
             passengerRide.setDriverRating(reviewCreationDTO.getDriverRating());
             passengerRideRepository.save(passengerRide);
+
+            Driver driver = passengerRide.getRide().getDriver();
+            driver.setTotalRatingSum(driver.getTotalRatingSum() + passengerRide.getDriverRating());
+            driver.setNumberOfReviews(driver.getNumberOfReviews() + 1);
+            driverRepository.save(driver);
             return true;
         }
         return false;

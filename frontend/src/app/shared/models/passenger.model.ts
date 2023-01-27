@@ -17,4 +17,5 @@ export interface PassengerSimple {
   username: string;
   name: string;
   surname: string;
+  profilePicture: string;
 }

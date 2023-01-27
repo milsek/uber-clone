@@ -130,10 +130,10 @@ public class TestDataSupplierService {
         driver.setCity("New York City");
         driver.setActive(true);
         driver.setVehicle(vehicle);
-        driver.setDistanceTravelled(5251.12);
-        driver.setRidesCompleted(2153);
-        driver.setTotalRatingSum(7814);
-        driver.setNumberOfReviews(1693);
+        driver.setDistanceTravelled(5.0);
+        driver.setRidesCompleted(1);
+        driver.setTotalRatingSum(4);
+        driver.setNumberOfReviews(1);
         driver.setAccountStatus(AccountStatus.ACTIVE);
         driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
         driver.setProfilePicture("/default.png");
@@ -162,7 +162,7 @@ public class TestDataSupplierService {
         ride.setStartTime(LocalDateTime.now());
         ride.setEndTime(LocalDateTime.now().minusMonths(3));
         ride.setDriver(driverRepository.findByUsername("driver1@noemail.com").get());
-        ride.setDistance(600.0);
+        ride.setDistance(5.0);
         ride.setStartAddress("Djordja Niksica Johana 2, Bistrica, Novi Sad City");
         ride.setDestinationAddress("Bulevar Slobodana Jovanovića 18, Bistrica, Novi Sad City");
         ride.setVehicleType("COUPE");

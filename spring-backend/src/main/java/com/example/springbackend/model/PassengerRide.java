@@ -12,8 +12,8 @@ public class PassengerRide {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private double driverRating;
-    private double vehicleRating;
+    private int driverRating;
+    private int vehicleRating;
     private String comment;
     private int fare;
     private boolean agreed;
