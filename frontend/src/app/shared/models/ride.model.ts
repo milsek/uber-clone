@@ -15,8 +15,9 @@ export interface RideSimple {
   passengerConfirmed: boolean;
   status: string;
   startAddress: string;
-  endAddress: string;
+  destinationAddress: string;
   delayInMinutes: number;
+  driverInconsistencyReported: boolean;
 }
 
 export interface DriverRide {
@@ -29,7 +30,7 @@ export interface DriverRide {
   createdAt: Date;
   status: string;
   startAddress: string;
-  endAddress: string;
+  destinationAddress: string;
 }
 
 export interface PassengerRide {
@@ -43,10 +44,11 @@ export interface PassengerRide {
   endTime: Date;
   expectedTime: Date;
   status: string;
-  actualRoute: {
+  route: {
     coordinates: Coordinates[];
     waypoints: Coordinates[];
   };
   driverRating: number;
   vehicleRating: number;
+  driverInconsistencyReported: boolean;
 }

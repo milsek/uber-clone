@@ -153,5 +153,9 @@ export class RegisterDriverComponent implements OnInit {
   get arePasswordsDifferent() {
     return this.password?.value !== this.confirmPassword?.value;
   }
+  
+  goHome(): void {
+    window.location.href = '/';
+  }
 
 }

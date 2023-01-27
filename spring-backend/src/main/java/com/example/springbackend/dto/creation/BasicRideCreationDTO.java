@@ -1,7 +1,6 @@
 package com.example.springbackend.dto.creation;
 
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.*;
 
@@ -21,8 +20,7 @@ public class BasicRideCreationDTO {
     @NotBlank
     private String vehicleType;
     @NotNull
-    private RouteCreationDTO actualRoute;
-    private RouteCreationDTO expectedRoute;
+    private RouteCreationDTO route;
     @Min(value = 0, message="Delay in minutes must be a non-negative integer.")
     @Max(value = 300, message="Delay in minutes cannot be greater than 300.")
     private int delayInMinutes;

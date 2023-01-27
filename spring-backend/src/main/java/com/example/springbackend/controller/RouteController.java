@@ -27,19 +27,23 @@ public class RouteController {
 
 
     @PostMapping("/mark-route-as-favourite")
+    @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<Boolean> markRouteAsFavourite(@Valid @RequestBody RouteIdDTO routeIdDTO, Authentication authentication){
         return ResponseEntity.ok(routeService.markRouteAsFavourite(routeIdDTO, authentication));
     }
     @PostMapping("/unmark-route-as-favourite")
+    @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<Boolean> unmarkRouteAsFavourite(@Valid @RequestBody RouteIdDTO routeIdDTO, Authentication authentication){
         return ResponseEntity.ok(routeService.unmarkRouteAsFavourite(routeIdDTO, authentication));
     }
     @GetMapping("/favourite-routes")
+    @PreAuthorize("hasRole('PASSENGER')")
     public Page<Route> getFavouriteRoutes(@RequestParam(value="page") Integer page, @RequestParam(value="amount") Integer amount, Authentication authentication){
         Pageable paging = PageRequest.of(page, amount);
         return routeService.getFavouriteRoutes(paging, authentication);
     }
     @PostMapping("/is-route-favourite")
+    @PreAuthorize("hasRole('PASSENGER')")
     public ResponseEntity<Boolean> isRouteFavourite(@Valid @RequestBody RouteIdDTO routeIdDTO, Authentication authentication){
         return ResponseEntity.ok(routeService.isRouteFavourite(routeIdDTO, authentication));
     }

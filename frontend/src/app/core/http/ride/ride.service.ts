@@ -10,14 +10,10 @@ interface RideOrderData {
   babySeat: boolean,
   petFriendly: boolean,
   vehicleType: string,
-  actualRoute: {
+  route: {
     coordinates: Coordinates[],
     waypoints: Coordinates[]
   },
-  expectedRoute: {
-    coordinates: Coordinates[],
-    waypoints: Coordinates[]
-  } | null,
   usersToPay: string[]
 }
 
@@ -118,6 +114,18 @@ export class RideService {
   sendReview(data: ReviewData): Promise<any> {
     return axios.post(`/api/rides/reviews`, 
     data,
+    {
+      headers: {
+        Authorization: `Bearer ${this.authenticationService.getToken()}`
+      }
+    });
+  }
+
+  reportInconsistency(rideId: number): Promise<any> {
+    return axios.patch(`/api/rides/inconsistency`, 
+    {
+      rideId
+    },
     {
       headers: {
         Authorization: `Bearer ${this.authenticationService.getToken()}`

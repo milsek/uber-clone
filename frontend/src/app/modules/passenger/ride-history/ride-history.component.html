@@ -1,8 +1,8 @@
 <div class="min-h-screen h-full w-full bg-dark flex flex-col">
   <div class="absolute top-6 left-6">
-    <div
-      class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400 hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
-      routerLink="/"
+    <div class="border-4 border-stone-500 h-9 w-9 text-lg text-stone-500 hover:border-stone-400
+      hover:text-stone-400 text-center cursor-pointer transition hover:-translate-x-1 mb-2"
+      (click)="goHome()"
     >
       <fa-icon [icon]="faChevronLeft"></fa-icon>
     </div>
@@ -20,7 +20,7 @@
           <select
             id="sortBy"
             name="sortBy"
-            class="block w-1/5 rounded-md p-1 text-base m:text-sm absolute right-3 bg-dark cursor-pointer"
+            class="block w-28 rounded-md p-1 text-base m:text-sm absolute right-3 bg-dark cursor-pointer"
             (change)="sortRides($event)"
           >
             <option selected value="ride.startTime">Start time</option>
@@ -155,7 +155,7 @@
       </button>
       <div class="flex -space-x-2 absolute top-3 left-3" *ngIf="driver">
         <img
-          class="inline-block h-8 w-8 rounded-full ring-2 ring-accent z-50 hover:z-100"
+          class="inline-block h-8 w-8 rounded-full ring-2 cursor-pointer ring-accent z-50 hover:z-100"
           [src]="driver.userImage ? driver.userImage : ''"
           alt="Image Description"
           [title]="driver.name + ' ' + driver.surname + '\n' + driver.username"

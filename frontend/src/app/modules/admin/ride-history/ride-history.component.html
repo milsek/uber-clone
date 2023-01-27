@@ -156,6 +156,15 @@
           [routerLink]="['/driver', user.username]"
         />
       </div>
+
+      <!-- inconsistency -->
+      <div class="absolute bottom-3 left z-50 w-full flex justify-center text-base">
+        <div *ngIf="selectedRide && selectedRide.driverInconsistencyReported"
+          class="flex flex-col justify-center h-8 bg-dark bg-opacity-80 rounded-full px-6 text-accent-light my-auto">
+          ! Inconsistency reported
+        </div>
+      </div>
+
       <div id="map" class="w-full h-full z-10 rounded-lg"></div>
     </div>
   </div>

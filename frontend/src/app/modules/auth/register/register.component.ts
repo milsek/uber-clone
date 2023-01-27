@@ -111,5 +111,7 @@ export class RegisterComponent implements OnInit {
     return this.password?.value !== this.confirmPassword?.value;
   }
 
-
+  goHome(): void {
+    window.location.href = '/';
+  }
 }

@@ -234,10 +234,7 @@ public class DriverService {
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
         dto.setPassengers(passengerRides.stream()
                 .map(pr -> modelMapper.map(pr.getPassenger(), PassengerDisplayDTO.class)).toList());
-        if (ride.getExpectedRoute() != null)
-            dto.setRoute(rideService.createRouteDisplayDtoFromRoute(ride.getExpectedRoute()));
-        else
-            dto.setRoute(rideService.createRouteDisplayDtoFromRoute(ride.getActualRoute()));
+        dto.setRoute(rideService.createRouteDisplayDtoFromRoute(ride.getRoute()));
         return dto;
     }
 

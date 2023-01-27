@@ -39,4 +39,7 @@ export class AccountComponent implements OnInit {
     return this.account as Admin;
   }
 
+  goHome(): void {
+    window.location.href = '/';
+  }
 }

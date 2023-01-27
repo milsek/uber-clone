@@ -105,6 +105,10 @@ export class DriverRideDetailsComponent implements OnInit {
     return this.driverService.getCurrentRides()?.currentRide;
   }
 
+  get nextRide(): DriverRide | undefined {
+    return this.driverService.getCurrentRides()?.nextRide;
+  }
+
   get rideStatus(): string {
     if (this.ride)
       return this.ride.status.replace(/_/g, ' ')

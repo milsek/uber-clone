@@ -2,8 +2,6 @@ import {
   Component,
   AfterViewInit,
   Input,
-  OnChanges,
-  SimpleChanges,
 } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine';
@@ -16,6 +14,7 @@ import * as moment from 'moment';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 import { DriverRide, RideSimple } from 'src/app/shared/models/ride.model';
 import { DriverService } from 'src/app/core/http/user/driver.service';
+import { Route } from 'src/app/shared/models/route.model';
 
 const service_url = 'https://nominatim.openstreetmap.org/reverse?format=json';
 const API_KEY = null;
@@ -29,7 +28,6 @@ export class MapComponent implements AfterViewInit {
   private map: any;
   private control: any;
   public chosenRoute: any;
-  public alternativeRoute: any;
   public waypoints: any[] = [];
   private accontType: string = this.authenticationService.getAccountType();
   private vehiclePositions: any[] = [];
@@ -41,6 +39,7 @@ export class MapComponent implements AfterViewInit {
   @Input() set isMainLoaded(value: boolean) {
     this.handlePassengerRideInProgress();
     this.handleDriverRideInProgress();
+    this.handleTemporaryRoute();
   }
 
   handlePassengerRideInProgress(): void {
@@ -63,6 +62,24 @@ export class MapComponent implements AfterViewInit {
     this.drawRideRoute(ride);
   }
 
+  handleTemporaryRoute(): void {
+    if (this.waypoints.length === 0) {
+      const temporaryRoute: Route | null = this.passengerService.getTemporaryRoute();
+      if (temporaryRoute) {
+        setTimeout(() => {
+          this.passengerService.deleteTemporaryRoute();
+        }, 1000);
+        for (const latlng of temporaryRoute.waypoints) {
+          this.addMarker({ latlng });
+        }
+        this.map.setView(
+          [temporaryRoute.waypoints[0].lat, temporaryRoute.waypoints[0].lng],
+          15
+        );
+      }
+    }
+  }
+
   occupiedTaxiIcon = L.icon({
     iconUrl: '/assets/icons/occupied-taxi.png',
     iconSize: [20, 20],
@@ -81,10 +98,7 @@ export class MapComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.initMap();
-    }, 10);
-
+    this.initMap();
     this.getVehiclePositions();
     setInterval(() => {
       this.getVehiclePositions();
@@ -152,14 +166,9 @@ export class MapComponent implements AfterViewInit {
         if (that.chosenRoute?.waypoints.length === newRoute.waypoints.length)
           that.updateWaypoints(that.chosenRoute.waypoints, newRoute.waypoints);
         that.chosenRoute = newRoute;
-        that.alternativeRoute = e.routes.length > 1 ? e.routes[1] : null;
       })
       .on('routeselected', function (e) {
-        const previousRoute = that.chosenRoute;
-        if (previousRoute !== e.route) {
-          that.chosenRoute = e.route;
-          that.alternativeRoute = previousRoute;
-        }
+        that.chosenRoute = e.route;
       })
       .addTo(this.map);
 
@@ -196,7 +205,6 @@ export class MapComponent implements AfterViewInit {
       this.waypoints.splice(i, 1);
       if (this.waypoints.length < 2) {
         this.chosenRoute = null;
-        this.alternativeRoute = null;
       }
     }
   }

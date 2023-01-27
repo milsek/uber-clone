@@ -15,7 +15,7 @@ import { PassengerService } from 'src/app/core/http/user/passenger.service';
 import * as moment from 'moment';
 import { Driver } from 'src/app/shared/models/driver.model';
 import { PhotoService } from 'src/app/core/http/user/photo.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { DriverService } from 'src/app/core/http/user/driver.service';
 import { Location } from '@angular/common';
 
@@ -41,7 +41,6 @@ export class RideHistoryComponent implements OnInit {
   numOfElements: number = 0;
   page: number = 0;
   selectedRide: PassengerRide | null = null;
-  selectedIsFavourite: boolean = false;
   rides: Array<PassengerRide> = [];
   users: Array<Driver> = [];
   username: string = '';
@@ -112,9 +111,8 @@ export class RideHistoryComponent implements OnInit {
     const newRide = this.rides.find((ride) => ride.id === id);
     if (newRide === this.selectedRide) return;
     this.selectedRide! = this.rides.find((ride) => ride.id === id)!;
-    this.map.setView(this.selectedRide.actualRoute.coordinates[0], 8);
-    this.control.setWaypoints(this.selectedRide!.actualRoute.waypoints);
-    this.checkIsFavourite();
+    this.map.setView(this.selectedRide.route.coordinates[0], 8);
+    this.control.setWaypoints(this.selectedRide!.route.waypoints);
   }
 
   sortRides(event: Event): void {
@@ -135,16 +133,14 @@ export class RideHistoryComponent implements OnInit {
     this.passengerService
       .getRides(this.page, 4, 'ride.' + this.sortBy, this.username)
       .then((res) => {
-        console.log(res);
         this.startElem = this.page * 4;
         this.numOfElements = res.data.totalElements;
         this.rides = res.data.content;
         this.selectedRide = this.rides[0];
         this.control.setWaypoints([
-          this.selectedRide.actualRoute.waypoints[0],
-          this.selectedRide.actualRoute.waypoints[1],
+          this.selectedRide.route.waypoints[0],
+          this.selectedRide.route.waypoints[1],
         ]);
-        this.checkIsFavourite();
         this.passengerService
           .getRideDetails(this.selectedRide.id)
           .then((res) => {
@@ -164,8 +160,8 @@ export class RideHistoryComponent implements OnInit {
         this.rides = res.data.content;
         this.selectedRide = this.rides[0];
         this.control.setWaypoints([
-          this.selectedRide.actualRoute.waypoints[0],
-          this.selectedRide.actualRoute.waypoints[1],
+          this.selectedRide.route.waypoints[0],
+          this.selectedRide.route.waypoints[1],
         ]);
         this.driverService.getRideDetails(this.selectedRide.id).then((res) => {
           this.users = res.data.passengers;
@@ -184,29 +180,6 @@ export class RideHistoryComponent implements OnInit {
   next(): void {
     this.page++;
     this.getRides();
-  }
-
-  changeFavouriteStatus(): void {
-    if (!this.selectedIsFavourite)
-      this.passengerService
-        .markFavouriteRoute(this.selectedRide!.id)
-        .then(() => {
-          this.checkIsFavourite();
-        });
-    else
-      this.passengerService
-        .unmarkFavouriteRoute(this.selectedRide!.id)
-        .then(() => {
-          this.checkIsFavourite();
-        });
-  }
-
-  checkIsFavourite(): void {
-    this.passengerService
-      .isFavouriteRoute(this.selectedRide!.id)
-      .then((res) => {
-        this.selectedIsFavourite = res.data;
-      });
   }
 
   openReviewModal(): void {

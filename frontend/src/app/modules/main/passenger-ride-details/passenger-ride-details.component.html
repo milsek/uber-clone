@@ -83,7 +83,7 @@ sm:h-full select-none" id="order-menu">
       </div>
       
       <!-- vehicle -->
-      <div class="flex flex-col gap-x-4 py-6 mt-4 border border-stone-500 rounded-xl">
+      <div class="flex flex-col gap-x-4 py-6 mt-4 border border-stone-500 rounded-lg border-dashed">
 
         <div class="flex-shrink-0 my-auto mx-auto">
           <img [src]="vehicleImage" alt=""
@@ -100,8 +100,14 @@ sm:h-full select-none" id="order-menu">
         </div>
 
       </div>
-    </div>
 
+      <button *ngIf="ride.status === 'IN_PROGRESS' && ride.driverInconsistencyReported === false" class="w-full
+      text-stone-500 hover:text-stone-400 font-medium tracking-wide mt-2"
+      (click)="reportInconsistency()">
+        Report inconsistency
+      </button>
+
+    </div>
   </div>
 
   <!-- opening arrow -->

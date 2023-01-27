@@ -42,5 +42,7 @@ export class PasswordResetComponent implements OnInit {
     alert("Password reset");
   }
 
-
+  goHome(): void {
+    window.location.href = '/';
+  }
 }

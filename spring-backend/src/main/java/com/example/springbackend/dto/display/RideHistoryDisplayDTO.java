@@ -11,7 +11,7 @@ public class RideHistoryDisplayDTO {
     private Double distance;
     private int expectedTime;
     private int price;
-    private RouteDisplayDTO actualRoute;
+    private RouteDisplayDTO route;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private String startAddress;
@@ -20,4 +20,5 @@ public class RideHistoryDisplayDTO {
     private RideStatus status;
     private double driverRating;
     private double vehicleRating;
+    private boolean driverInconsistencyReported;
 }

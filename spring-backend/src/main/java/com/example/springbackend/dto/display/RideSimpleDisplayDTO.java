@@ -19,4 +19,5 @@ public class RideSimpleDisplayDTO {
     private String startAddress;
     private String destinationAddress;
     private int delayInMinutes;
+    private boolean driverInconsistencyReported;
 }

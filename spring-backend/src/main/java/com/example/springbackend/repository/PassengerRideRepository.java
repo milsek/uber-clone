@@ -87,7 +87,7 @@ public interface PassengerRideRepository extends JpaRepository<PassengerRide, In
     List<String> getPassengersForRide(@Param("rideId") Integer rideId);
 
     @Query("SELECT pr FROM PassengerRide pr WHERE " +
-            "pr.ride.expectedRoute.id = :routeId AND pr.passenger.username = :username" )
+            "pr.ride.route.id = :routeId AND pr.passenger.username = :username" )
     Optional<PassengerRide> findByRideRouteAndUsername(@Param("routeId") Integer routeId, @Param("username") String username);
 }
 

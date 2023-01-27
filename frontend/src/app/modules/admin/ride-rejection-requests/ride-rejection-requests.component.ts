@@ -38,4 +38,8 @@ export class RideRejectionRequestsComponent implements OnInit {
     });
   }
 
+  goHome(): void {
+    window.location.href = '/';
+  }
+
 }

@@ -79,5 +79,7 @@ export class RideReportsComponent implements OnInit {
     return this.rideReportForm.get('adminGraphType');
   }
 
-
+  goHome(): void {
+    window.location.href = '/';
+  }
 }

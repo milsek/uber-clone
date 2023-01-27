@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -147,12 +146,12 @@ public class TestDataSupplierService {
         driver.setCurrentRide(null);
         driver.setNextRide(null);
         driverRepository.save(driver);
-        driver.setUsername("driver2@noemail.com");
-        driverRepository.save(driver);
-        driver.setUsername("driver3@noemail.com");
-        driverRepository.save(driver);
-        driver.setUsername("driver4@noemail.com");
-        driverRepository.save(driver);
+//        driver.setUsername("driver2@noemail.com");
+//        driverRepository.save(driver);
+//        driver.setUsername("driver3@noemail.com");
+//        driverRepository.save(driver);
+//        driver.setUsername("driver4@noemail.com");
+//        driverRepository.save(driver);
     }
 
     private void addRides(){
@@ -196,9 +195,8 @@ public class TestDataSupplierService {
             add(new Coordinates(45.253658, 19.803968));
         }});
         routeRepository.save(route);
-        ride.setActualRoute(route);
+        ride.setRoute(route);
         ride.setPassengersConfirmed(true);
-        ride.setExpectedRoute(route);
         ride.setCreatedAt(LocalDateTime.now().minusMonths(3));
         ride.setPrice(50);
         ride.setId(1);

@@ -145,4 +145,8 @@ export class UpdateRequestsComponent implements OnInit {
     this.confirmModalDescription = '';
     this.showConfirmModal = false;
   }
+  
+  goHome(): void {
+    window.location.href = '/';
+  }
 }

@@ -63,7 +63,7 @@
             class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
             routerLink="/passenger/ride-history"
           >
-            <fa-icon [icon]="faRoute" class="text-xl w-6"></fa-icon>
+            <fa-icon [icon]="faRoute" class="text-xl"></fa-icon>
             <span class="my-auto">Ride history</span>
           </button>
 
@@ -71,7 +71,7 @@
             class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
             routerLink="/passenger/fav-routes"
           >
-            <fa-icon [icon]="faStar" class="text-xl w-6"></fa-icon>
+            <fa-icon [icon]="faStar" class="text-xl"></fa-icon>
             <span class="my-auto">Favourite routes</span>
           </button>
         </div>
@@ -80,7 +80,7 @@
             class="flex gap-x-3 px-3 py-1.5 rounded-lg w-full hover:text-gray-300"
             routerLink="/drivers/ride-history"
           >
-            <fa-icon [icon]="faRoute" class="text-xl w-6"></fa-icon>
+            <fa-icon [icon]="faRoute" class="text-xl"></fa-icon>
             <span class="my-auto">Ride history</span>
           </button>
         </div>
@@ -109,14 +109,14 @@
     <div
       *ngIf="accountType === 'driver' && driverInfo.isActive !== null"
       class="flex flex-col justify-center relative h-11 my-auto w-56 rounded-full mx-auto text-center text-xl font-medium tracking-wider pointer-events-auto select-none cursor-pointer"
-      [ngClass]="driverInfo.isActive ? 'bg-accent' : 'bg-light'"
+      [ngClass]="driverInfo.isActive ? 'bg-accent' : 'bg-stone-500'"
       (click)="toggleActivity()"
     >
       <div
         class="absolute top-0 left-0 w-full h-full rounded-full"
         [ngClass]="
           driverInfo.isActive
-            ? 'bg-accent-light  animate-pulse'
+            ? 'bg-accent-light animate-pulse'
             : 'bg-transparent animate-none'
         "
       ></div>

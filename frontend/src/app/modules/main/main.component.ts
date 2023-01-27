@@ -152,10 +152,6 @@ export class MainComponent implements OnInit {
     return this.mapComponent.chosenRoute;
   }
 
-  get alternativeRoute(): any {
-    return this.mapComponent.alternativeRoute;
-  }
-
   get waypoints(): any {
     return this.mapComponent.waypoints;
   }

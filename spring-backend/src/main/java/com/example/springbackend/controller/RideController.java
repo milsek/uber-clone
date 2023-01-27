@@ -51,6 +51,12 @@ public class RideController {
         return ResponseEntity.ok(rideService.rejectRide(dto, auth));
     }
 
+    @PatchMapping("/inconsistency")
+    @PreAuthorize("hasRole('PASSENGER')")
+    public ResponseEntity<Boolean> reportInconsistency(@Valid @RequestBody RideIdDTO dto, Authentication auth) {
+        return ResponseEntity.ok(rideService.reportInconsistency(dto, auth));
+    }
+
     @PatchMapping("/begin")
     @PreAuthorize("hasRole('DRIVER')")
     public ResponseEntity<Boolean> beginRide(@Valid @RequestBody RideIdDTO dto, Authentication auth) {

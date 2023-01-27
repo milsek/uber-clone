@@ -22,7 +22,7 @@ public class Ride {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime createdAt;
-    private Boolean driverInconsistency;
+    private Boolean driverInconsistencyReported;
     private int price;
     private String vehicleType;
     private boolean babySeatRequested;
@@ -35,9 +35,5 @@ public class Ride {
 
     @ManyToOne
     @JoinColumn
-    private Route actualRoute;
-
-    @ManyToOne
-    @JoinColumn
-    private Route expectedRoute;
+    private Route route;
 }

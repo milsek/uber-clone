@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios from 'axios';
-import { PassengerRide, RideSimple } from 'src/app/shared/models/ride.model';
+import { RideSimple } from 'src/app/shared/models/ride.model';
+import { Route } from 'src/app/shared/models/route.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
 @Injectable({
@@ -13,6 +14,20 @@ export class PassengerService {
 
   getPassengerByUsername(username: string): Promise<any> {
     return axios.get(`/api/passenger/${username}`);
+  }
+
+  setTemporaryRoute(route: Route | null) {
+    window.localStorage.setItem('temp_ride', JSON.stringify(route));
+  }
+
+  deleteTemporaryRoute() {
+    window.localStorage.removeItem('temp_ride');
+  }
+
+  getTemporaryRoute(): Route | null {
+    const rideString: string | null = window.localStorage.getItem('temp_ride');
+    if (!rideString) return null;
+    return JSON.parse(rideString);
   }
 
   async addTokens(amount: number): Promise<void> {

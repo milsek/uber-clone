@@ -191,4 +191,8 @@ export class UsersSearchComponent implements OnInit {
   get accountType(): string {
     return this.authenticationService.getAccountType();
   }
+
+  goHome(): void {
+    window.location.href = '/';
+  }
 }

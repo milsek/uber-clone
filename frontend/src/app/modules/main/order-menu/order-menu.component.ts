@@ -17,7 +17,6 @@ import { VehicleType } from 'src/app/shared/models/vehicle-type.model';
 export class OrderMenuComponent implements OnInit {
   @Input() waypoints: any[] = [];
   @Input() route!: any;
-  @Input() alternativeRoute!: any;
   @Output() stopAdded: EventEmitter<string> = new EventEmitter<string>();
   @Output() stopRemoved: EventEmitter<number> = new EventEmitter<number>();
 
@@ -82,8 +81,6 @@ export class OrderMenuComponent implements OnInit {
   }
 
   orderRide(): void {
-    const deviateFromRoute: boolean = Math.random() > 0.75 && this.alternativeRoute;
-    const actualRoute: any = deviateFromRoute ? this.alternativeRoute : this.route;
     const startWaypoint: any = this.waypoints[0];
     const destinationWaypoint: any = this.waypoints[this.waypoints.length - 1];
     const orderData: any = {
@@ -91,14 +88,10 @@ export class OrderMenuComponent implements OnInit {
       babySeat: this.hasBabySeat,
       petFriendly: this.isPetFriendly,
       vehicleType: this.selectedVehicleType.name,
-      expectedTime: actualRoute.summary.totalTime,
-      expectedRoute: deviateFromRoute ? {
+      expectedTime: this.route.summary.totalTime,
+      route: {
         waypoints: this.route.waypoints.map((waypoint: any) => waypoint.latLng),
         coordinates: this.route.coordinates
-      } : null,
-      actualRoute: {
-        waypoints: actualRoute.waypoints.map((waypoint: any) => waypoint.latLng),
-        coordinates: actualRoute.coordinates
       },
       usersToPay: this.linkedPassengers,
       startAddress: this.getAddressName(startWaypoint),

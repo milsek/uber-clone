@@ -67,6 +67,14 @@ public class ControllerAdvisor {
                 "Reservation must be made at least 20 minutes in advance.");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(RideDoesNotBelongToPassengerException.class)
+    public ExceptionResponseBody handleRideDoesNotBelongToPassengerException(RideDoesNotBelongToPassengerException ex) {
+        return new ExceptionResponseBody(
+                HttpStatus.BAD_REQUEST.value(),
+                "Ride does not belong to request sender.");
+    }
+
     @ResponseStatus(HttpStatus.PAYMENT_REQUIRED)
     @ExceptionHandler(InsufficientFundsException.class)
     public ExceptionResponseBody handleInsufficientFundsException(InsufficientFundsException ex) {

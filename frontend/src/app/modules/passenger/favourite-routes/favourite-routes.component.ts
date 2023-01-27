@@ -116,6 +116,11 @@ export class FavouriteRoutesComponent implements OnInit {
   }
 
   startRide(): void {
-    //add logic for starting ride
+    this.passengerService.setTemporaryRoute(this.selectedRoute);
+    window.location.href = '/';
+  }
+
+  goHome(): void {
+    window.location.href = '/';
   }
 }

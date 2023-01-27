@@ -177,23 +177,32 @@ public class RideService {
     }
 
     private void directDriverToCurrentRideStart(Driver driver, Ride ride) {
-        directDriverToLocation(driver, ride.getActualRoute().getWaypoints().get(0));
+        directDriverToLocation(driver, ride.getRoute().getWaypoints().get(0));
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(() -> markDriverArrived(ride),
+        executorService.schedule(() -> markDriverArrived(ride.getId()),
                 driver.getVehicle().getExpectedTripTime(), TimeUnit.SECONDS);
     }
 
-    private void markDriverArrived(Ride ride) {
+    private void markDriverArrived(Integer rideId) {
+        Ride ride = rideRepository.findById(rideId).get();
         if (ride.getStatus() == RideStatus.CANCELLED) return;
         ride.setStatus(RideStatus.DRIVER_ARRIVED);
         rideRepository.save(ride);
         sendRefreshMessageToDriverAndAllPassengers(ride);
     }
 
-    private void markArrivedAtDestination(Ride ride) {
+    private void markArrivedAtDestination(Integer rideId, int waypointIndex) {
+        Ride ride = rideRepository.findById(rideId).get();
         if (ride.getStatus() == RideStatus.CANCELLED) return;
-        ride.setStatus(RideStatus.ARRIVED_AT_DESTINATION);
-        rideRepository.save(ride);
+        if (ride.getRoute().getWaypoints().size() > waypointIndex + 1) {
+            directDriverToLocation(ride.getDriver(), ride.getRoute().getWaypoints().get(waypointIndex + 1));
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.schedule(() -> markArrivedAtDestination(ride.getId(), waypointIndex + 1),
+                    ride.getDriver().getVehicle().getExpectedTripTime(), TimeUnit.SECONDS);
+        } else {
+            ride.setStatus(RideStatus.ARRIVED_AT_DESTINATION);
+            rideRepository.save(ride);
+        }
         sendRefreshMessageToDriverAndAllPassengers(ride);
     }
 
@@ -204,7 +213,7 @@ public class RideService {
         vehicle.setCoordinatesChangedAt(LocalDateTime.now());
         long estimatedTime = simulatorService.getEstimatedTime(vehicle);
         vehicle.setExpectedTripTime(estimatedTime);
-        vehicleRepository.save(driver.getVehicle());
+        vehicleRepository.save(vehicle);
 
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.schedule(() -> simulatorService.arriveAtLocation(vehicle, true),
@@ -313,6 +322,21 @@ public class RideService {
         return false;
     }
 
+    public Boolean reportInconsistency(RideIdDTO dto, Authentication auth) {
+        Passenger passenger = (Passenger) auth.getPrincipal();
+        Ride ride = rideRepository.findById(dto.getRideId()).orElseThrow();
+        Optional<PassengerRide> passengerRide =
+                passengerRideRepository.findByRideAndPassengerUsername(ride, passenger.getUsername());
+        if (passengerRide.isPresent()) {
+            ride.setDriverInconsistencyReported(true);
+            rideRepository.save(ride);
+            sendRefreshMessageToDriverAndAllPassengers(ride);
+            return true;
+        } else {
+            throw new RideDoesNotBelongToPassengerException();
+        }
+    }
+
     private void refundPassengers(List<PassengerRide> passengerRides) {
         for (PassengerRide passengerRide : passengerRides) {
             Passenger ridePassenger = passengerRide.getPassenger();
@@ -353,13 +377,12 @@ public class RideService {
         ride.setStatus(RideStatus.IN_PROGRESS);
         ride.setStartTime(LocalDateTime.now());
         rideRepository.save(ride);
-        List<Coordinates> waypoints = ride.getActualRoute().getWaypoints();
-        directDriverToLocation(driver, waypoints.get(waypoints.size() - 1));
+        directDriverToLocation(driver, ride.getRoute().getWaypoints().get(1));
         sendRefreshMessageToDriverAndAllPassengers(ride);
 
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(() -> markArrivedAtDestination(ride),
-                driver.getVehicle().getExpectedTripTime(), TimeUnit.SECONDS);
+        executorService.schedule(() -> markArrivedAtDestination(ride.getId(), 1),
+                ride.getDriver().getVehicle().getExpectedTripTime(), TimeUnit.SECONDS);
         return true;
     }
 
@@ -418,20 +441,37 @@ public class RideService {
         rideRepository.save(ride);
 
         Driver driver = ride.getDriver();
-        driver.setCurrentRide(driver.getNextRide());
+        Optional<Ride> optionalNextRide = rideRepository.findById(driver.getNextRide().getId());
+        driver.setActive(false);
+        driver.setCurrentRide(null);
         driver.setNextRide(null);
         driverRepository.save(driver);
 
         Vehicle vehicle = driver.getVehicle();
         vehicle.setCurrentCoordinates(vehicle.getNextCoordinates());
-        if (driver.getCurrentRide() != null) {
-            List<Coordinates> waypoints = driver.getCurrentRide().getActualRoute().getWaypoints();
-            vehicle.setNextCoordinates(waypoints.get(0));
-        }
+        vehicle.setExpectedTripTime(0);
+        vehicle.setCoordinatesChangedAt(LocalDateTime.now());
         vehicleRepository.save(vehicle);
 
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
+        handleRejectedRidePassengers(passengerRides);
 
+        if (optionalNextRide.isPresent()) {
+            Ride nextRide = optionalNextRide.get();
+            nextRide.setStatus(RideStatus.CANCELLED);
+            rideRepository.save(nextRide);
+            List<PassengerRide> nextRidePassengerRides = passengerRideRepository.findByRide(nextRide);
+            handleRejectedRidePassengers(nextRidePassengerRides);
+        }
+
+        sendMessageToDriver(ride.getDriver().getUsername(),
+                "Your rejection is accepted and your rides are cancelled.",
+                MessageType.RIDE_UPDATE);
+
+        return true;
+    }
+
+    private void handleRejectedRidePassengers(List<PassengerRide> passengerRides) {
         for (PassengerRide passengerRide : passengerRides) {
             Passenger ridePassenger = passengerRide.getPassenger();
             sendMessageToPassenger(ridePassenger.getUsername(),
@@ -442,16 +482,10 @@ public class RideService {
                 passengerRepository.save(ridePassenger);
             }
         }
-
-        sendMessageToDriver(ride.getDriver().getUsername(),
-                "Your rejection is accepted. The ride will be cancelled.",
-                MessageType.RIDE_UPDATE);
-
-        return true;
     }
 
     private Driver findDriver(Ride ride) {
-        Coordinates startCoordinates = ride.getActualRoute().getWaypoints().get(0);
+        Coordinates startCoordinates = ride.getRoute().getWaypoints().get(0);
         List<Driver> potentialClosestDriver = driverRepository.getClosestFreeDriver(startCoordinates.getLat(),
                 startCoordinates.getLng(), ride.isBabySeatRequested(), ride.isPetFriendlyRequested(), ride.getVehicleType(),
                 PageRequest.of(0, 1)).stream().toList();
@@ -492,16 +526,10 @@ public class RideService {
 
     private Ride createBasicRide(BasicRideCreationDTO dto, int price, Driver driver) {
         Ride ride = new Ride();
-        Route actualRoute = createRouteFromDto(dto.getActualRoute());
-        routeRepository.save(actualRoute);
-        Route expectedRoute = null;
-        if (dto.getExpectedRoute() != null) {
-            expectedRoute = createRouteFromDto(dto.getExpectedRoute());
-            routeRepository.save(expectedRoute);
-        }
+        Route route = createRouteFromDto(dto.getRoute());
+        routeRepository.save(route);
         ride.setDistance(dto.getDistance());
-        ride.setActualRoute(actualRoute);
-        ride.setExpectedRoute(expectedRoute);
+        ride.setRoute(route);
         ride.setDriverRejectionReason(null);
         ride.setStatus(RideStatus.RESERVED);
         ride.setPetFriendlyRequested(dto.isPetFriendly());
@@ -514,7 +542,7 @@ public class RideService {
         ride.setExpectedTime(dto.getExpectedTime());
         ride.setVehicleType(dto.getVehicleType());
         ride.setCreatedAt(LocalDateTime.now());
-        ride.setDriverInconsistency(false);
+        ride.setDriverInconsistencyReported(false);
         ride.setPrice(price);
         ride.setPassengersConfirmed(true);
         ride.setDriver(driver);
@@ -524,16 +552,10 @@ public class RideService {
 
     private Ride createSplitFareRide(BasicRideCreationDTO dto, int price) {
         Ride ride = new Ride();
-        Route actualRoute = createRouteFromDto(dto.getActualRoute());
-        routeRepository.save(actualRoute);
-        Route expectedRoute = null;
-        if (dto.getExpectedRoute() != null) {
-            expectedRoute = createRouteFromDto(dto.getExpectedRoute());
-            routeRepository.save(expectedRoute);
-        }
+        Route route = createRouteFromDto(dto.getRoute());
+        routeRepository.save(route);
         ride.setDistance(dto.getDistance());
-        ride.setActualRoute(actualRoute);
-        ride.setExpectedRoute(expectedRoute);
+        ride.setRoute(route);
         ride.setDriverRejectionReason(null);
         ride.setStatus(RideStatus.PENDING_CONFIRMATION);
         ride.setPetFriendlyRequested(dto.isPetFriendly());
@@ -546,7 +568,7 @@ public class RideService {
         ride.setExpectedTime(dto.getExpectedTime());
         ride.setVehicleType(dto.getVehicleType());
         ride.setCreatedAt(LocalDateTime.now());
-        ride.setDriverInconsistency(false);
+        ride.setDriverInconsistencyReported(false);
         ride.setPrice(price);
         ride.setPassengersConfirmed(false);
         rideRepository.save(ride);
@@ -563,10 +585,7 @@ public class RideService {
         rideDisplayDTO.setDriver(driver != null ? modelMapper.map(driver, DriverSimpleDisplayDTO.class) : null);
         rideDisplayDTO.setAllConfirmed(ride.getPassengersConfirmed());
         rideDisplayDTO.setPassengerConfirmed(pr.isAgreed());
-        if (ride.getExpectedRoute() != null)
-            rideDisplayDTO.setRoute(createRouteDisplayDtoFromRoute(ride.getExpectedRoute()));
-        else
-            rideDisplayDTO.setRoute(createRouteDisplayDtoFromRoute(ride.getActualRoute()));
+        rideDisplayDTO.setRoute(createRouteDisplayDtoFromRoute(ride.getRoute()));
         return rideDisplayDTO;
     }
 

@@ -2,7 +2,7 @@
 sm:h-full select-none" id="order-menu">
 
   <div *ngIf="isOpened && ride" class="sm:static flex flex-col rounded-t-3xl sm:rounded-none
-  w-screen h-140 sm:h-auto sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
+  w-screen h-140 sm:h-full sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
     <h1 class="text-3xl font-bold text-gray-50 mt-4 sm:mt-0">Current ride</h1>
     <div class="tracking-wide uppercase text-light font-medium rounded-2xl">{{ rideStatus }}</div>
 
@@ -58,7 +58,7 @@ sm:h-full select-none" id="order-menu">
 
     </div>
 
-    <!-- driver info -->
+    <!-- passengers info -->
     <h1 class="text-2xl font-bold text-gray-50 mt-10">Your passengers</h1>
     <div *ngIf="ride.passengers" class="flex flex-col gap-y-2 mt-4 max-h-72 overflow-auto">
       <div *ngFor="let passenger of ride.passengers">
@@ -91,6 +91,52 @@ sm:h-full select-none" id="order-menu">
       COMPLETE RIDE
     </button>
 
+    <!-- next ride -->
+    <div *ngIf="isOpened && nextRide" class="mt-6">
+      <h3 class="text-xl font-bold text-gray-50 mt-4 sm:mt-0">Next ride</h3>
+
+      <div class="flex flex-col shrink-0 gap-y-3 mt-4">
+          <div class="flex w-full justify-between">
+            
+            <div class="flex grow gap-x-4">
+              <div class="relative flex flex-col justify-center h-10 w-10 shrink-0 text-accent-light
+              rounded-full text-center select-none">
+                <fa-icon [icon]="faCircle" class="mx-auto text-base"></fa-icon>
+                <p
+                class="absolute -bottom-4 w-full text-center mx-auto font-extrabold">·</p>
+              </div>
+              
+              <div class="flex flex-col">
+                <div class="text-lg font-medium text-gray-50">First Stop</div>
+                <div class="text-sm font-medium text-light">
+                  {{ nextRide.startAddress }}
+                  </div>
+              </div>
+            </div>
+  
+          </div>
+          <div class="flex w-full justify-between">
+            
+            <div class="flex grow gap-x-4">
+              <div class="relative flex flex-col justify-center h-10 w-10 shrink-0 text-accent-light
+              rounded-full text-center select-none">
+                <p
+                  class="absolute -top-4 w-full text-center mx-auto font-extrabold">·</p>
+                <fa-icon [icon]="faFlagCheckered" class="mx-auto text-base"></fa-icon>
+              </div>
+              
+              <div class="flex flex-col">
+                <div class="text-lg font-medium text-gray-50">Last Stop</div>
+                <div class="text-sm font-medium text-light">
+                  {{ nextRide.destinationAddress }}
+                  </div>
+              </div>
+            </div>
+  
+          </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- opening arrow -->
