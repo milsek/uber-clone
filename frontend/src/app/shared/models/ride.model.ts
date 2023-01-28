@@ -49,10 +49,7 @@ export interface PassengerRide {
   endTime: Date;
   expectedTime: Date;
   status: string;
-  route: {
-    coordinates: Coordinates[];
-    waypoints: Coordinates[];
-  };
+  route: Route,
   driverRating: number;
   vehicleRating: number;
   driverInconsistencyReported: boolean;

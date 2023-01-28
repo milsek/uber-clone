@@ -168,6 +168,13 @@ export class RideHistoryComponent implements OnInit {
       });
   }
 
+  orderRouteAgain(): void {
+    if (this.selectedRide) {
+      this.passengerService.setTemporaryRoute(this.selectedRide.route);
+      window.location.href = '/';
+    }
+  }
+
   openReviewModal(): void {
     this.showReviewModal = true;
   }

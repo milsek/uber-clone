@@ -153,6 +153,19 @@
           [icon]="faStar"
         ></fa-icon>
       </button>
+
+      <!-- order again -->
+      <div>
+        <button
+          class="z-100 bg-accent text-white w-32 py-1 text-base font-medium 
+          rounded-2xl shadow-md absolute bottom-3 right-3"
+          *ngIf="selectedRide && selectedRide.route !== null"
+          (click)="orderRouteAgain()"
+        >
+          Order again
+        </button>
+      </div>
+
       <div class="flex -space-x-2 absolute top-3 left-3" *ngIf="driver">
         <img
           class="inline-block h-8 w-8 object-cover rounded-full ring-2 cursor-pointer ring-accent z-50 hover:z-100"

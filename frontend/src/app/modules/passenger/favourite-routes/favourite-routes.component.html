@@ -19,11 +19,12 @@
   <div class="mx-auto mt-10 gap-y-3 w-3/4 h-[38rem] relative">
     <div>
       <button
-        class="z-100 bg-accent text-white w-32 h-7 text-xl rounded-2xl absolute top-3 right-3"
+        class="z-100 bg-accent text-white w-32 py-1 text-base font-medium
+        rounded-2xl shadow-md absolute bottom-3 right-3"
         *ngIf="selectedRoute !== null"
-        (click)="startRide()"
+        (click)="orderRouteAgain()"
       >
-        Start ride
+        Order again
       </button>
     </div>
     <div
