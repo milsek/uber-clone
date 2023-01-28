@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
-import { Observable } from 'rxjs';
+import axios, { AxiosResponse } from 'axios';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
 @Injectable({
@@ -9,7 +8,7 @@ import { AuthenticationService } from '../../authentication/authentication.servi
 export class PhotoService {
   constructor(private authenticationService: AuthenticationService) {}
 
-  storeImage(file: File): Promise<any> {
+  storeImage(file: File): Promise<AxiosResponse<string>> {
     const formData = new FormData();
     formData.append('file', file);
     return axios.post(`/api/image/save`, formData, {
@@ -19,7 +18,7 @@ export class PhotoService {
     });
   }
 
-  loadImage(photoName: string): Promise<any> {
+  loadImage(photoName: string): Promise<AxiosResponse<string>> {
     return axios.get(`/api/image/load/${photoName}`);
   }
 }

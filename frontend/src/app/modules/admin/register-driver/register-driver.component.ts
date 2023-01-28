@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { faBabyCarriage, faChevronLeft, faPaw, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
@@ -8,7 +8,7 @@ import { DriverService } from 'src/app/core/http/user/driver.service';
   selector: 'app-register-driver',
   templateUrl: './register-driver.component.html',
 })
-export class RegisterDriverComponent implements OnInit {
+export class RegisterDriverComponent {
   faChevronLeft: IconDefinition = faChevronLeft;
   faBabyCarriage: IconDefinition = faBabyCarriage;
   faPaw: IconDefinition = faPaw;
@@ -73,9 +73,6 @@ export class RegisterDriverComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService, private driverService: DriverService) {
     document.getElementById('register-email')?.focus();
-  }
-
-  ngOnInit(): void {
   }
 
   onSubmit() {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconDefinition, faBell } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -6,14 +6,11 @@ import { IconDefinition, faBell } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './disappearing-notification.component.html',
   styleUrls: ['./disappearing-notification.component.css']
 })
-export class DisappearingNotificationComponent implements OnInit {
+export class DisappearingNotificationComponent {
   @Input() title!: string;
   @Input() description!: string;
   faBell: IconDefinition = faBell;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faChevronLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
@@ -8,7 +8,7 @@ import { AuthenticationService } from 'src/app/core/authentication/authenticatio
   selector: 'app-login',
   templateUrl: './login.component.html',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   faChevronLeft: IconDefinition = faChevronLeft;
   errorMessage: string = '';
 
@@ -24,9 +24,6 @@ export class LoginComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService) { 
     document.getElementById('login-email')?.focus();
-  }
-
-  ngOnInit(): void {
   }
 
   resetPassword(): void {

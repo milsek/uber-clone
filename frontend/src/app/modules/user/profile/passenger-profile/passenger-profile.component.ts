@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconDefinition, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Passenger } from 'src/app/shared/models/passenger.model';
 
@@ -11,7 +11,7 @@ enum PassengerProfileView {
   selector: 'app-passenger-profile',
   templateUrl: './passenger-profile.component.html'
 })
-export class PassengerProfileComponent implements OnInit {
+export class PassengerProfileComponent {
   @Input() passenger!: Passenger;
 
   _selectedView: PassengerProfileView = PassengerProfileView.Details; 
@@ -19,9 +19,6 @@ export class PassengerProfileComponent implements OnInit {
   showDropdown: boolean = false;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   set selectedView(value: string) {
     this._selectedView = value as PassengerProfileView;

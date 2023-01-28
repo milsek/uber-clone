@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { faStar, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { RideService } from 'src/app/core/http/ride/ride.service';
 
@@ -6,7 +6,7 @@ import { RideService } from 'src/app/core/http/ride/ride.service';
   selector: 'app-ride-review-modal',
   templateUrl: './ride-review-modal.component.html',
 })
-export class RideReviewModalComponent implements OnInit {
+export class RideReviewModalComponent {
   @Input() rideId!: number | null | undefined;
   @Output() reviewSent: EventEmitter<any> = new EventEmitter();
   
@@ -21,10 +21,6 @@ export class RideReviewModalComponent implements OnInit {
   errorMessage: string = '';
 
   constructor(private rideService: RideService) { }
-
-  ngOnInit(): void {
-
-  }
 
   sendReview(): void {
     if (this.rideId) {

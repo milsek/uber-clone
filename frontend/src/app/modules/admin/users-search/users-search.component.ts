@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IconDefinition,
@@ -18,7 +18,7 @@ import { Note } from 'src/app/shared/models/note.model';
   selector: 'app-users-search',
   templateUrl: './users-search.component.html',
 })
-export class UsersSearchComponent implements OnInit {
+export class UsersSearchComponent {
   faChevronLeft: IconDefinition = faChevronLeft;
   faTrashCan: IconDefinition = faTrashCan;
   public name: string = '';
@@ -47,10 +47,9 @@ export class UsersSearchComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {}
-
-  onItemChange(event: any) {
-    this.type = event.target.value;
+  onItemChange(event: Event): void {
+    if (event)
+      this.type = (event.target as HTMLInputElement).value;
   }
 
   search(): void {

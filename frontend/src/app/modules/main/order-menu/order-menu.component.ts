@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
+import { RideOrderData } from 'src/app/shared/models/data-transfer-interfaces/ride-oder.model';
 import { VehicleType } from 'src/app/shared/models/vehicle-type.model';
 
 @Component({
@@ -83,7 +84,7 @@ export class OrderMenuComponent implements OnInit {
   orderRide(): void {
     const startWaypoint: any = this.waypoints[0];
     const destinationWaypoint: any = this.waypoints[this.waypoints.length - 1];
-    const orderData: any = {
+    const orderData: RideOrderData = {
       distance: Number((this.route.summary.totalDistance / 1000).toLocaleString('fullwide', {minimumFractionDigits:2, maximumFractionDigits:2})),
       babySeat: this.hasBabySeat,
       petFriendly: this.isPetFriendly,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 
 @Component({
@@ -6,16 +6,13 @@ import { PassengerService } from 'src/app/core/http/user/passenger.service';
   templateUrl: './ride-complete.component.html',
   styleUrls: ['./ride-complete.component.scss']
 })
-export class RideCompleteComponent implements OnInit {
-  @Output() onClose: EventEmitter<void> = new EventEmitter();
+export class RideCompleteComponent {
+  @Output() closeModal: EventEmitter<void> = new EventEmitter();
   showReviewModal: boolean = false;
 
   constructor(
     private passengerService: PassengerService,
     ) { }
-
-  ngOnInit(): void {
-  }
 
   openReviewModal(): void {
     this.showReviewModal = true;
@@ -25,8 +22,8 @@ export class RideCompleteComponent implements OnInit {
     window.location.href = '/';
   }
 
-  close () {
-    this.onClose.emit();
+  closeSelf () {
+    this.closeModal.emit();
   }
 
   get ride() {

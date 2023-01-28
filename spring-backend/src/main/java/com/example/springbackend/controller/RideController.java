@@ -2,7 +2,7 @@ package com.example.springbackend.controller;
 
 import com.example.springbackend.dto.creation.*;
 import com.example.springbackend.dto.display.*;
-import com.example.springbackend.model.ReportDisplayDTO;
+import com.example.springbackend.dto.display.ReportDisplayDTO;
 import com.example.springbackend.model.helpClasses.ReportParameter;
 import com.example.springbackend.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class RideController {
 
     @PatchMapping("/confirm")
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<Object> confirmRide(@Valid @RequestBody RideIdDTO dto, Authentication auth) {
+    public ResponseEntity<Boolean> confirmRide(@Valid @RequestBody RideIdDTO dto, Authentication auth) {
         return ResponseEntity.ok(rideService.confirmRide(dto, auth));
     }
 

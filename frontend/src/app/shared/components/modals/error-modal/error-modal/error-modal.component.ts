@@ -1,21 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-error-modal',
   templateUrl: './error-modal.component.html',
 })
-export class ErrorModalComponent implements OnInit {
+export class ErrorModalComponent {
   @Input() title!: string;
   @Input() description!: string;
-  @Output() onClose: EventEmitter<void> = new EventEmitter();
+  @Output() closeModal: EventEmitter<void> = new EventEmitter();
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
-  close () {
-    this.onClose.emit();
+  closeSelf () {
+    this.closeModal.emit();
   }
 
 }

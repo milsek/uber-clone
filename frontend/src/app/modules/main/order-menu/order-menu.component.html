@@ -40,7 +40,7 @@ sm:h-full select-none" id="order-menu">
 
     <!-- add new stop -->
     
-    <div *ngIf="!(accountType === 'anonymous' && waypoints.length == 2)" class="flex" [ngClass]="waypoints.length > 0 ? 'mt-4' : 'mt-0'">
+    <div *ngIf="!(accountType === 'anonymous' && waypoints.length === 2)" class="flex" [ngClass]="waypoints.length > 0 ? 'mt-4' : 'mt-0'">
       <input class="appearance-none block w-full text-white tracking-wide
       placeholder-light caret-light border-b border-light focus:border-accent-light
       bg-transparent leading-tight outline-none py-1 focus:transition-color duration-300"
@@ -191,7 +191,7 @@ sm:h-full select-none" id="order-menu">
         </button>
         <div *ngIf="accountType === 'anonymous'" class="text-light text-center mt-6">
           You must
-          <span class="text-accent-light cursor-pointer font-bold"><a routerLink="/login">Log In</a></span>
+          <span class="text-accent-light cursor-pointer font-bold"><a routerLink="/auth/login">Log In</a></span>
           before ordering a ride
         </div>
       </div>
@@ -291,7 +291,7 @@ sm:h-full select-none" id="order-menu">
     <app-error-modal
       [title]="errorTitle"
       [description]="errorMessage"
-      (onClose)="closeErrorModal()"
+      (closeModal)="closeErrorModal()"
     ></app-error-modal>
   </div>
 

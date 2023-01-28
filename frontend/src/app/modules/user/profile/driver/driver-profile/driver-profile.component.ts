@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, HostListener } from '@angular/core';
+import { Component, Input, HostListener } from '@angular/core';
 import { ActivatedRoute  } from '@angular/router';
 import { IconDefinition, faBars } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
@@ -14,7 +14,7 @@ enum DriverProfileView {
   selector: 'app-driver-profile',
   templateUrl: './driver-profile.component.html'
 })
-export class DriverProfileComponent implements OnInit {
+export class DriverProfileComponent {
   @Input() driver!: Driver;
   
   _selectedView: DriverProfileView = DriverProfileView.Details; 
@@ -23,9 +23,6 @@ export class DriverProfileComponent implements OnInit {
   clickedInDropdown: boolean = false;
 
   constructor(private authenticationService: AuthenticationService, private route: ActivatedRoute) { }
-
-  ngOnInit(): void {
-  }
 
   set selectedView(value: string) {
     this._selectedView = value as DriverProfileView;

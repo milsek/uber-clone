@@ -15,6 +15,7 @@ import { PassengerService } from 'src/app/core/http/user/passenger.service';
 import { DriverRide, RideSimple } from 'src/app/shared/models/ride.model';
 import { DriverService } from 'src/app/core/http/user/driver.service';
 import { Route } from 'src/app/shared/models/route.model';
+import { VehiclePosition } from 'src/app/shared/models/vehicle.model';
 
 const service_url = 'https://nominatim.openstreetmap.org/reverse?format=json';
 const API_KEY = null;
@@ -30,7 +31,7 @@ export class MapComponent implements AfterViewInit {
   public chosenRoute: any;
   public waypoints: any[] = [];
   private accontType: string = this.authenticationService.getAccountType();
-  private vehiclePositions: any[] = [];
+  private vehiclePositions: VehiclePosition[] = [];
   @Input() driverInfo!: DriverInfo;
   private provider!: GeoSearch.OpenStreetMapProvider;
   private vehicleMarkers: any = {};
@@ -265,7 +266,6 @@ export class MapComponent implements AfterViewInit {
 
   drawVehiclePositions = () => {
     this.vehiclePositions.forEach((vehicle) => {
-      // if (this.areSameCoordinates(vehicle.currentCoordinates, vehicle.nextCoordinates)) {
       if (!vehicle.rideActive) {
         if (this.vehicleMarkers[vehicle.id])
           this.vehicleMarkers[vehicle.id].removeFrom(this.map);

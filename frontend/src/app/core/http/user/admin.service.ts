@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Note } from 'src/app/shared/models/note.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
@@ -9,7 +9,7 @@ import { AuthenticationService } from '../../authentication/authentication.servi
 export class AdminService {
   constructor(private authenticationService: AuthenticationService) {}
 
-  banUser(username: string): Promise<any> {
+  banUser(username: string): Promise<AxiosResponse<void>> {
     return axios.post(
       '/api/admin/ban-user',
       { username },
@@ -20,7 +20,7 @@ export class AdminService {
       }
     );
   }
-  unbanUser(username: string): Promise<any> {
+  unbanUser(username: string): Promise<AxiosResponse<void>> {
     return axios.post(
       '/api/admin/unban-user',
       { username },
@@ -32,7 +32,7 @@ export class AdminService {
     );
   }
 
-  addNote(note: string, username: string): Promise<any> {
+  addNote(note: string, username: string): Promise<AxiosResponse<void>> {
     var formData = {
       content: note,
       username: username,
@@ -44,7 +44,7 @@ export class AdminService {
     });
   }
 
-  removeNote(note: Note, username: string): Promise<any> {
+  removeNote(note: Note, username: string): Promise<AxiosResponse<void>> {
     var formData = {
       content: note.content,
       username: username,

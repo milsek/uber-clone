@@ -256,7 +256,7 @@ public class RideService {
         }
     }
 
-    public Object confirmRide(RideIdDTO dto, Authentication auth) {
+    public Boolean confirmRide(RideIdDTO dto, Authentication auth) {
         Ride ride = rideRepository.findById(dto.getRideId()).get();
         Passenger passenger = (Passenger) auth.getPrincipal();
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
@@ -297,7 +297,7 @@ public class RideService {
                 handleNotificationsAndProcessReservations(ride, passengerRides);
             }
         }
-        return null;
+        return true;
     }
 
     public Boolean rejectRide(RideIdDTO dto, Authentication auth) {

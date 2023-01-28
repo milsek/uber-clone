@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { faBars, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { Admin } from 'src/app/shared/models/admin.model';
 
@@ -11,7 +11,7 @@ enum AdminProfileView {
   selector: 'app-admin-profile',
   templateUrl: './admin-profile.component.html',
 })
-export class AdminProfileComponent implements OnInit {
+export class AdminProfileComponent  {
   @Input() admin!: Admin;
 
   _selectedView: AdminProfileView = AdminProfileView.Details; 
@@ -19,9 +19,6 @@ export class AdminProfileComponent implements OnInit {
   showDropdown: boolean = false;
 
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   set selectedView(value: string) {
     this._selectedView = value as AdminProfileView;

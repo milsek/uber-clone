@@ -1,4 +1,4 @@
-package com.example.springbackend.model;
+package com.example.springbackend.dto.display;
 
 import lombok.Data;
 

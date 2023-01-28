@@ -13,7 +13,6 @@ import * as GeoSearch from 'leaflet-geosearch';
 import { PassengerRide } from 'src/app/shared/models/ride.model';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 import * as moment from 'moment';
-import { User } from 'src/app/shared/models/user.model';
 import { Driver } from 'src/app/shared/models/driver.model';
 import { PhotoService } from 'src/app/core/http/user/photo.service';
 import { Router } from '@angular/router';

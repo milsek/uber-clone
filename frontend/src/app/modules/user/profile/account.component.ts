@@ -11,7 +11,7 @@ import { Passenger } from 'src/app/shared/models/passenger.model';
 })
 export class AccountComponent implements OnInit {
   faChevronLeft: IconDefinition = faChevronLeft;
-  account!: Driver | Passenger;
+  account!: Driver | Passenger | Admin;
   notFound: boolean = false;
 
   constructor(private accountService: AccountService) { }

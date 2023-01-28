@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { faChevronLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
@@ -8,7 +8,7 @@ import { PassengerService } from 'src/app/core/http/user/passenger.service';
   selector: 'app-register',
   templateUrl: './register.component.html',
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   faChevronLeft: IconDefinition = faChevronLeft;
 
   registrationSuccessful: boolean = false;
@@ -53,9 +53,6 @@ export class RegisterComponent implements OnInit {
 
   constructor(private passengerService: PassengerService) {
     document.getElementById('register-email')?.focus();
-  }
-
-  ngOnInit(): void {
   }
 
   onSubmit() {

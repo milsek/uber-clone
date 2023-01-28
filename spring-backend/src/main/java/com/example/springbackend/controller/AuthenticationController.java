@@ -63,7 +63,7 @@ public class AuthenticationController {
     @GetMapping("/auth-login/{token}")
     public ResponseEntity<String> authLogin(@PathVariable String token) {
         return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create("http://localhost:4200/google-login?token="+token))
+                .location(URI.create("http://localhost:4200/auth/google-login?token="+token))
                 .build();
     }
 

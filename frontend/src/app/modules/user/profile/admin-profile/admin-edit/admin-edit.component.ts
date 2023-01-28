@@ -13,8 +13,8 @@ export class AdminEditComponent implements OnInit {
 
   @Output() changeView = new EventEmitter<void>();
 
-  currentImage = '';
-  newImage: any = '';
+  currentImage: string = '';
+  newImage: string | ArrayBuffer | null = '';
   newFile: File | undefined;
 
   userEditForm = new FormGroup(

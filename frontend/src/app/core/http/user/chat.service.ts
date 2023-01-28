@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { Chat } from 'src/app/shared/models/chat.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
 @Injectable({
@@ -8,11 +9,11 @@ import { AuthenticationService } from '../../authentication/authentication.servi
 export class ChatService {
   constructor(private authenticationService: AuthenticationService) {}
 
-  getAllChats(): Promise<any> {
+  getAllChats(): Promise<AxiosResponse<Array<Chat>>> {
     return axios.get('api/chat/all');
   }
 
-  getUserChat(username: string): Promise<any> {
+  getUserChat(username: string): Promise<AxiosResponse<Chat>> {
     return axios.get(`/api/chat/${username}`);
   }
 

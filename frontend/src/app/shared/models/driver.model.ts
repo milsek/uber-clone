@@ -1,5 +1,5 @@
 import { Note } from './note.model';
-import { Vehicle } from './vehicle.model';
+import { Vehicle, VehiclePosition } from './vehicle.model';
 
 export interface Driver {
   username: string;
@@ -8,11 +8,11 @@ export interface Driver {
   phoneNumber: string;
   city: string;
   profilePicture: string;
-  vehicle: Vehicle;
   distanceTravelled: number;
   ridesCompleted: number;
   totalRatingSum: number;
   numberOfReviews: number;
+  vehicle: Vehicle;
   active: boolean;
   email?: string;
   accountType?: string;
@@ -27,7 +27,7 @@ export interface DriverSimple {
   surname: string;
   phoneNumber: string;
   profilePicture: string;
-  vehicle: Vehicle;
+  vehicle: VehiclePosition;
   totalRatingSum: number;
   numberOfReviews: number;
 }
@@ -54,4 +54,9 @@ export interface DriverNano {
   name: string;
   surname: string;
   profilePicture: string;
+}
+
+export interface DriverSearchResult {
+  drivers: Driver[],
+  numberOfDrivers: number
 }

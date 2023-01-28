@@ -2,6 +2,7 @@ import { Coordinates } from "./coordinates.model";
 import { VehicleType } from "./vehicle-type.model";
 
 export interface Vehicle {
+    id: number,
     babySeat: boolean,
     petsAllowed: boolean,
     vehicleType: VehicleType,
@@ -9,10 +10,12 @@ export interface Vehicle {
     model: string,
     colour: string,
     licensePlateNumber: string,
-    id?: number,
-    currentCoordinates?: Coordinates,
-    nextCoordinates?: Coordinates,
-    coordinatesChangedAt?: string,
-    expectedTripTime?: number,
-    rideActive?: boolean
+}
+
+export interface VehiclePosition extends Vehicle {
+    currentCoordinates: Coordinates,
+    nextCoordinates: Coordinates,
+    coordinatesChangedAt: string,
+    expectedTripTime: number,
+    rideActive: boolean
 }

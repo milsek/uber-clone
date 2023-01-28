@@ -4,7 +4,7 @@ import { AuthenticationService } from 'src/app/core/authentication/authenticatio
 
 
 @Component({
-  selector: 'google-login',
+  selector: 'app-google-login',
   templateUrl: './google-login.component.html',
 })
 export class GoogleLoginComponent implements OnInit {

@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
-import { DriverRide } from 'src/app/shared/models/ride.model';
+import axios, { AxiosResponse } from 'axios';
+import { DriverRegistrationData } from 'src/app/shared/models/data-transfer-interfaces/registration.model';
+import { Driver, DriverNewData, DriverSearchResult } from 'src/app/shared/models/driver.model';
+import { DriverCurrentRides, PassengerRide } from 'src/app/shared/models/ride.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
+import { DriverRideRejectionRequest } from 'src/app/shared/models/drver-ride-rejection-request.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DriverService {
-  private rides: { currentRide: DriverRide; nextRide: DriverRide } | null =
+  private rides: DriverCurrentRides | null =
     null;
 
   constructor(private authenticationService: AuthenticationService) {}
 
-  getDriverByUsername(username: string): Promise<any> {
+  getDriverByUsername(username: string): Promise<AxiosResponse<Driver>> {
     return axios.get(`/api/drivers/${username}`, {
       headers: {
         Authorization: `Bearer ${this.authenticationService.getToken()}`,
@@ -20,7 +23,7 @@ export class DriverService {
     });
   }
 
-  fetchRides = async () => {
+  fetchRides = async (): Promise<void> => {
     await axios
       .get(`/api/drivers/current-rides`, {
         headers: {
@@ -35,7 +38,7 @@ export class DriverService {
       });
   };
 
-  getCurrentRides = () => {
+  getCurrentRides = (): DriverCurrentRides | null => {
     return this.rides;
   };
 
@@ -61,7 +64,7 @@ export class DriverService {
     return activity;
   }
 
-  async register(data: any): Promise<any> {
+  async register(data: DriverRegistrationData): Promise<void> {
     await axios
       .post(`/api/drivers`, data, {
         headers: {
@@ -85,7 +88,7 @@ export class DriverService {
     );
   }
 
-  getUpdateRequests(): Promise<any> {
+  getUpdateRequests(): Promise<AxiosResponse<DriverNewData[]>> {
     return axios.get(`/api/preupdate/all`, {
       headers: {
         Authorization: `Bearer ${this.authenticationService.getToken()}`,
@@ -93,7 +96,7 @@ export class DriverService {
     });
   }
 
-  getRideRejectionRequests(): Promise<any> {
+  getRideRejectionRequests(): Promise<AxiosResponse<DriverRideRejectionRequest[]>> {
     return axios.get(`/api/rides/rejection-requests`, {
       headers: {
         Authorization: `Bearer ${this.authenticationService.getToken()}`,
@@ -104,7 +107,7 @@ export class DriverService {
   sendRideRejectionRequestVerdict(
     rideId: number,
     accepted: boolean
-  ): Promise<any> {
+  ): Promise<AxiosResponse<boolean>> {
     return axios.patch(
       `/api/rides/driver-rejection-verdict`,
       {
@@ -124,7 +127,7 @@ export class DriverService {
     surname: string,
     username: string,
     page: number
-  ): Promise<any> {
+  ): Promise<AxiosResponse<DriverSearchResult>> {
     return axios.post(
       `/api/drivers/search`,
       { name: name, surname: surname, username: username, page: page },
@@ -141,7 +144,7 @@ export class DriverService {
     amount: number,
     sortBy: string,
     username: string
-  ): Promise<any> {
+  ): Promise<AxiosResponse<{ totalElements: number, content: PassengerRide[] }>> {
     return axios.get(
       `/api/rides/driver-history?page=${page}&amount=${amount}&sortBy=${sortBy}&username=${username}`,
       {

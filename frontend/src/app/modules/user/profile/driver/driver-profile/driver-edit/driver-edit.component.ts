@@ -23,8 +23,8 @@ export class DriverEditComponent implements OnInit {
   faChevronUp: IconDefinition = faChevronUp;
   faChevronDown: IconDefinition = faChevronDown;
   @Input() driver!: Driver;
-  currentImage = '';
-  newImage: any = '';
+  currentImage: string = '';
+  newImage: string | ArrayBuffer | null = '';
   newFile: File | undefined;
   selectedVehicleType: string = '';
   hasBabySeat: boolean = false;

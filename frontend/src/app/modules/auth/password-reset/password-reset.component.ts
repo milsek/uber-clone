@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faChevronLeft, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -10,7 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   selector: 'app-password-reset',
   templateUrl: './password-reset.component.html',
 })
-export class PasswordResetComponent implements OnInit {
+export class PasswordResetComponent {
   faChevronLeft: IconDefinition = faChevronLeft;
   wrongCredentials: boolean = false;
 
@@ -23,10 +23,7 @@ export class PasswordResetComponent implements OnInit {
       Validators.required
     ]),
   });
-  constructor(private authenticationService: AuthenticationService, private router: Router, private activatedRoute: ActivatedRoute) { 
-  }
-
-  ngOnInit(): void {
+  constructor(private authenticationService: AuthenticationService, private activatedRoute: ActivatedRoute) { 
   }
 
   get email() {

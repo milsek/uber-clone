@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input } from '@angular/core';
 import { faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faCircle, faFlagCheckered, faHandHoldingUsd, faRoute, faStop, faStopwatch, IconDefinition, faUser } from '@fortawesome/free-solid-svg-icons';
 import { AuthenticationService } from 'src/app/core/authentication/authentication.service';
 import { RideService } from 'src/app/core/http/ride/ride.service';
@@ -10,7 +10,7 @@ import { DriverRide } from 'src/app/shared/models/ride.model';
   templateUrl: './driver-ride-details.component.html',
   styleUrls: ['./driver-ride-details.component.css']
 })
-export class DriverRideDetailsComponent implements OnInit {
+export class DriverRideDetailsComponent {
   @Input() waypoints: any[] = [];
 
   faChevronRight: IconDefinition = faChevronRight;
@@ -39,9 +39,6 @@ export class DriverRideDetailsComponent implements OnInit {
     private driverService: DriverService,
     private rideService: RideService
     ) { }
-
-  ngOnInit(): void {
-  }
 
   openRejectRideModal(): void {
     this.showRejectRideModal = true;

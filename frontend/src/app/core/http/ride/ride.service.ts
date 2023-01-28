@@ -1,21 +1,11 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Coordinates } from 'src/app/shared/models/coordinates.model';
 import { ReviewData } from 'src/app/shared/models/data-transfer-interfaces/review-data.model';
+import { RideOrderData } from 'src/app/shared/models/data-transfer-interfaces/ride-oder.model';
+import { RideSimple } from 'src/app/shared/models/ride.model';
+import { VehicleType } from 'src/app/shared/models/vehicle-type.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
-
-interface RideOrderData {
-  distance: number,
-  expectedTime: number,
-  babySeat: boolean,
-  petFriendly: boolean,
-  vehicleType: string,
-  route: {
-    coordinates: Coordinates[],
-    waypoints: Coordinates[]
-  },
-  usersToPay: string[]
-}
 
 @Injectable({
   providedIn: 'root'
@@ -24,13 +14,13 @@ export class RideService {
 
   constructor(private authenticationService: AuthenticationService) { }
 
-  getVehicleTypes(): Promise<any> {
+  getVehicleTypes(): Promise<VehicleType[]> {
     return axios.get(`/api/vehicles/types`).then((res => {
       return res.data;
     }));
   }
 
-  orderBasicRide(orderData: RideOrderData): Promise<any> {
+  orderBasicRide(orderData: RideOrderData): Promise<AxiosResponse<RideSimple>> {
     return axios.post(`/api/rides/basic`, 
     orderData,
     {
@@ -40,7 +30,7 @@ export class RideService {
     });
   }
 
-  orderSplitFareRide(orderData: RideOrderData): Promise<any> {
+  orderSplitFareRide(orderData: RideOrderData): Promise<AxiosResponse<boolean>> {
     return axios.post(`/api/rides/split-fare`, 
     orderData,
     {
@@ -50,7 +40,7 @@ export class RideService {
     });
   }
 
-  confirmRide(rideId: number): Promise<any> {
+  confirmRide(rideId: number): Promise<AxiosResponse<boolean>> {
     return axios.patch(`/api/rides/confirm`, 
     {
       rideId
@@ -62,7 +52,7 @@ export class RideService {
     });
   }
 
-  rejectRide(rideId: number): Promise<any> {
+  rejectRide(rideId: number): Promise<AxiosResponse<boolean>> {
     return axios.patch(`/api/rides/reject`, 
     {
       rideId
@@ -74,7 +64,7 @@ export class RideService {
     });
   }
 
-  driverRejectRide(rideId: number, reason: string): Promise<any> {
+  driverRejectRide(rideId: number, reason: string): Promise<AxiosResponse<boolean>> {
     return axios.patch(`/api/rides/driver-rejection`, 
     {
       rideId,
@@ -87,7 +77,7 @@ export class RideService {
     });
   }
 
-  beginRide(rideId: number): Promise<any> {
+  beginRide(rideId: number): Promise<AxiosResponse<boolean>> {
     return axios.patch(`/api/rides/begin`, 
     {
       rideId,
@@ -99,7 +89,7 @@ export class RideService {
     });
   }
 
-  completeRide(rideId: number): Promise<any> {
+  completeRide(rideId: number): Promise<AxiosResponse<boolean>> {
     return axios.patch(`/api/rides/complete`, 
     {
       rideId,
@@ -111,7 +101,7 @@ export class RideService {
     });
   }
 
-  sendReview(data: ReviewData): Promise<any> {
+  sendReview(data: ReviewData): Promise<AxiosResponse<boolean>> {
     return axios.post(`/api/rides/reviews`, 
     data,
     {
@@ -121,7 +111,7 @@ export class RideService {
     });
   }
 
-  reportInconsistency(rideId: number): Promise<any> {
+  reportInconsistency(rideId: number): Promise<AxiosResponse<boolean>> {
     return axios.patch(`/api/rides/inconsistency`, 
     {
       rideId

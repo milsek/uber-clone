@@ -46,7 +46,7 @@
     <app-error-modal
       [title]="errorTitle"
       [description]="errorMessage"
-      (onClose)="closeErrorModal()"
+      (closeModal)="closeErrorModal()"
     ></app-error-modal>
   </div>
 
@@ -59,7 +59,7 @@
   
   <div *ngIf="showRideCompleteModal">
     <app-ride-complete
-      (onClose)="closeRideCompleteModal()"
+      (closeModal)="closeRideCompleteModal()"
     ></app-ride-complete>
   </div>
 

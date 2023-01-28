@@ -33,6 +33,11 @@ export interface DriverRide {
   destinationAddress: string;
 }
 
+export interface DriverCurrentRides {
+  currentRide: DriverRide;
+  nextRide: DriverRide;
+}
+
 export interface PassengerRide {
   id: number;
   distance: number;

@@ -6,7 +6,7 @@ import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 import { PhotoService } from 'src/app/core/http/user/photo.service';
 import { RideSimple } from 'src/app/shared/models/ride.model';
-import { Vehicle } from 'src/app/shared/models/vehicle.model';
+import { VehiclePosition } from 'src/app/shared/models/vehicle.model';
 
 @Component({
   selector: 'app-passenger-ride-details',
@@ -112,7 +112,7 @@ export class PassengerRideDetailsComponent implements OnInit {
 
   calculateArrivalTimeInMinutes(): number {
     if (this.ride) {
-      const vehicle: Vehicle = this.ride.driver.vehicle;
+      const vehicle: VehiclePosition = this.ride.driver.vehicle;
       if (vehicle.expectedTripTime) {
         const tripTime: number = this.ride.status === 'IN_PROGRESS' ? this.ride.expectedTime : vehicle.expectedTripTime;
         let startingMoment = moment(vehicle.coordinatesChangedAt);

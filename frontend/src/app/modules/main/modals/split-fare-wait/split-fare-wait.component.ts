@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RideService } from 'src/app/core/http/ride/ride.service';
 import { PassengerService } from 'src/app/core/http/user/passenger.service';
 
@@ -7,15 +7,12 @@ import { PassengerService } from 'src/app/core/http/user/passenger.service';
   templateUrl: './split-fare-wait.component.html',
   styleUrls: ['./split-fare-wait.component.scss']
 })
-export class SplitFareWaitComponent implements OnInit {
+export class SplitFareWaitComponent {
 
   constructor(
     private passengerService: PassengerService,
     private rideService: RideService,
     ) {}
-
-  ngOnInit(): void {
-  }
 
   confirmRide(): void {
     if (this.ride)

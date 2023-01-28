@@ -10,8 +10,8 @@ import { PhotoService } from 'src/app/core/http/user/photo.service';
 })
 export class PassengerEditComponent implements OnInit {
   @Input() passenger!: Passenger;
-  currentImage = '';
-  newImage: any = '';
+  currentImage: string = '';
+  newImage: string | ArrayBuffer | null = '';
   newFile: File | undefined;
 
   showResetPasswordConfirmationModal: boolean = false;

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import axios from 'axios';
-import { RideSimple } from 'src/app/shared/models/ride.model';
+import axios, { AxiosResponse } from 'axios';
+import { MemberRegistrationData } from 'src/app/shared/models/data-transfer-interfaces/registration.model';
+import { PassengerSearchResult } from 'src/app/shared/models/passenger.model';
+import { PassengerRide, RideSimple } from 'src/app/shared/models/ride.model';
 import { Route } from 'src/app/shared/models/route.model';
 import { AuthenticationService } from '../../authentication/authentication.service';
 
@@ -11,10 +13,6 @@ export class PassengerService {
   private currentRide: RideSimple | null = null;
 
   constructor(private authenticationService: AuthenticationService) {}
-
-  getPassengerByUsername(username: string): Promise<any> {
-    return axios.get(`/api/passenger/${username}`);
-  }
 
   setTemporaryRoute(route: Route | null) {
     window.localStorage.setItem('temp_ride', JSON.stringify(route));
@@ -71,7 +69,7 @@ export class PassengerService {
       });
   };
 
-  async register(data: any): Promise<any> {
+  async register(data: MemberRegistrationData): Promise<void> {
     await axios
       .post(`/api/passengers`, data, {
         headers: {
@@ -96,7 +94,7 @@ export class PassengerService {
     surname: string,
     username: string,
     page: number
-  ): Promise<any> {
+  ): Promise<AxiosResponse<PassengerSearchResult>> {
     return axios.post(
       `/api/passengers/search`,
       { name: name, surname: surname, username: username, page: page },
@@ -113,7 +111,7 @@ export class PassengerService {
     amount: number,
     sortBy: string,
     username: string
-  ): Promise<any> {
+  ): Promise<AxiosResponse<{ totalElements: number, content: PassengerRide[] }>> {
     return axios.get(
       `/api/rides/history?page=${page}&amount=${amount}&sortBy=${sortBy}&username=${username}`,
       {
@@ -156,7 +154,7 @@ export class PassengerService {
     });
   }
 
-  isFavouriteRoute(routeId: number): Promise<any> {
+  isFavouriteRoute(routeId: number): Promise<AxiosResponse<boolean>> {
     return axios.post(
       `/api/routes/is-route-favourite`,
       { routeId },
@@ -168,7 +166,7 @@ export class PassengerService {
     );
   }
 
-  getRideDetails(rideId: number): Promise<any> {
+  getRideDetails(rideId: number): Promise<AxiosResponse<any>> {
     return axios.get(
       `/api/rides/detailed-ride-history-passenger?rideId=${rideId}`,
       {

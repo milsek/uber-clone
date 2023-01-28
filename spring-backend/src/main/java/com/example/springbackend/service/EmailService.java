@@ -78,7 +78,7 @@ public class EmailService {
     public void sendPasswordResetEmail(String email, String token) {
         HashMap<String, String> variables = new HashMap<>();
         variables.put("name", email);
-        variables.put("link", "http://localhost:4200/reset-password?token=" + token);
+        variables.put("link", "http://localhost:4200/auth/reset-password?token=" + token);
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
