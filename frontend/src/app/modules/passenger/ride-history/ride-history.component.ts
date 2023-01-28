@@ -121,17 +121,18 @@ export class RideHistoryComponent implements OnInit {
         this.numOfElements = res.data.totalElements;
         this.rides = res.data.content;
         this.selectedRide = this.rides[0];
-        this.control.setWaypoints([
-          this.selectedRide.route.waypoints[0],
-          this.selectedRide.route.waypoints[1],
-        ]);
-        this.checkIsFavourite();
-        this.passengerService
-          .getRideDetails(this.selectedRide.id)
-          .then((res) => {
-            this.driver = res.data.driver;
-            this.getImage(this.driver!.profilePicture);
-          });
+        if (this.selectedRide) {
+          this.control.setWaypoints(
+            this.selectedRide.route.waypoints
+          );
+          this.checkIsFavourite();
+          this.passengerService
+            .getRideDetails(this.selectedRide.id)
+            .then((res) => {
+              this.driver = res.data.driver;
+              this.getImage(this.driver!.profilePicture);
+            });
+        }
       });
   }
 
