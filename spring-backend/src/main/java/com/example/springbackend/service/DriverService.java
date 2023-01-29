@@ -10,6 +10,7 @@ import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Vehicle;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;
 import com.example.springbackend.repository.*;
+import com.example.springbackend.util.RideUtils;
 import com.example.springbackend.util.TokenUtils;
 import com.example.springbackend.websocket.MessageType;
 import com.example.springbackend.websocket.WSMessage;
@@ -55,7 +56,7 @@ public class DriverService {
     @Autowired
     private RoleService roleService;
     @Autowired
-    private RideService rideService;
+    private RideUtils rideUtils;
     @Autowired
     private PassengerRideRepository passengerRideRepository;
     @Autowired
@@ -233,7 +234,7 @@ public class DriverService {
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
         dto.setPassengers(passengerRides.stream()
                 .map(pr -> modelMapper.map(pr.getPassenger(), PassengerDisplayDTO.class)).toList());
-        dto.setRoute(rideService.createRouteDisplayDtoFromRoute(ride.getRoute()));
+        dto.setRoute(rideUtils.createRouteDisplayDtoFromRoute(ride.getRoute()));
         return dto;
     }
 

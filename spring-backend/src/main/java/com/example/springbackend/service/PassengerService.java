@@ -8,6 +8,7 @@ import com.example.springbackend.model.*;
 import com.example.springbackend.model.helpClasses.AuthenticationProvider;
 import com.example.springbackend.repository.DriverRepository;
 import com.example.springbackend.repository.PassengerRepository;
+import com.example.springbackend.util.RideUtils;
 import com.example.springbackend.util.TokenUtils;
 import com.example.springbackend.websocket.MessageType;
 import com.example.springbackend.websocket.WSMessage;
@@ -46,7 +47,7 @@ public class PassengerService {
     @Autowired
     private TokenUtils tokenUtils;
     @Autowired
-    private RideService rideService;
+    private RideUtils rideUtils;
 
 
     public Passenger signUp(UserCreationDTO userCreationDTO) {
@@ -83,7 +84,7 @@ public class PassengerService {
         PassengerRide currentPassengerRide = passengerRideRepository.getCurrentPassengerRide(passenger).orElseThrow();
         Optional<Driver> optionalDriver = driverRepository.getDriverForRide(currentPassengerRide.getRide());
         Driver driver = optionalDriver.isPresent() ? optionalDriver.get() : null;
-        RideSimpleDisplayDTO rideDisplayDTO = this.rideService.createBasicRideSimpleDisplayDTO(currentPassengerRide, driver);
+        RideSimpleDisplayDTO rideDisplayDTO = this.rideUtils.createBasicRideSimpleDisplayDTO(currentPassengerRide, driver);
         return rideDisplayDTO;
     }
 
