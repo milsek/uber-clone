@@ -56,7 +56,7 @@ public class AuthenticationController {
     public ResponseEntity<String> confirmRegistration(@PathVariable String token) {
         memberService.confirmRegistration(token);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create("http://localhost:4200/login"))
+                .location(URI.create("http://localhost:4200/auth/login"))
                 .build();
     }
 

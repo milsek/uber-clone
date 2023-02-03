@@ -46,7 +46,7 @@ public class ChatService {
             firstMessage.setChat(newChat);
             firstMessage.setSender("admin");
             firstMessage.setContent("Hi, do you need any help?");
-            firstMessage.setSentDateTime(LocalDateTime.now());
+            firstMessage.setSentDateTime(LocalDateTime.of(2023, 1,1, 12, 0));
             chatRepository.save(newChat);
             messageRepository.save(firstMessage);
             newChat.getMessages().add(firstMessage);

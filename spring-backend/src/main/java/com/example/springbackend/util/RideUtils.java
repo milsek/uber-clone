@@ -8,6 +8,7 @@ import com.example.springbackend.exception.*;
 import com.example.springbackend.model.*;
 import com.example.springbackend.model.helpClasses.Coordinates;
 import com.example.springbackend.repository.*;
+import com.example.springbackend.service.PassengerService;
 import com.example.springbackend.service.SimulatorService;
 import com.example.springbackend.service.UserService;
 import com.example.springbackend.websocket.MessageType;
@@ -171,7 +172,7 @@ public class RideUtils {
 
     public void checkIfSplitFareRideIsValid(SplitFareRideCreationDTO dto, Passenger passenger, int fare, VehicleType vehicleType) {
         dto.getUsersToPay().stream().forEach(email -> {
-            if (!userService.userExists(email)) {
+            if (!passengerRepository.findByEmail(email).isPresent()) {
                 throw new UserDoesNotExistException("A co-passenger's email does not exist in the system.");
             }
         });

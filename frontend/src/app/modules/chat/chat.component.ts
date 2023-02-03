@@ -10,7 +10,7 @@ import { User } from 'src/app/shared/models/user.model';
   selector: 'app-chat',
   templateUrl: './chat.component.html',
 })
-export class ChatComponent implements OnInit, AfterContentInit {
+export class ChatComponent implements OnInit {
   numOfNewMessages: number = 0;
   indexOfSelectedChat: number = 0;
   showChat: boolean = false;
@@ -30,12 +30,6 @@ export class ChatComponent implements OnInit, AfterContentInit {
     this.initChats();
   }
 
-  ngAfterContentInit(): void {
-    if (this.user.role !== '') {
-      this.countNumberOfUnreadMessages();
-    }
-  }
-
   initChats(): void {
     const session = this.authenticationService.getSession();
     if (!session) return;
@@ -46,6 +40,8 @@ export class ChatComponent implements OnInit, AfterContentInit {
       };
       this.chatService.getAllChats().then((response) => {
         this.chats = response.data;
+        this.sortChats();
+        this.countNumberOfUnreadMessages();
         this.receiver = this.chats[0].member.username;
       });
     } else {
@@ -55,6 +51,8 @@ export class ChatComponent implements OnInit, AfterContentInit {
       };
       this.chatService.getUserChat(this.user.username).then((response) => {
         this.chats = [response.data];
+        this.sortChats();
+        this.countNumberOfUnreadMessages();
         this.receiver = 'admin';
       });
     }
@@ -86,8 +84,15 @@ export class ChatComponent implements OnInit, AfterContentInit {
           this.chats[0].messages.push(mess);
         }
         this.checkNewMessage(mess.sender);
+        const member = this.chats[this.indexOfSelectedChat].member.username;
+        this.sortChats();
+        this.indexOfSelectedChat = this.chats.indexOf(
+          this.chats.filter((chat) => chat.member.username === member)[0]
+        );
         this.scroll();
-        this.updateLastRead();
+        if (this.showChat) {
+          this.updateLastRead();
+        }
       }
     });
   }
@@ -118,6 +123,8 @@ export class ChatComponent implements OnInit, AfterContentInit {
       sentDateTime: currentDate,
     });
     this.newMessage = '';
+    this.sortChats();
+    this.indexOfSelectedChat = 0;
     this.scroll();
     this.updateLastRead();
     this.checkIfStillHasUnread();
@@ -173,9 +180,17 @@ export class ChatComponent implements OnInit, AfterContentInit {
   getNumberOfUnread(chat: Chat): number {
     if (chat.messages.length === 0) return 0;
     let numOfUnread = 0;
+    let lastRead =
+      this.user.role === 'admin' ? chat.lastReadAdmin : chat.lastReadMember;
+    if (typeof lastRead === 'string') {
+      lastRead = new Date(lastRead);
+    }
     for (let i = chat.messages.length - 1; i > 0; i--) {
-      if (chat.messages[i].sentDateTime > new Date(chat.lastReadAdmin))
-        numOfUnread += 1;
+      let messTime = chat.messages[i].sentDateTime;
+      if (typeof messTime === 'string') {
+        messTime = new Date(messTime);
+      }
+      if (messTime > lastRead) numOfUnread += 1;
       else break;
     }
     return numOfUnread;
@@ -209,6 +224,14 @@ export class ChatComponent implements OnInit, AfterContentInit {
     return message.sentDateTime.toLocaleTimeString('en-GB', {
       hour: 'numeric',
       minute: 'numeric',
+    });
+  }
+
+  sortChats(): void {
+    this.chats.sort((a, b) => {
+      let aDate = new Date(a.messages[a.messages.length - 1].sentDateTime);
+      let bDate = new Date(b.messages[b.messages.length - 1].sentDateTime);
+      return bDate.getTime() - aDate.getTime();
     });
   }
 }

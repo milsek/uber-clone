@@ -46,7 +46,7 @@ public class SeleniumTest {
 
 
     @Test
-    public void mainTest() {
+    public void mainBasicRideTest() {
         LoginPage homePage = new LoginPage(driver);
         assertTrue(homePage.isPageOpened());
         homePage.login("passenger5@noemail.com","cascaded");

@@ -416,7 +416,10 @@ public class RideService {
         int startYear = Integer.parseInt(dateString.split("-")[0]);
         int startMonth = Integer.parseInt(dateString.split("-")[1]);
         int startDay = Integer.parseInt(dateString.split("-")[2]);
-        return new Date(startYear-1900,startMonth,startDay);
+        System.out.println(startYear);
+        System.out.println(startMonth);
+        System.out.println(startDay);
+        return new Date(startYear-1900,startMonth - 1,startDay);
     }
 
     public ReportDisplayDTO generateReportPassenger(String startDateString, String endDateString, ReportParameter reportParameter, Authentication authentication) {
@@ -425,6 +428,11 @@ public class RideService {
         Passenger passenger = (Passenger) authentication.getPrincipal();
         List<Object[]> queryRet;
         ReportDisplayDTO reportDisplayDTO = new ReportDisplayDTO();
+        System.out.println(startDateString);
+        System.out.println(endDateString);
+        System.out.println(startDate);
+        System.out.println(endDate);
+        System.out.println(reportParameter);
         switch(reportParameter){
             case MONEY_SPENT_EARNED -> {queryRet = passengerRideRepository.getPassengersMoneyReport(startDate, endDate, passenger.getUsername());
                 reportDisplayDTO.setYAxisName("Money spent"); break;}
