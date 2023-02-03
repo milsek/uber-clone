@@ -1,7 +1,6 @@
 package com.example.springbackend.selenium.tests;
 
 import com.example.springbackend.SpringBackendApplication;
-import com.example.springbackend.repository.RideRepository;
 import com.example.springbackend.selenium.pages.Login.LoginPage;
 import com.example.springbackend.selenium.pages.MainPage;
 import com.example.springbackend.selenium.pages.RideRejectionPage;
@@ -12,7 +11,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(classes = SpringBackendApplication.class)
 @Transactional
-public class SeleniumTest {
+public class RideTests {
 
     WebDriver driver;
     ChromeOptions chromeOptions = new ChromeOptions();
@@ -265,6 +263,22 @@ public class SeleniumTest {
         mainPage.fillStartingPoint("Novosadski put 2");
         mainPage.fillDestinationPoint("Ivana Gorana Kovacica 23");
         mainPage.addPassenger("unknown@noemail.com");
+        mainPage.orderRide();
+        assertTrue(mainPage.expectMessage("email does not exist in the system"));
+    }
+
+    @Test
+    public void splitFareRideDriverEmail() {
+        LoginPage homePage = new LoginPage(driver);
+        assertTrue(homePage.isPageOpened());
+        homePage.login("passenger1@noemail.com","cascaded");
+
+        MainPage mainPage = new MainPage(driver);
+        assertTrue(mainPage.isPageOpened());
+        mainPage.openSidePanel();
+        mainPage.fillStartingPoint("Novosadski put 2");
+        mainPage.fillDestinationPoint("Ivana Gorana Kovacica 23");
+        mainPage.addPassenger("driver1@noemail.com");
         mainPage.orderRide();
         assertTrue(mainPage.expectMessage("email does not exist in the system"));
     }
