@@ -27,10 +27,10 @@
             <div class="h-1">
               <p *ngIf="email && email.invalid && email.touched"
                 class="text-yellow-400 text-xs italic">
-                <span *ngIf="email.errors?.['required']">
+                <span *ngIf="email.errors?.['required']" id="email-required">
                   Email is required.
                 </span>
-                <span *ngIf="email.errors?.['pattern']">
+                <span *ngIf="email.errors?.['pattern']" id="email-invalid">
                   Email is not valid.
                 </span>
               </p>
@@ -50,13 +50,13 @@
               <div class="h-1">
                 <p *ngIf="name && name.invalid && name.touched"
                   class="text-yellow-400 text-xs italic">
-                  <span *ngIf="name.errors?.['required']">
+                  <span *ngIf="name.errors?.['required']"  id="name-required">
                     First name is required.
                   </span>
-                  <span *ngIf="name.errors?.['minlength']">
+                  <span *ngIf="name.errors?.['minlength']"  id="name-too-short">
                     First name is too short.
                   </span>
-                  <span *ngIf="name.errors?.['maxlength']">
+                  <span *ngIf="name.errors?.['maxlength']"  id="name-too-long">
                     First name is too long.
                   </span>
                 </p>
@@ -75,13 +75,13 @@
               <div class="h-1">
                 <p *ngIf="surname && surname.invalid && surname.touched"
                   class="text-yellow-400 text-xs italic">
-                  <span *ngIf="surname.errors?.['required']">
+                  <span *ngIf="surname.errors?.['required']" id="surname-required">
                     Last name is required.
                   </span>
-                  <span *ngIf="surname.errors?.['minlength']">
+                  <span *ngIf="surname.errors?.['minlength']" id="surname-too-short">
                     Last name is too short.
                   </span>
-                  <span *ngIf="surname.errors?.['maxlength']">
+                  <span *ngIf="surname.errors?.['maxlength']"  id="surname-too-long">
                     Last name is too long.
                   </span>
                 </p>
@@ -121,10 +121,10 @@
             <div class="h-1">
               <p *ngIf="phoneNumber && phoneNumber.invalid && phoneNumber.touched"
                 class="text-yellow-400 text-xs italic">
-                <span *ngIf="phoneNumber.errors?.['required']">
+                <span *ngIf="phoneNumber.errors?.['required']" id="phoneNumber-required">
                   Phone number is required.
                 </span>
-                <span *ngIf="phoneNumber.errors?.['pattern']">
+                <span *ngIf="phoneNumber.errors?.['pattern']" id="phoneNumber-invalid">
                   Phone number is invalid.
                 </span>
               </p>
@@ -146,7 +146,7 @@
                 <span *ngIf="password.errors?.['required']">
                   Password is required.
                 </span>
-                <span *ngIf="password.errors?.['minlength']">
+                <span *ngIf="password.errors?.['minlength']" id="password-too-short">
                   Password is too short.
                 </span>
               </p>
@@ -164,7 +164,7 @@
             id="register-confirm-password" type="password" placeholder="Confirm the Password" formControlName="confirmPassword">
             <div class="h-1">
               <p *ngIf="password && confirmPassword && registerForm.hasError('notSame') && password.valid"
-                class="text-yellow-400 text-xs italic">
+                class="text-yellow-400 text-xs italic" id="passwords-different">
                 Passwords do not match.
               </p>
             </div>
@@ -302,7 +302,7 @@
         </div>
       
         <button type="submit" class="w-full h-16 bg-accent-light
-        active:bg-accent-light text-white font-medium tracking-wide">
+        active:bg-accent-light text-white font-medium tracking-wide" id="register-button">
           REGISTER
         </button>
         <div class="h-1 mx-auto text-center mt-0.5">

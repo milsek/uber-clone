@@ -26,10 +26,10 @@
         <div class="h-1">
           <p *ngIf="email && email.invalid && email.touched"
             class="text-yellow-400 text-xs italic">
-            <span *ngIf="email.errors?.['required']">
+            <span *ngIf="email.errors?.['required']" id="email-required">
               Email is required.
             </span>
-            <span *ngIf="email.errors?.['pattern']">
+            <span *ngIf="email.errors?.['pattern']" id="email-invalid">
               Email is not valid.
             </span>
           </p>
@@ -49,10 +49,10 @@
         <div class="h-1">
           <p *ngIf="password && password.invalid && password.touched"
             class="text-yellow-400 text-xs italic">
-            <span *ngIf="password.errors?.['required']">
+            <span *ngIf="password.errors?.['required']" id="password-required">
               Password is required.
             </span>
-            <span *ngIf="password.errors?.['minlength']">
+            <span *ngIf="password.errors?.['minlength']" id="password-minLength">
               Password is too short.
             </span>
           </p>
