@@ -56,9 +56,9 @@ public class RideControllerIntegrationTests {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + passengerToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.driver.name")
-                        .value("Travis"))
+                        .value("Djuro"))
                 .andExpect(jsonPath("$.startAddress")
-                        .value("Example starting address 1, Novi Sad"))
+                        .value("Example starting address 1, Subotica"))
                 .andExpect(jsonPath("$.distance")
                         .value(5.0));
     }
@@ -129,8 +129,8 @@ public class RideControllerIntegrationTests {
         String passengerToken = IntegrationUtils.getToken(mockMvc, "passenger1@noemail.com");
         BasicRideCreationDTO dto = IntegrationUtils.getValidBasicRideCreationDto();
         dto.getRoute().setWaypoints(dto.getRoute().getWaypoints().stream().map(wp -> {
-            wp.setLat(wp.getLat() + 1);
-            wp.setLng(wp.getLng() + 1);
+            wp.setLat(wp.getLat() + 3);
+            wp.setLng(wp.getLng() + 3);
             return wp;
         }).toList());
 
@@ -158,7 +158,7 @@ public class RideControllerIntegrationTests {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + passengerToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startAddress")
-                        .value("Example starting address 1, Novi Sad"))
+                        .value("Example starting address 1, Subotica"))
                 .andExpect(jsonPath("$.distance")
                         .value(5.0));
     }
@@ -216,7 +216,7 @@ public class RideControllerIntegrationTests {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + passengerToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startAddress")
-                        .value("Example starting address 1, Novi Sad"))
+                        .value("Example starting address 1, Subotica"))
                 .andExpect(jsonPath("$.distance")
                         .value(5.0));
     }
@@ -290,7 +290,7 @@ public class RideControllerIntegrationTests {
         dto.getUsersToPay().add("passenger2@noemail.com");
         dto.getUsersToPay().add("passenger3@noemail.com");
         dto.getUsersToPay().add("passenger4@noemail.com");
-        dto.getUsersToPay().add("passenger5@noemail.com");
+        dto.getUsersToPay().add("passenger6@noemail.com");
 
         mockMvc.perform(post(URL_PREFIX + "/split-fare")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -421,7 +421,7 @@ public class RideControllerIntegrationTests {
         String passengerToken = IntegrationUtils.getToken(mockMvc, "passenger1@noemail.com");
         SplitFareRideCreationDTO splitFareRideCreationDto = IntegrationUtils.getValidSplitFareRideCreationDto();
         splitFareRideCreationDto.getUsersToPay().add("passenger2@noemail.com");
-        String passenger5Token = IntegrationUtils.getToken(mockMvc, "passenger5@noemail.com");
+        String passenger6Token = IntegrationUtils.getToken(mockMvc, "passenger6@noemail.com");
 
         MvcResult res =  mockMvc.perform(post(URL_PREFIX + "/split-fare")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -437,7 +437,7 @@ public class RideControllerIntegrationTests {
         mockMvc.perform(patch(URL_PREFIX + "/reject")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(rideIdDTO))
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger5Token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger6Token))
                 .andExpect(status().is(404));
     }
 
@@ -493,7 +493,7 @@ public class RideControllerIntegrationTests {
         String passengerToken = IntegrationUtils.getToken(mockMvc, "passenger1@noemail.com");
         SplitFareRideCreationDTO splitFareRideCreationDto = IntegrationUtils.getValidSplitFareRideCreationDto();
         splitFareRideCreationDto.getUsersToPay().add("passenger2@noemail.com");
-        String passenger5Token = IntegrationUtils.getToken(mockMvc, "passenger5@noemail.com");
+        String passenger6Token = IntegrationUtils.getToken(mockMvc, "passenger6@noemail.com");
 
         MvcResult res =  mockMvc.perform(post(URL_PREFIX + "/split-fare")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -509,7 +509,7 @@ public class RideControllerIntegrationTests {
         mockMvc.perform(patch(URL_PREFIX + "/confirm")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(rideIdDTO))
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger5Token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger6Token))
                 .andExpect(status().is(404));
     }
 
@@ -548,8 +548,8 @@ public class RideControllerIntegrationTests {
     void Return_200_when_confirmation_is_valid() throws Exception {
         String passengerToken = IntegrationUtils.getToken(mockMvc, "passenger1@noemail.com");
         SplitFareRideCreationDTO splitFareRideCreationDto = IntegrationUtils.getValidSplitFareRideCreationDto();
-        splitFareRideCreationDto.getUsersToPay().add("passenger5@noemail.com");
-        String passenger5Token = IntegrationUtils.getToken(mockMvc, "passenger5@noemail.com");
+        splitFareRideCreationDto.getUsersToPay().add("passenger6@noemail.com");
+        String passenger6Token = IntegrationUtils.getToken(mockMvc, "passenger6@noemail.com");
 
         MvcResult res =  mockMvc.perform(post(URL_PREFIX + "/split-fare")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -565,7 +565,7 @@ public class RideControllerIntegrationTests {
         mockMvc.perform(patch(URL_PREFIX + "/confirm")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(rideIdDTO))
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger5Token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger6Token))
                 .andExpect(status().is(402))
                 .andExpect(jsonPath("$.message")
                         .value("Insufficient funds."));
@@ -685,7 +685,7 @@ public class RideControllerIntegrationTests {
             "[PATCH] " + URL_PREFIX + "/begin")
     @Rollback
     void Return_404_when_attempting_to_start_a_non_existing_ride() throws Exception {
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
         RideIdDTO dto = new RideIdDTO();
         dto.setRideId(111);
 
@@ -715,7 +715,7 @@ public class RideControllerIntegrationTests {
         RideIdDTO rideIdDTO = new RideIdDTO();
         rideIdDTO.setRideId(id);
 
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
         RideIdDTO dto = new RideIdDTO();
         dto.setRideId(id);
 
@@ -734,7 +734,7 @@ public class RideControllerIntegrationTests {
             "[PATCH] " + URL_PREFIX + "/complete")
     @Rollback
     void Return_404_when_attempting_to_complete_a_non_existing_ride() throws Exception {
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
         RideIdDTO dto = new RideIdDTO();
         dto.setRideId(111);
 
@@ -765,7 +765,7 @@ public class RideControllerIntegrationTests {
         RideIdDTO rideIdDTO = new RideIdDTO();
         rideIdDTO.setRideId(id);
 
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
         RideIdDTO dto = new RideIdDTO();
         dto.setRideId(id);
 
@@ -792,7 +792,7 @@ public class RideControllerIntegrationTests {
             "[PATCH] " + URL_PREFIX + "/driver-rejection")
     @Rollback
     void Return_404_when_a_driver_is_attempting_to_reject_a_non_existing_ride() throws Exception {
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
         DriverRideRejectionCreationDTO dto = new DriverRideRejectionCreationDTO();
         dto.setRideId(111);
 
@@ -815,14 +815,15 @@ public class RideControllerIntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(rideCreationDTO))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + passengerToken))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk())
+                .andReturn();
 
         String rideResponse = res.getResponse().getContentAsString();
         Integer id = JsonPath.parse(rideResponse).read("$.id");
         RideIdDTO rideIdDTO = new RideIdDTO();
         rideIdDTO.setRideId(id);
 
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
         DriverRideRejectionCreationDTO dto = new DriverRideRejectionCreationDTO();
         dto.setReason("Reason for rejection.");
         dto.setRideId(id);
@@ -871,7 +872,7 @@ public class RideControllerIntegrationTests {
         rejectionCreationDTO.setReason("Reason for rejection.");
         rejectionCreationDTO.setRideId(id);
 
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
 
         mockMvc.perform(patch(URL_PREFIX + "/driver-rejection")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -891,7 +892,7 @@ public class RideControllerIntegrationTests {
                 .andExpect(jsonPath("$.[*].reason")
                         .value("Reason for rejection."))
                 .andExpect(jsonPath("$.[*].*.name")
-                        .value("Travis"));
+                        .value("Djuro"));
     }
 
 
@@ -933,7 +934,7 @@ public class RideControllerIntegrationTests {
         rejectionCreationDTO.setReason("Reason for rejection.");
         rejectionCreationDTO.setRideId(id);
 
-        String driverToken = IntegrationUtils.getToken(mockMvc, "driver1@noemail.com");
+        String driverToken = IntegrationUtils.getToken(mockMvc, "driver100@noemail.com");
 
         mockMvc.perform(patch(URL_PREFIX + "/driver-rejection")
                         .contentType(MediaType.APPLICATION_JSON)

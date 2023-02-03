@@ -48,11 +48,11 @@
     
           <div class="hidden sm:block my-auto">
             <button class="bg-accent-light hover:bg-accent px-2 rounded-md w-10
-            h-10 mr-2" (click)="acceptRequest(i)">
+            h-10 mr-2 acceptIncomingRequest" (click)="acceptRequest(i)">
               <fa-icon [icon]="faCheck" class="text-white"></fa-icon>
             </button>
             <button class="bg-light hover:bg-gray-500 px-2 rounded-md w-10 h-10
-            ml-2" (click)="rejectRequest(i)">
+            ml-2 declineIncomingRequest" (click)="rejectRequest(i)">
               <fa-icon [icon]="faXmark" class="text-white mx-auto"></fa-icon>
             </button>
           </div>

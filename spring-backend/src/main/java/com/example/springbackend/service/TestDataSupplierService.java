@@ -4,6 +4,7 @@ import com.example.springbackend.model.*;
 import com.example.springbackend.model.helpClasses.Coordinates;
 import com.example.springbackend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 @Service
+@Scope("singleton")
 public class TestDataSupplierService {
     @Autowired
     DriverRepository driverRepository;
@@ -42,8 +43,11 @@ public class TestDataSupplierService {
             new Coordinates(45.245749, 19.851122),
             new Coordinates(45.252782, 19.855517),
             new Coordinates(45.264056, 19.829546),
-            new Coordinates(45.257006, 19.801482)
+            new Coordinates(45.257006, 19.801482),
+            new Coordinates(45.241448, 19.776247)
     );
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Transactional
     public void injectTestData() {
@@ -52,6 +56,13 @@ public class TestDataSupplierService {
         addDrivers();
         addRides();
     }
+
+    public void resetRides() {
+        passengerRideRepository.deleteAllInBatch();
+        rideRepository.deleteAllInBatch();
+        addRides();
+    }
+
 
 
     private void addAdmins() {
@@ -106,17 +117,22 @@ public class TestDataSupplierService {
         passenger.setTokenBalance(690);
         passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
-        passenger.setName("Carl");
-        passenger.setSurname("Rogers");
+        passenger.setName("Jane");
+        passenger.setSurname("Doe");
         passenger.setUsername("passenger5@noemail.com");
         passenger.setEmail("passenger5@noemail.com");
+        passenger.setTokenBalance(690);
+        passengerRepository.save(passenger);
+        passenger.setName("Carl");
+        passenger.setSurname("Rogers");
+        passenger.setUsername("passenger6@noemail.com");
+        passenger.setEmail("passenger6@noemail.com");
         passenger.setTokenBalance(10);
         passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
     }
 
     private void addDrivers() {
-//        addOtherDrivers();
         Vehicle vehicle = new Vehicle();
         vehicle.setBabySeat(false);
         vehicle.setPetsAllowed(true);
@@ -152,6 +168,7 @@ public class TestDataSupplierService {
         driver.setAccountStatus(AccountStatus.ACTIVE);
         driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
         driver.setProfilePicture("/driver1@noemail.com.jpeg");
+
 //        Ride mockRide = new Ride();
 //        mockRide.setCreatedAt(LocalDateTime.now());
 //        mockRide.setStartTime(LocalDateTime.now());
@@ -161,12 +178,51 @@ public class TestDataSupplierService {
         driver.setCurrentRide(null);
         driver.setNextRide(null);
         driverRepository.save(driver);
+        addOtherDrivers();
+        addDriverSubotica();
 //        driver.setUsername("driver2@noemail.com");
 //        driverRepository.save(driver);
 //        driver.setUsername("driver3@noemail.com");
 //        driverRepository.save(driver);
 //        driver.setUsername("driver4@noemail.com");
 //        driverRepository.save(driver);
+    }
+
+    private void addDriverSubotica() {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setBabySeat(false);
+        vehicle.setPetsAllowed(true);
+        vehicle.setMake("Peugeot");
+        vehicle.setModel("307");
+        vehicle.setColour("Gray");
+        vehicle.setLicensePlateNumber("SU154TA");
+        vehicle.setRideActive(false);
+        vehicle.setCurrentCoordinates(new Coordinates(46.098246, 19.655735));
+        vehicle.setNextCoordinates(new Coordinates(46.098246, 19.655735));
+        vehicle.setCoordinatesChangedAt(LocalDateTime.now());
+        vehicle.setExpectedTripTime(0);
+        vehicle.setVehicleType(vehicleTypeRepository.findByName("COUPE").orElseThrow());
+        vehicleRepository.save(vehicle);
+        Driver driver = new Driver();
+        driver.setUsername("driver100@noemail.com");
+        driver.setEmail("driver100@noemail.com");
+        driver.setPassword(passwordEncoder.encode("cascaded"));
+        driver.setName("Djuro");
+        driver.setSurname("Petrovic");
+        driver.setPhoneNumber("+38165213512");
+        driver.setCity("Subotica");
+        driver.setActive(true);
+        driver.setVehicle(vehicle);
+        driver.setDistanceTravelled(5.0);
+        driver.setRidesCompleted(1);
+        driver.setTotalRatingSum(4);
+        driver.setNumberOfReviews(1);
+        driver.setAccountStatus(AccountStatus.ACTIVE);
+        driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
+        driver.setProfilePicture("/default.png");
+        driver.setCurrentRide(null);
+        driver.setNextRide(null);
+        driverRepository.save(driver);
     }
 
     private void addRides(){
@@ -252,8 +308,7 @@ public class TestDataSupplierService {
     }
 
     private void addOtherDrivers() {
-        Random rand = new Random();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 2; i < 7; i++) {
             Vehicle vehicle = new Vehicle();
             vehicle.setBabySeat(true);
             vehicle.setPetsAllowed(true);
@@ -262,14 +317,14 @@ public class TestDataSupplierService {
             vehicle.setColour("Gray");
             vehicle.setLicensePlateNumber("A61353");
             vehicle.setRideActive(false);
-            int k = rand.nextInt(0, locations.size());
+            int k = Math.min(i-1, locations.size()-1);
             vehicle.setCurrentCoordinates(locations.get(k));
             vehicle.setNextCoordinates(locations.get(k));
             vehicle.setCoordinatesChangedAt(LocalDateTime.now());
             vehicle.setVehicleType(vehicleTypeRepository.findByName("COUPE").orElseThrow());
             vehicleRepository.save(vehicle);
             Driver driver = new Driver();
-            driver.setUsername("driver" + i);
+            driver.setUsername("driver" + i + "@noemail.com");
             driver.setEmail("driver" + i + "@noemail.com");
             driver.setPassword(passwordEncoder.encode("cascaded"));
             driver.setName("Driver" + i);
@@ -282,10 +337,12 @@ public class TestDataSupplierService {
             driver.setRidesCompleted(2153 + i);
             driver.setTotalRatingSum(7814 + i);
             driver.setNumberOfReviews(1693 + i);
+            driver.setAccountStatus(AccountStatus.ACTIVE);
             driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
             driver.setCurrentRide(null);
             driver.setNextRide(null);
             driver.setProfilePicture("/default.png");
+            vehicle.setExpectedTripTime(0);
             driverRepository.save(driver);
         }
     }

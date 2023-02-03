@@ -8,7 +8,7 @@
   </div>
 
   <div class="w-11/12 sm:w-96 mx-auto text-left">
-    <h1 class="text-3xl font-bold text-white">Log in</h1>
+    <h1 class="text-3xl font-bold text-white" id="login-header">Log in</h1>
 
     <form [formGroup]="loginForm" (submit)="onSubmit()">
     <div class="flex flex-col gap-y-6 mt-10 mb-12 tracking-wide">
@@ -60,7 +60,7 @@
       </div>
 
     </div>
-    <button type="submit" class="w-full h-16 bg-accent-light active:bg-accent text-white font-medium tracking-wide">
+    <button type="submit" class="w-full h-16 bg-accent-light active:bg-accent text-white font-medium tracking-wide" id="login-button">
       LOGIN
     </button>
     <div class="h-1">
