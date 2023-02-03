@@ -98,7 +98,7 @@ public class DriverService {
 
     public boolean toggleActivity(Authentication auth) {
         Driver driver = (Driver) auth.getPrincipal();
-        if(driver.getActiveMinutesToday() < 480 && driver.getCurrentRide() == null && driver.getNextRide() == null) {
+        if (driver.getActiveMinutesToday() < 480 && driver.getCurrentRide() == null && driver.getNextRide() == null) {
             triggerActivity(driver);
             driver.setActive(!driver.getActive());
             driverRepository.save(driver);

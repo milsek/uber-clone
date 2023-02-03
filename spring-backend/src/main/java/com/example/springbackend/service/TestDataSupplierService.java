@@ -166,6 +166,7 @@ public class TestDataSupplierService {
         driver.setTotalRatingSum(4);
         driver.setNumberOfReviews(1);
         driver.setAccountStatus(AccountStatus.ACTIVE);
+        driver.setLastSetActive(LocalDateTime.now());
         driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
         driver.setProfilePicture("/driver1@noemail.com.jpeg");
 
@@ -218,6 +219,7 @@ public class TestDataSupplierService {
         driver.setTotalRatingSum(4);
         driver.setNumberOfReviews(1);
         driver.setAccountStatus(AccountStatus.ACTIVE);
+        driver.setLastSetActive(LocalDateTime.now());
         driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
         driver.setProfilePicture("/default.png");
         driver.setCurrentRide(null);
@@ -338,6 +340,7 @@ public class TestDataSupplierService {
             driver.setTotalRatingSum(7814 + i);
             driver.setNumberOfReviews(1693 + i);
             driver.setAccountStatus(AccountStatus.ACTIVE);
+            driver.setLastSetActive(LocalDateTime.now());
             driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
             driver.setCurrentRide(null);
             driver.setNextRide(null);

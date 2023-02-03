@@ -111,13 +111,16 @@
             class="text-yellow-400 text-xs italic"
           >
             <span *ngIf="phoneNumber.errors?.['minlength']">
+              Phone Number is required.
+            </span>
+            <span *ngIf="phoneNumber.errors?.['minlength']">
               Phone Number is too short.
             </span>
             <span *ngIf="phoneNumber.errors?.['maxlength']">
               Phone Number is too long.
             </span>
             <span *ngIf="phoneNumber.errors?.['pattern']">
-              Phone Number is too long.
+              Phone Number is invalid.
             </span>
           </p>
         </div>
@@ -125,7 +128,7 @@
       <div class="w-full my-2">
         <label
           class="block tracking-wide text-light text-xs font-bold mb-1"
-          for="register-first-name"
+          for="register-city"
         >
           City
         </label>
@@ -141,8 +144,9 @@
             *ngIf="city && city.invalid && city.touched"
             class="text-yellow-400 text-xs italic"
           >
-            <span *ngIf="city.errors?.['minlength']"> City is too short. </span>
-            <span *ngIf="city.errors?.['maxlength']"> City is too long. </span>
+            <span *ngIf="city.errors?.['required']"> City name is required. </span>
+            <span *ngIf="city.errors?.['minlength']"> City name is too short. </span>
+            <span *ngIf="city.errors?.['maxlength']"> City name is too long. </span>
           </p>
         </div>
       </div>
@@ -384,10 +388,27 @@
     >Change password</span
   >
 </div>
+
 <div *ngIf="showConfirmModal">
-  <app-error-modal
+  <app-message-modal
     title="Successfully sent request"
     description="Successfully sent profile update request to the admin!"
     (closeModal)="closeModal()"
-  ></app-error-modal>
+  ></app-message-modal>
+</div>
+
+<div *ngIf="showResetPasswordConfirmationModal">
+  <app-message-modal 
+  [title]="'Success!'"
+  [description]="'An email was sent to your address.'"
+  (closeModal)="closeResetPasswordConfirmationModal()">
+  </app-message-modal>
+</div>
+
+<div *ngIf="showDataInvalidModal">
+  <app-message-modal 
+  [title]="'Error'"
+  [description]="'Data is not valid.'"
+  (closeModal)="closeDataInvalidModal()">
+  </app-message-modal>
 </div>

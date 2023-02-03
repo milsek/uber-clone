@@ -151,19 +151,22 @@
           </div>
           <div class="flex gap-x-2">
             <button
-              class="w-24 inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5 text-white shadow-sm hover:bg-accent justify-center"
+              class="w-24 inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm
+              font-medium leading-5 text-white shadow-sm hover:bg-accent justify-center"
               (click)="showBanModal(user.username)"
             >
               {{ user.accountStatus === "ACTIVE" ? "Ban User" : "Unban User" }}
             </button>
             <button
-              class="inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5 text-white shadow-sm hover:bg-accent"
+              class="inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm
+              font-medium leading-5 text-white shadow-sm hover:bg-accent"
               (click)="showUserNotes(user.username)"
             >
               User Notes
             </button>
             <button
-              class="w-32 inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm font-medium leading-5 text-white shadow-sm hover:bg-accent justify-center"
+              class="w-32 inline-flex items-center rounded-full bg-accent-light px-2.5 py-1 text-sm
+              font-medium leading-5 text-white shadow-sm hover:bg-accent justify-center"
               (click)="showRideHistory(user.username)"
             >
               Ride history
@@ -174,26 +177,27 @@
     </ul>
 
     <div class="flex flex-col items-center mt-7 mb-3">
-      <span class="text-sm text-gray-700 dark:text-gray-400">
+      <span class="text-sm text-stone-400">
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white">{{
+        <span class="font-semibold text-white">{{
           startElem + 1
         }}</span>
         to
-        <span class="font-semibold text-gray-900 dark:text-white">{{
-          startElem + 7 < numOfElements ? startElem + 7 : numOfElements
+        <span class="font-semibold text-white">{{
+          startElem + ELEMENTS_PER_PAGE < numOfElements ? startElem + ELEMENTS_PER_PAGE : numOfElements
         }}</span>
         of
-        <span class="font-semibold text-gray-900 dark:text-white">{{
+        <span class="font-semibold text-white">{{
           numOfElements
         }}</span>
         Entries
       </span>
       <div class="inline-flex mt-2 xs:mt-0">
         <button
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-l hover:bg-medium"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark
+          border-0 border-l border-gray-700 rounded-l hover:bg-medium disabled:text-stone-500"
           (click)="prev()"
-          disabled="{{ startElem === 0 }}"
+          [disabled]="startElem === 0"
         >
           <svg
             aria-hidden="true"
@@ -211,9 +215,10 @@
           Prev
         </button>
         <button
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-r hover:bg-medium"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark
+          border-0 border-l border-gray-700 rounded-r hover:bg-medium disabled:text-stone-500"
           (click)="next()"
-          disabled="{{ startElem + 7 >= numOfElements }}"
+          [disabled]="startElem + ELEMENTS_PER_PAGE >= numOfElements"
         >
           Next
           <svg

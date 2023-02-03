@@ -63,6 +63,7 @@ export class TopControlsComponent implements OnInit {
   };
 
   logout(): void {
+    if (this.driverInfo.isActive) this.driverService.toggleActivity();
     this.authenticationService.logout();
     window.location.href = '/';
   }

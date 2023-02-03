@@ -33,6 +33,8 @@ export class DriverEditComponent implements OnInit {
   @Output() changeView = new EventEmitter<void>();
 
   showConfirmModal: boolean = false;
+  showResetPasswordConfirmationModal: boolean = false;
+  showDataInvalidModal: boolean = false;
 
   userEditForm = new FormGroup(
     {
@@ -52,10 +54,12 @@ export class DriverEditComponent implements OnInit {
         Validators.maxLength(30),
       ]),
       city: new FormControl('', [
+        Validators.required,
         Validators.minLength(2),
         Validators.maxLength(30),
       ]),
       phoneNumber: new FormControl('', [
+        Validators.required,
         Validators.minLength(2),
         Validators.maxLength(30),
         Validators.pattern(/[+]?[(]?\d{3}[)]?[-\s.]?\d{3}[-\s.]?\d{3,6}/),
@@ -128,7 +132,7 @@ export class DriverEditComponent implements OnInit {
   }
   async resetPassword() {
     this.authenticationService.resetPasword(this.driver.email!);
-    alert('Email sent');
+    this.showResetPasswordConfirmationModal = true;
   }
 
   async onSubmitUserUpdate() {
@@ -154,10 +158,19 @@ export class DriverEditComponent implements OnInit {
         this.model?.value!,
         this.colour?.value!,
         this.licensePlateNumber?.value!
-      );
-      this.showConfirmModal = true;
+      )
+      .then((resp) => {
+        if (resp.data) {
+          this.showConfirmModal = true;
+        } else {
+          this.showDataInvalidModal = true;
+        }
+      })
+      .catch((err) => {
+        this.showDataInvalidModal = true;
+      });;
     } else {
-      alert('Data not valid!');
+      this.showDataInvalidModal = true;
     }
   }
 
@@ -176,5 +189,13 @@ export class DriverEditComponent implements OnInit {
   closeModal(): void {
     this.showConfirmModal = false;
     this.changeView.emit();
+  }
+
+  closeResetPasswordConfirmationModal(): void {
+    this.showResetPasswordConfirmationModal = false;
+  }
+
+  closeDataInvalidModal(): void {
+    this.showDataInvalidModal = false;
   }
 }

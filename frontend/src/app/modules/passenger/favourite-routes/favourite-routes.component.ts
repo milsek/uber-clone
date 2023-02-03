@@ -93,9 +93,13 @@ export class FavouriteRoutesComponent implements OnInit {
       this.numberOfElements = res.data.totalElements;
       if (res.data.last) {
         this.disableNext = true;
+      } else {
+        this.disableNext = false;
       }
       if (res.data.first) {
         this.disablePrev = true;
+      } else {
+        this.disablePrev = false;
       }
       this.control.setWaypoints([
         this.selectedRoute!.waypoints[0],

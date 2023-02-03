@@ -8,6 +8,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { GoogleLoginComponent } from './google-login/google-login.component';
 import { AuthRoutingModule } from './auth-routing.module';
 import { NotFoundComponent } from './not-found/not-found/not-found.component';
+import { SharedModule } from 'src/app/shared/module/shared/shared.module';
 
 @NgModule({
   declarations: [ RegisterComponent, LoginComponent, PasswordResetComponent, GoogleLoginComponent, NotFoundComponent ],
@@ -15,7 +16,8 @@ import { NotFoundComponent } from './not-found/not-found/not-found.component';
     CommonModule,
     FontAwesomeModule,
     ReactiveFormsModule,
-    AuthRoutingModule
+    AuthRoutingModule,
+    SharedModule
   ]
 })
 export class AuthModule { }

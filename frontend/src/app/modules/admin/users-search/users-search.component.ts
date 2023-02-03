@@ -38,6 +38,8 @@ export class UsersSearchComponent {
   banStatus: string = '';
   newNote: string = '';
 
+  ELEMENTS_PER_PAGE = 7;
+
   constructor(
     private photoService: PhotoService,
     private driverService: DriverService,
@@ -96,15 +98,15 @@ export class UsersSearchComponent {
   prev(): void {
     if (this.page !== 0) {
       this.page--;
-      this.startElem -= 7;
+      this.startElem -= this.ELEMENTS_PER_PAGE;
       this.getUsers();
     }
   }
 
   next(): void {
-    if (this.startElem + 7 <= this.numOfElements) {
+    if (this.startElem + this.ELEMENTS_PER_PAGE <= this.numOfElements) {
       this.page++;
-      this.startElem += 7;
+      this.startElem += this.ELEMENTS_PER_PAGE;
       this.getUsers();
     }
   }

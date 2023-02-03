@@ -288,11 +288,11 @@ sm:h-full select-none" id="order-menu">
   </div>
 
   <div *ngIf="showErrorModal">
-    <app-error-modal
+    <app-message-modal
       [title]="errorTitle"
       [description]="errorMessage"
       (closeModal)="closeErrorModal()"
-    ></app-error-modal>
+    ></app-message-modal>
   </div>
 
 </div>

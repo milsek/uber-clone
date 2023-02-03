@@ -337,9 +337,9 @@
 </div>
 
 <div *ngIf="showConfirmModal">
-  <app-error-modal
+  <app-message-modal
     [title]="confirmModalTitle"
     [description]="confirmModalDescription"
     (closeModal)="closeConfirmModal()"
-  ></app-error-modal>
+  ></app-message-modal>
 </div>

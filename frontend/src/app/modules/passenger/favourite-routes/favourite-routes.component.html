@@ -33,13 +33,13 @@
     ></div>
   </div>
   <div class="flex flex-col items-center mx-auto mt-10 text-center w-full">
-    <span class="text-sm text-gray-700 dark:text-gray-400">
+    <span class="text-sm text-stone-400">
       Showing
-      <span class="font-semibold text-gray-900 dark:text-white">{{
+      <span class="font-semibold text-white">{{
         numberOfElements > 0 ? elemNumber + 1 : 0
       }}</span>
       of
-      <span class="font-semibold text-gray-900 dark:text-white">{{
+      <span class="font-semibold text-white">{{
         numberOfElements
       }}</span>
       Entries
@@ -47,7 +47,7 @@
     <div class="inline-flex mt-1 xs:mt-0">
       <button
         class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0
-        border-l border-gray-700 rounded-l hover:bg-medium disabled:text-gray-500"
+        border-l border-gray-700 rounded-l hover:bg-medium disabled:text-stone-500"
         (click)="prev()"
         [disabled]="disablePrev"
       >
@@ -67,7 +67,8 @@
         Prev
       </button>
       <button
-        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark border-0 border-l border-gray-700 rounded-r hover:bg-medium disabled:text-gray-500"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-dark 
+        border-0 border-l border-gray-700 rounded-r hover:bg-medium disabled:text-stone-500"
         (click)="next()"
         [disabled]="disableNext"
       >

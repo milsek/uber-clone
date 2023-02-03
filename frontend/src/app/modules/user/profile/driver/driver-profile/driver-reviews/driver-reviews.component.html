@@ -118,17 +118,17 @@
 
   <!-- pagination controls -->
   <div class="flex flex-col items-center mt-8 mb-3 text-center w-full">
-        <span class="text-sm text-gray-700 dark:text-stone-400">
+        <span class="text-sm text-stone-400">
           Showing
-          <span class="font-semibold text-gray-900 dark:text-white px-1">{{
+          <span class="font-semibold text-white px-1">{{
             numOfElements === 0 ? 0 : startElem + 1
           }}</span>
           to
-          <span class="font-semibold text-gray-900 dark:text-white px-1">{{
+          <span class="font-semibold text-white px-1">{{
             startElem + RESULTS_PER_PAGE < numOfElements ? startElem + RESULTS_PER_PAGE : numOfElements
           }}</span>
           of
-          <span class="font-semibold text-gray-900 dark:text-white px-1">{{
+          <span class="font-semibold text-white px-1">{{
             numOfElements
           }}</span>
           Entries

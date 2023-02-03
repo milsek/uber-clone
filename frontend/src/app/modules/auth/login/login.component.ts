@@ -12,6 +12,10 @@ export class LoginComponent {
   faChevronLeft: IconDefinition = faChevronLeft;
   errorMessage: string = '';
 
+  showPasswordChangeResponseModal: boolean = false;
+  passwordChangeResponseModalTitle: string = '';
+  passwordChangeResponseModalMessage: string = '';
+
   loginForm = new FormGroup({
     email: new FormControl('', [
       Validators.required,
@@ -31,8 +35,25 @@ export class LoginComponent {
       this.errorMessage = 'You must enter your email first.';
     else if (this.email?.invalid)
       this.errorMessage = 'Enter a valid email.';
-    else 
-      this.authenticationService.resetPasword(this.email?.value!);
+    else {
+      this.authenticationService.resetPasword(this.email?.value!)
+      .then(res => {
+        if (res.data) {
+          this.passwordChangeResponseModalTitle = 'Success!';
+          this.passwordChangeResponseModalMessage = 'An email was sent to your address.';
+          this.showPasswordChangeResponseModal = true;
+        } else {
+          this.passwordChangeResponseModalTitle = 'Something went wrong.';
+          this.passwordChangeResponseModalMessage = 'Please check your email and try again.';
+          this.showPasswordChangeResponseModal = true;
+        }
+      })
+      .catch(err => {
+        this.passwordChangeResponseModalTitle = 'Something went wrong.';
+        this.passwordChangeResponseModalMessage = 'Please check your email and try again.';
+        this.showPasswordChangeResponseModal = true;
+      });
+    }
   }
 
   async onSubmit() {
@@ -56,5 +77,11 @@ export class LoginComponent {
 
   goHome(): void {
     window.location.href = '/';
+  }
+
+  closePasswordChangeResponseModal(): void {
+    this.passwordChangeResponseModalTitle = '';
+    this.passwordChangeResponseModalMessage = '';
+    this.showPasswordChangeResponseModal = false;
   }
 }

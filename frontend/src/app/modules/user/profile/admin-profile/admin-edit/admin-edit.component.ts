@@ -17,6 +17,8 @@ export class AdminEditComponent implements OnInit {
   newImage: string | ArrayBuffer | null = '';
   newFile: File | undefined;
 
+  showResetPasswordConfirmationModal: boolean = false;
+
   userEditForm = new FormGroup(
     {
       name: new FormControl('', [
@@ -90,7 +92,7 @@ export class AdminEditComponent implements OnInit {
 
   async resetPassword() {
     this.authenticationService.resetPasword(this.admin.email!);
-    alert('Email sent');
+    this.showResetPasswordConfirmationModal = true;
   }
 
   async onSubmitUserUpdate() {
@@ -124,5 +126,9 @@ export class AdminEditComponent implements OnInit {
       reader.readAsDataURL(file);
       this.newFile = file;
     }
+  }
+  
+  closeResetPasswordConfirmationModal(): void {
+    this.showResetPasswordConfirmationModal = false;
   }
 }

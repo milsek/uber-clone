@@ -43,11 +43,11 @@
   </div>
   
   <div *ngIf="showErrorModal" class="z-100">
-    <app-error-modal
+    <app-message-modal
       [title]="errorTitle"
       [description]="errorMessage"
       (closeModal)="closeErrorModal()"
-    ></app-error-modal>
+    ></app-message-modal>
   </div>
 
   <div *ngIf="showDisappearingNotification" class="z-100">

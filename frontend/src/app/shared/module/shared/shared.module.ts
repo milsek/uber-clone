@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ErrorModalComponent } from '../../components/modals/error-modal/error-modal/error-modal.component';
-import { DisappearingNotificationComponent } from '../../components/modals/disappearing-notification/disappearing-notification/disappearing-notification.component';
+import { MessageModalComponent } from '../../components/modals/message-modal/message-modal.component';
+import { DisappearingNotificationComponent } from '../../components/modals/disappearing-notification/disappearing-notification.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RideReviewModalComponent } from '../../components/modals/ride-review-modal/ride-review-modal/ride-review-modal.component';
+import { RideReviewModalComponent } from '../../components/modals/ride-review-modal/ride-review-modal.component';
 import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
   declarations: [
-    ErrorModalComponent,
+    MessageModalComponent,
     DisappearingNotificationComponent,
     RideReviewModalComponent
   ],
@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     FontAwesomeModule
   ],
   exports: [
-    ErrorModalComponent,
+    MessageModalComponent,
     DisappearingNotificationComponent,
     RideReviewModalComponent
   ]

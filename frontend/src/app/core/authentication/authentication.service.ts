@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { faCity } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { Session } from 'src/app/shared/models/session.model';
-import { VehicleType } from 'src/app/shared/models/vehicle-type.model';
 
 @Injectable({
   providedIn: 'root',
@@ -28,12 +26,13 @@ export class AuthenticationService {
         let reload: boolean = false;
         if (!this.getSession()) reload = true;
         this.saveSession(response.data);
-        if (reload) window.location.href = '/';
 
-        if(!localStorage.getItem('token')){
+        if (!localStorage.getItem('token')){
           localStorage.setItem('token',localStorage.getItem('token2')!);
         }
         localStorage.removeItem('token2');
+
+        if (reload) window.location.href = '/';
       })
       .catch((err) => {
         this.logout();
@@ -63,39 +62,19 @@ export class AuthenticationService {
     localStorage.setItem('session', JSON.stringify(session));
   }
 
-  async resetPasword(email: String): Promise<boolean> {
-    if (email) {
-      var formData = {
-        email: email,
-      };
-      await axios
-        .post('http://localhost:8080/api/auth/reset-password', formData)
-        .then((resp) => {
-          return true;
-        })
-        .catch((err) => {
-          return false;
-        });
-    }
-    return false;
+  async resetPasword(email: String): Promise<AxiosResponse<boolean>> {
+    return axios
+      .post('http://localhost:8080/api/auth/reset-password', {
+        email
+      });
   }
 
-  async confirmReset(token: String, password: String): Promise<boolean> {
-    if (password) {
-      var formData = {
+  confirmReset(token: String, password: String): Promise<AxiosResponse<boolean>> {
+    return axios
+      .post('http://localhost:8080/api/auth/confirm-password-reset', {
         token: token,
         newPassword: password,
-      };
-      await axios
-        .post('http://localhost:8080/api/auth/confirm-password-reset', formData)
-        .then((res) => {
-          return true;
-        })
-        .catch((err) => {
-          return false;
-        });
-    }
-    return false;
+      })
   }
 
   async login(username: string, password: string): Promise<boolean> {
@@ -112,6 +91,7 @@ export class AuthenticationService {
           axios.defaults.headers.common[
             'Authorization'
           ] = `Bearer ${localStorage.getItem('token')}`;
+          this.toggleDriverActivityIfNeeded(res.data['accessToken']);
           return true;
         } else {
           return false;
@@ -170,7 +150,7 @@ export class AuthenticationService {
     model: string,
     colour: string,
     licensePlateNumber: string
-  ) {
+  ) : Promise<AxiosResponse<boolean>> {
     const formData = {
       username: username,
       name: name,
@@ -186,20 +166,7 @@ export class AuthenticationService {
       colour: colour,
       licensePlateNumber: licensePlateNumber,
     };
-    const successfulLogin = axios
-      .post('http://localhost:8080/api/preupdate/sendUpdateRequest', formData)
-      .then((resp) => {
-        if (resp.data) {
-          return true;
-        } else {
-          return false;
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        return false;
-      });
-    return successfulLogin;
+    return axios.post('http://localhost:8080/api/preupdate/sendUpdateRequest', formData);
   }
 
   updateDriver(
@@ -248,5 +215,27 @@ export class AuthenticationService {
           },
         }
       );
+  }
+
+  async toggleDriverActivityIfNeeded(token: string): Promise<void> {
+    axios
+    .get(`/api/drivers/activity`, {
+      headers: {
+        Authorization: `Bearer ${ token }`,
+      },
+    })
+    .then((res) => {
+      if (!res.data) {
+        axios.patch(
+          `/api/drivers/activity`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
+    });
   }
 }
