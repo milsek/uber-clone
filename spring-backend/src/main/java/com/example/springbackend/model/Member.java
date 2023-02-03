@@ -1,9 +1,5 @@
 package com.example.springbackend.model;
 
-import lombok.Data;
-import org.hibernate.annotations.Where;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.*;
 import java.util.List;
 @Entity

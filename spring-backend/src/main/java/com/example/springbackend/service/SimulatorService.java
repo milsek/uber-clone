@@ -3,7 +3,6 @@ package com.example.springbackend.service;
 import com.example.springbackend.model.Driver;
 import com.example.springbackend.model.Vehicle;
 import com.example.springbackend.model.helpClasses.Coordinates;
-import com.example.springbackend.repository.DriverRepository;
 import com.example.springbackend.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
