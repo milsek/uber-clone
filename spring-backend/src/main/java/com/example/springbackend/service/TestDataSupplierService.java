@@ -95,7 +95,7 @@ public class TestDataSupplierService {
         passenger.setTokenBalance(1000);
         passenger.setProfilePicture("/passenger1@noemail.com.png");
         passengerRepository.save(passenger);
-        passenger.setTokenBalance(800);
+        passenger.setTokenBalance(600);
         passenger.setDistanceTravelled(0.0);
         passenger.setRidesCompleted(0);
         passenger.setName("Karl Gustav");

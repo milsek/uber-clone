@@ -309,7 +309,7 @@ public class RideControllerIntegrationTests {
         String passengerToken = IntegrationUtils.getToken(mockMvc, "passenger1@noemail.com");
         SplitFareRideCreationDTO dto = IntegrationUtils.getValidSplitFareRideCreationDto();
         dto.setVehicleType("COUPE");
-        dto.getUsersToPay().add("passenger2@noemail.com");
+        dto.getUsersToPay().add("passenger1@noemail.com");
         dto.getUsersToPay().add("passenger3@noemail.com");
         dto.getUsersToPay().add("passenger4@noemail.com");
 
@@ -319,13 +319,13 @@ public class RideControllerIntegrationTests {
         mockMvc.perform(post(URL_PREFIX + "/basic")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dtoBasic))
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger2Token))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passengerToken))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post(URL_PREFIX + "/split-fare")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(dto))
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passengerToken))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + passenger2Token))
                 .andExpect(status().is(422))
                 .andExpect(jsonPath("$.message")
                         .value("Passenger already has an active ride."));
