@@ -100,7 +100,7 @@ public class RideService {
         return rideDisplayDTO;
     }
 
-    public Boolean orderSplitFareRide(SplitFareRideCreationDTO dto, Authentication auth) {
+    public RideSimpleDisplayDTO orderSplitFareRide(SplitFareRideCreationDTO dto, Authentication auth) {
         Passenger passenger = (Passenger) auth.getPrincipal();
         VehicleType vehicleType = vehicleTypeRepository.findByName(dto.getVehicleType()).orElseThrow();
 
@@ -108,7 +108,7 @@ public class RideService {
         dto.getUsersToPay().add(passenger.getUsername());
         int fare = (int) Math.ceil(price/dto.getUsersToPay().size());
 
-        rideUtils.checkIfSplitFareRideIsValid(dto, passenger, fare);
+        rideUtils.checkIfSplitFareRideIsValid(dto, passenger, fare, vehicleType);
 
         Ride ride = rideUtils.createSplitFareRide(dto, price);
         passenger.setTokenBalance(passenger.getTokenBalance() - fare);
@@ -120,13 +120,17 @@ public class RideService {
                 rideUtils.sendRefreshMessage(username);
         });
 
-        scheduleExecution(() -> processSplitFareRide(dto, ride), 30, TimeUnit.SECONDS);
-        return true;
+        scheduleExecution(() -> processSplitFareRide(dto, ride.getId()), 30, TimeUnit.SECONDS);
+
+        PassengerRide passengerRide = passengerRideRepository
+                .findByRideAndPassengerUsername(ride, passenger.getUsername()).get();
+        RideSimpleDisplayDTO rideDisplayDTO = rideUtils.createBasicRideSimpleDisplayDTO(passengerRide, null);
+        return rideDisplayDTO;
     }
 
-    public void processSplitFareRide(SplitFareRideCreationDTO dto, Ride ride) {
-        Ride newRide = rideRepository.findById(ride.getId()).get();
-        if (newRide.getStatus() != RideStatus.CANCELLED && !newRide.getPassengersConfirmed()) {
+    public void processSplitFareRide(SplitFareRideCreationDTO dto, Integer rideId) {
+        Ride ride = rideRepository.findById(rideId).get();
+        if (ride.getStatus() != RideStatus.CANCELLED && !ride.getPassengersConfirmed()) {
             for (String username : dto.getUsersToPay()) {
                 rideUtils.sendMessageToPassenger(username,
                         "The ride is cancelled because one of the passengers did not respond to the invitation.",

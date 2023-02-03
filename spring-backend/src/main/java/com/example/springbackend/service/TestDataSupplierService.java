@@ -84,7 +84,7 @@ public class TestDataSupplierService {
         passenger.setTokenBalance(1000);
         passenger.setProfilePicture("/passenger1@noemail.com.png");
         passengerRepository.save(passenger);
-        passenger.setTokenBalance(600);
+        passenger.setTokenBalance(800);
         passenger.setDistanceTravelled(0.0);
         passenger.setRidesCompleted(0);
         passenger.setName("Karl Gustav");
@@ -106,6 +106,13 @@ public class TestDataSupplierService {
         passenger.setTokenBalance(690);
         passenger.setProfilePicture("/default.png");
         passengerRepository.save(passenger);
+        passenger.setName("Carl");
+        passenger.setSurname("Rogers");
+        passenger.setUsername("passenger5@noemail.com");
+        passenger.setEmail("passenger5@noemail.com");
+        passenger.setTokenBalance(10);
+        passenger.setProfilePicture("/default.png");
+        passengerRepository.save(passenger);
     }
 
     private void addDrivers() {
@@ -119,11 +126,11 @@ public class TestDataSupplierService {
         vehicle.setLicensePlateNumber("A31216");
 //        vehicle.setRideActive(true);
         vehicle.setRideActive(false);
-        Random rand = new Random();
-        int i = rand.nextInt(0, locations.size());
-        vehicle.setCurrentCoordinates(locations.get(i));
+//        Random rand = new Random();
+//        int i = rand.nextInt(0, locations.size());
+        vehicle.setCurrentCoordinates(locations.get(0));
 //        vehicle.setNextCoordinates(locations.get((i+1) % locations.size()));
-        vehicle.setNextCoordinates(locations.get(i));
+        vehicle.setNextCoordinates(locations.get(0));
         vehicle.setCoordinatesChangedAt(LocalDateTime.now());
         vehicle.setExpectedTripTime(0);
         vehicle.setVehicleType(vehicleTypeRepository.findByName("COUPE").orElseThrow());
@@ -217,7 +224,6 @@ public class TestDataSupplierService {
         passengerRide.setDriverRating(4);
         passengerRide.setVehicleRating(3);
         passengerRide.setComment("The car was old and dirty.");
-        passengerRide.setId(1);
         passengerRideRepository.save(passengerRide);
 //        ride.setDriver(driverRepository.findByUsername("driver2@noemail.com").get());
 //

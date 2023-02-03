@@ -99,11 +99,11 @@ public class ControllerAdvisor {
                 "Passenger already has an active ride.");
     }
 
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(TooManyPassengersException.class)
     public ExceptionResponseBody handleTooManyPassengersException(TooManyPassengersException ex) {
         return new ExceptionResponseBody(
-                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 "Number of passengers exceeds vehicle capacity.");
     }
 }

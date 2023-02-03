@@ -169,7 +169,7 @@ public class RideUtils {
         }
     }
 
-    public void checkIfSplitFareRideIsValid(SplitFareRideCreationDTO dto, Passenger passenger, int fare) {
+    public void checkIfSplitFareRideIsValid(SplitFareRideCreationDTO dto, Passenger passenger, int fare, VehicleType vehicleType) {
         dto.getUsersToPay().stream().forEach(email -> {
             if (!userService.userExists(email)) {
                 throw new UserDoesNotExistException("A co-passenger's email does not exist in the system.");
@@ -177,6 +177,9 @@ public class RideUtils {
         });
         if (dto.getUsersToPay().stream().distinct().count() != dto.getUsersToPay().size()) {
             throw new LinkedPassengersNotAllDistinctException();
+        }
+        if (dto.getUsersToPay().size() > vehicleType.getSeats()) {
+            throw new TooManyPassengersException();
         }
         List<PassengerRide> currentPassengerRides =
                 passengerRideRepository.getCurrentPassengerRidesByUsername(dto.getUsersToPay());

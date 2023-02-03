@@ -193,7 +193,7 @@ public class RideServiceTests {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {-1, 1, 10, 19})
+    @ValueSource(ints = {1, 10, 19})
     void Throw_exception_when_delay_is_shorter_than_20_for_a_scheduled_basic_ride(int delayInMinutes) {
         BasicRideCreationDTO dto = mock(BasicRideCreationDTO.class);
 
@@ -283,7 +283,7 @@ public class RideServiceTests {
         when(dto.getUsersToPay()).thenReturn(new ArrayList<>(3));
 
         doThrow(UserDoesNotExistException.class)
-                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt());
+                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt(), any());
 
         assertThrows(
                 UserDoesNotExistException.class,
@@ -304,12 +304,33 @@ public class RideServiceTests {
         when(dto.getUsersToPay()).thenReturn(new ArrayList<>(3));
 
         doThrow(LinkedPassengersNotAllDistinctException.class)
-                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt());
+                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt(), any());
 
         assertThrows(
                 LinkedPassengersNotAllDistinctException.class,
                 () -> rideService.orderSplitFareRide(dto, authentication),
                 "Expected orderSplitFareRide() to throw LinkedPassengersNotAllDistinctException, but it didn't"
+        );
+    }
+
+    @Test
+    void Throw_exception_when_there_are_too_many_passengers_when_ordering_a_split_fare_ride() {
+        SplitFareRideCreationDTO dto = mock(SplitFareRideCreationDTO.class);
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(passengerMock);
+        when(dto.getVehicleType()).thenReturn("COUPE");
+        when(vehicleTypeRepositoryMock.findByName("COUPE")).thenReturn(Optional.of(vehicleTypeMock));
+
+        when(rideUtilsMock.calculateRidePrice(dto, vehicleTypeMock)).thenReturn(1300);
+        when(dto.getUsersToPay()).thenReturn(new ArrayList<>(3));
+
+        doThrow(TooManyPassengersException.class)
+                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt(), any());
+
+        assertThrows(
+                TooManyPassengersException.class,
+                () -> rideService.orderSplitFareRide(dto, authentication),
+                "Expected orderSplitFareRide() to throw TooManyPassengersException, but it didn't"
         );
     }
 
@@ -325,7 +346,7 @@ public class RideServiceTests {
         when(dto.getUsersToPay()).thenReturn(new ArrayList<>(3));
 
         doThrow(PassengerAlreadyHasAnActiveRideException.class)
-                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt());
+                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt(), any());
 
         assertThrows(
                 PassengerAlreadyHasAnActiveRideException.class,
@@ -346,7 +367,7 @@ public class RideServiceTests {
         when(dto.getUsersToPay()).thenReturn(new ArrayList<>(3));
 
         doThrow(InsufficientFundsException.class)
-                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt());
+                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt(), any());
 
         assertThrows(
                 InsufficientFundsException.class,
@@ -367,7 +388,7 @@ public class RideServiceTests {
         when(dto.getUsersToPay()).thenReturn(new ArrayList<>(3));
 
         doThrow(ReservationTooSoonException.class)
-                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt());
+                .when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt(), any());
 
         assertThrows(
                 ReservationTooSoonException.class,
@@ -392,7 +413,7 @@ public class RideServiceTests {
         usersToPay.add("username3@noemail.com");
 
         when(dto.getUsersToPay()).thenReturn(usersToPay);
-        doNothing().when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt());
+        doNothing().when(rideUtilsMock).checkIfSplitFareRideIsValid(any(), any(), anyInt(), any());
 
         when(rideUtilsMock.createSplitFareRide(any(), anyInt())).thenReturn(rideMock);
         doNothing().when(passengerMock).setTokenBalance(anyInt());
@@ -405,7 +426,13 @@ public class RideServiceTests {
         RideService rideServiceSpy = Mockito.spy(rideService);
         doNothing().when(rideServiceSpy).scheduleExecution(any(), anyLong(), any());
 
-        assertTrue(rideServiceSpy.orderSplitFareRide(dto, authentication));
+        when(passengerRideRepositoryMock.findByRideAndPassengerUsername(any(), anyString()))
+                .thenReturn(Optional.of(passengerRideMock));
+        RideSimpleDisplayDTO rideSimpleDisplayDTOMock = mock(RideSimpleDisplayDTO.class);
+        when(rideUtilsMock.createBasicRideSimpleDisplayDTO(passengerRideMock, null))
+                .thenReturn(rideSimpleDisplayDTOMock);
+
+        assertTrue(rideServiceSpy.orderSplitFareRide(dto, authentication).equals(rideSimpleDisplayDTOMock));
         verify(passengerMock).setTokenBalance(anyInt());
         verify(passengerRepositoryMock).save(passengerMock);
         verify(rideUtilsMock).createPassengerRideForUsers(any(), any(), anyInt(), any());

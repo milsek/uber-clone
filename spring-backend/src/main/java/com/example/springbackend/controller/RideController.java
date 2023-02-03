@@ -16,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class RideController {
 
     @PostMapping("/split-fare")
     @PreAuthorize("hasRole('PASSENGER')")
-    public ResponseEntity<Boolean> orderSplitFareRide(@Valid @RequestBody SplitFareRideCreationDTO dto,
+    public ResponseEntity<RideSimpleDisplayDTO> orderSplitFareRide(@Valid @RequestBody SplitFareRideCreationDTO dto,
                                                       Authentication auth) {
         return ResponseEntity.ok(rideService.orderSplitFareRide(dto, auth));
     }
