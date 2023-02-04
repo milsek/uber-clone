@@ -128,16 +128,15 @@ public class RideUtils {
     }
 
     public void directDriverToLocation(Driver driver, Coordinates coordinates) {
-        Driver driverActual = driverRepository.findByUsername(driver.getUsername()).get();
-        if (driverActual.getCurrentRide() != null || driverActual.getNextRide() != null) {
-            Vehicle vehicle = driverActual.getVehicle();
+        if (driver.getCurrentRide() != null || driver.getNextRide() != null) {
+            Vehicle vehicle = driver.getVehicle();
             vehicle.setNextCoordinates(coordinates);
             vehicle.setRideActive(true);
             vehicle.setCoordinatesChangedAt(LocalDateTime.now());
             long estimatedTime = simulatorService.getEstimatedTime(vehicle);
             vehicle.setExpectedTripTime(estimatedTime);
             vehicleRepository.save(vehicle);
-            scheduleExecution(() -> simulatorService.arriveAtLocation(vehicle, true),
+            scheduleExecution(() -> simulatorService.arriveAtLocation(vehicle.getId(), true),
                     estimatedTime, TimeUnit.SECONDS);
         }
     }

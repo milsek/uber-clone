@@ -45,7 +45,7 @@ public class SimulatorService {
         vehicleRepository.save(vehicle);
 
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.schedule(() -> arriveAtLocation(vehicle, false), estimatedTime, TimeUnit.SECONDS);
+        executorService.schedule(() -> arriveAtLocation(vehicle.getId(), false), estimatedTime, TimeUnit.SECONDS);
     }
 
     public long getEstimatedTime(Vehicle vehicle) {
@@ -65,10 +65,12 @@ public class SimulatorService {
         return location;
     }
 
-    public void arriveAtLocation(Vehicle vehicle, boolean setRideActive) {
+    public void arriveAtLocation(Integer vehicleId, boolean setRideActive) {
+        Vehicle vehicle = vehicleRepository.findById(vehicleId).get();
+        boolean setActive = vehicle.isRideActive() ? setRideActive : false;
         vehicle.setCurrentCoordinates(vehicle.getNextCoordinates());
         vehicle.setExpectedTripTime(0);
-        vehicle.setRideActive(setRideActive);
+        vehicle.setRideActive(setActive);
         vehicleRepository.save(vehicle);
     }
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 @Repository
-public interface VehicleRepository extends JpaRepository<Vehicle, String> {
+public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
     @Query(value="SELECT v FROM Vehicle v JOIN Driver d ON d.vehicle = v WHERE d.active = true")
     Collection<Vehicle> findVehiclesWhoseDriversAreActive();
 }
