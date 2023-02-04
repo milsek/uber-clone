@@ -228,7 +228,6 @@ export class AuthenticationService {
       if (!res.data) {
         axios.patch(
           `/api/drivers/activity`,
-          {},
           {
             headers: {
               Authorization: `Bearer ${token}`,

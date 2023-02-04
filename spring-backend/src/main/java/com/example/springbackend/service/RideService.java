@@ -305,17 +305,17 @@ public class RideService {
             rideUtils.handleRejectedRidePassengers(nextRidePassengerRides);
         }
 
-        driver.setActive(false);
-        driver.setCurrentRide(null);
-        driver.setNextRide(null);
-        driverRepository.save(driver);
-
         Vehicle vehicle = driver.getVehicle();
         vehicle.setCurrentCoordinates(vehicle.getNextCoordinates());
         vehicle.setExpectedTripTime(0);
         vehicle.setRideActive(false);
         vehicle.setCoordinatesChangedAt(LocalDateTime.now());
         vehicleRepository.save(vehicle);
+
+        driver.setActive(false);
+        driver.setCurrentRide(null);
+        driver.setNextRide(null);
+        driverRepository.save(driver);
 
         List<PassengerRide> passengerRides = passengerRideRepository.findByRide(ride);
         rideUtils.handleRejectedRidePassengers(passengerRides);

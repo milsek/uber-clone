@@ -2,7 +2,7 @@
 sm:h-full select-none" id="order-menu">
 
   <div *ngIf="isOpened && ride" class="sm:static flex flex-col rounded-t-3xl sm:rounded-none
-  w-screen h-140 sm:h-full sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
+  w-screen h-140 sm:h-auto sm:w-120 bg-dark py-8 px-10 overflow-auto hidden-scrollbar">
     <h1 class="text-3xl font-bold text-gray-50 mt-4 sm:mt-0">Current ride</h1>
     <div class="tracking-wide uppercase text-light font-medium rounded-2xl">{{ rideStatus }}</div>
 
@@ -59,9 +59,9 @@ sm:h-full select-none" id="order-menu">
     </div>
 
     <!-- passengers info -->
-    <h1 class="text-2xl font-bold text-gray-50 mt-10">Your passengers</h1>
-    <div *ngIf="ride.passengers" class="flex flex-col gap-y-2 mt-4 max-h-72 overflow-auto">
-      <div *ngFor="let passenger of ride.passengers">
+    <h1 class="text-2xl font-bold text-gray-50 mt-10 shrink-0">Your passengers</h1>
+    <div *ngIf="ride.passengers" class="flex flex-col gap-y-2 mt-4 max-h-72 overflow-auto shrink-0">
+      <div *ngFor="let passenger of ride.passengers" class="shrink-0">
         <div class="flex w-full justify-between">
           
           <div class="flex grow my-auto text-base font-medium text-gray-50 gap-x-4">
@@ -77,17 +77,17 @@ sm:h-full select-none" id="order-menu">
     </div>
     
     <button *ngIf="ride.status === 'DRIVER_ARRIVING' && !isRideRejectionSent" class="w-full h-16 bg-accent-light
-    active:bg-accent text-white font-medium tracking-wide mt-8" (click)="openRejectRideModal()">
+    active:bg-accent text-white font-medium tracking-wide mt-8 shrink-0" (click)="openRejectRideModal()">
       REJECT RIDE
     </button>
 
     <button *ngIf="ride.status === 'DRIVER_ARRIVED'" class="w-full h-16 bg-accent-light
-    active:bg-accent text-white font-medium tracking-wide mt-8" (click)="beginRide()">
+    active:bg-accent text-white font-medium tracking-wide mt-8 shrink-0" (click)="beginRide()">
       BEGIN RIDE
     </button>
 
     <button *ngIf="ride.status === 'ARRIVED_AT_DESTINATION'" class="w-full h-16 bg-accent-light
-    active:bg-accent text-white font-medium tracking-wide mt-8" (click)="completeRide()">
+    active:bg-accent text-white font-medium tracking-wide mt-8 shrink-0" (click)="completeRide()">
       COMPLETE RIDE
     </button>
 
