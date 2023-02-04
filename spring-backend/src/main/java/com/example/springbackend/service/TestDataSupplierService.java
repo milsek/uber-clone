@@ -46,6 +46,21 @@ public class TestDataSupplierService {
             new Coordinates(45.257006, 19.801482),
             new Coordinates(45.241448, 19.776247)
     );
+
+    public static List<Coordinates> simLocations = Arrays.asList(
+            new Coordinates(45.257006, 19.801482),
+            new Coordinates(45.244510, 19.809867),
+            new Coordinates(45.245396, 19.838314),
+            new Coordinates(45.250752, 19.846262),
+            new Coordinates(45.258980, 19.836656),
+            new Coordinates(45.261578, 19.850342),
+            new Coordinates(45.257473, 19.829160),
+            new Coordinates(45.261818, 19.813415),
+            new Coordinates(45.247753, 19.799362),
+            new Coordinates(45.236642, 19.807773),
+            new Coordinates(45.239597, 19.835787),
+            new Coordinates(45.245476, 19.825145)
+    );
     @Autowired
     private OrderRepository orderRepository;
 
@@ -179,14 +194,60 @@ public class TestDataSupplierService {
         driver.setCurrentRide(null);
         driver.setNextRide(null);
         driverRepository.save(driver);
-        addOtherDrivers();
-        addDriverSubotica();
 //        driver.setUsername("driver2@noemail.com");
 //        driverRepository.save(driver);
 //        driver.setUsername("driver3@noemail.com");
 //        driverRepository.save(driver);
 //        driver.setUsername("driver4@noemail.com");
 //        driverRepository.save(driver);
+
+
+        addOtherDrivers();
+        addDriverSubotica();
+
+//        Don't run while running selenium and integration tests
+//        addSimDrivers();
+    }
+
+    private void addOtherDrivers() {
+        for (int i = 2; i < 7; i++) {
+            Vehicle vehicle = new Vehicle();
+            vehicle.setBabySeat(true);
+            vehicle.setPetsAllowed(true);
+            vehicle.setMake("Peugeot");
+            vehicle.setModel("406");
+            vehicle.setColour("Gray");
+            vehicle.setLicensePlateNumber("A61353");
+            vehicle.setRideActive(false);
+            int k = Math.min(i-1, locations.size()-1);
+            vehicle.setCurrentCoordinates(locations.get(k));
+            vehicle.setNextCoordinates(locations.get(k));
+            vehicle.setCoordinatesChangedAt(LocalDateTime.now());
+            vehicle.setVehicleType(vehicleTypeRepository.findByName("COUPE").orElseThrow());
+            vehicleRepository.save(vehicle);
+            Driver driver = new Driver();
+            driver.setUsername("driver" + i + "@noemail.com");
+            driver.setEmail("driver" + i + "@noemail.com");
+            driver.setPassword(passwordEncoder.encode("cascaded"));
+            driver.setName("Driver" + i);
+            driver.setSurname("Drivich");
+            driver.setPhoneNumber("+1 422 135 12");
+            driver.setCity("Novi Sad");
+            driver.setActive(true);
+            driver.setVehicle(vehicle);
+            driver.setDistanceTravelled(5251.12 + i);
+            driver.setRidesCompleted(2153 + i);
+            driver.setTotalRatingSum(7814 + i);
+            driver.setNumberOfReviews(1693 + i);
+            driver.setAccountStatus(AccountStatus.ACTIVE);
+            driver.setLastSetActive(LocalDateTime.now());
+            driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
+            driver.setCurrentRide(null);
+            driver.setNextRide(null);
+            driver.setProfilePicture("/default.png");
+            vehicle.setExpectedTripTime(0);
+            driverRepository.save(driver);
+        }
     }
 
     private void addDriverSubotica() {
@@ -225,6 +286,46 @@ public class TestDataSupplierService {
         driver.setCurrentRide(null);
         driver.setNextRide(null);
         driverRepository.save(driver);
+    }
+
+    private void addSimDrivers() {
+        for (int i = 0; i < 10; i++) {
+            Vehicle vehicle = new Vehicle();
+            vehicle.setBabySeat(true);
+            vehicle.setPetsAllowed(true);
+            vehicle.setMake("Peugeot");
+            vehicle.setModel("506");
+            vehicle.setColour("Gray");
+            vehicle.setLicensePlateNumber("A4444444");
+            vehicle.setRideActive(false);
+            vehicle.setCurrentCoordinates(simLocations.get(i));
+            vehicle.setNextCoordinates(simLocations.get((i + 1) % simLocations.size()));
+            vehicle.setCoordinatesChangedAt(LocalDateTime.now());
+            vehicle.setVehicleType(vehicleTypeRepository.findByName("COUPE").orElseThrow());
+            vehicleRepository.save(vehicle);
+            Driver driver = new Driver();
+            driver.setUsername("simdriver" + i + "@noemail.com");
+            driver.setEmail("simdriver" + i + "@noemail.com");
+            driver.setPassword(passwordEncoder.encode("cascaded"));
+            driver.setName("Sim_Driver_" + i);
+            driver.setSurname("Matrix");
+            driver.setPhoneNumber("+1 422 135 12");
+            driver.setCity("Novi Sad");
+            driver.setActive(true);
+            driver.setVehicle(vehicle);
+            driver.setDistanceTravelled(5251.12 + i);
+            driver.setRidesCompleted(2153 + i);
+            driver.setTotalRatingSum(7814 + i);
+            driver.setNumberOfReviews(1693 + i);
+            driver.setAccountStatus(AccountStatus.ACTIVE);
+            driver.setLastSetActive(LocalDateTime.now());
+            driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
+            driver.setCurrentRide(null);
+            driver.setNextRide(null);
+            driver.setProfilePicture("/default.png");
+            vehicle.setExpectedTripTime(0);
+            driverRepository.save(driver);
+        }
     }
 
     private void addRides(){
@@ -307,47 +408,6 @@ public class TestDataSupplierService {
 //        passengerRide.setFare(80);
 //        passengerRide.setId(8);
 //        passengerRideRepository.save(passengerRide);
-    }
-
-    private void addOtherDrivers() {
-        for (int i = 2; i < 7; i++) {
-            Vehicle vehicle = new Vehicle();
-            vehicle.setBabySeat(true);
-            vehicle.setPetsAllowed(true);
-            vehicle.setMake("Peugeot");
-            vehicle.setModel("406");
-            vehicle.setColour("Gray");
-            vehicle.setLicensePlateNumber("A61353");
-            vehicle.setRideActive(false);
-            int k = Math.min(i-1, locations.size()-1);
-            vehicle.setCurrentCoordinates(locations.get(k));
-            vehicle.setNextCoordinates(locations.get(k));
-            vehicle.setCoordinatesChangedAt(LocalDateTime.now());
-            vehicle.setVehicleType(vehicleTypeRepository.findByName("COUPE").orElseThrow());
-            vehicleRepository.save(vehicle);
-            Driver driver = new Driver();
-            driver.setUsername("driver" + i + "@noemail.com");
-            driver.setEmail("driver" + i + "@noemail.com");
-            driver.setPassword(passwordEncoder.encode("cascaded"));
-            driver.setName("Driver" + i);
-            driver.setSurname("Drivich");
-            driver.setPhoneNumber("+1 422 135 12");
-            driver.setCity("Novi Sad");
-            driver.setActive(true);
-            driver.setVehicle(vehicle);
-            driver.setDistanceTravelled(5251.12 + i);
-            driver.setRidesCompleted(2153 + i);
-            driver.setTotalRatingSum(7814 + i);
-            driver.setNumberOfReviews(1693 + i);
-            driver.setAccountStatus(AccountStatus.ACTIVE);
-            driver.setLastSetActive(LocalDateTime.now());
-            driver.setRoles(roleRepository.findByName("ROLE_DRIVER"));
-            driver.setCurrentRide(null);
-            driver.setNextRide(null);
-            driver.setProfilePicture("/default.png");
-            vehicle.setExpectedTripTime(0);
-            driverRepository.save(driver);
-        }
     }
 
 }

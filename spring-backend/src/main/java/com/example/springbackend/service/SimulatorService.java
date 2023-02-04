@@ -59,8 +59,8 @@ public class SimulatorService {
         Random rand = new Random();
         while (Math.abs(location.getLat() - vehicle.getCurrentCoordinates().getLat()) < Double.MIN_NORMAL &&
                 Math.abs(location.getLng() - vehicle.getCurrentCoordinates().getLng()) < Double.MIN_NORMAL) {
-            location = TestDataSupplierService.locations.get(rand.nextInt(0,
-                    TestDataSupplierService.locations.size()));
+            location = TestDataSupplierService.simLocations.get(rand.nextInt(0,
+                    TestDataSupplierService.simLocations.size()));
         }
         return location;
     }
